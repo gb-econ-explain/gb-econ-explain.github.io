@@ -31,17 +31,17 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
 .nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
-.sidebar-footer { padding:0.875rem 1rem; border-top:1px solid var(--border); }
-.sidebar-user { display:flex; align-items:center; gap:9px; padding:6px 4px; }
+
+
 .avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.user-name { font-size:13px; font-weight:500; color:var(--text); }
-.user-role { font-size:11px; color:var(--muted); }
+
+
 .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
 .topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0.8rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
 .breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
 .breadcrumb a { color:var(--blue-mid); text-decoration:none; }
-.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); }
-.content { padding:2rem 2rem 4rem; max-width:940px; }
+.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); } .topbar-user { display:flex; align-items:center; gap:9px; padding:4px 6px 4px 10px; border-left:1px solid var(--border); margin-left:4px; } .topbar-user-info { display:flex; flex-direction:column; } .topbar-user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; } .topbar-user-role { font-size:11px; color:var(--muted); }
+.content { padding:2rem 2rem 4rem; }
 .page-header { margin-bottom:2.5rem; }
 .page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); margin-bottom:4px; }
 .page-header p { font-size:13.5px; color:var(--muted); }
@@ -90,13 +90,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
       <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
     </a>
   </nav>
-  <div class="sidebar-footer">
-    <div class="sidebar-user">
-      <div class="avatar">GB</div>
-      <div><div class="user-name">Gabriel Bayle</div><div class="user-role">Researcher · GATE</div></div>
-    </div>
-  </div>
-</aside>
+  </aside>
 <div class="main">
   <div class="topbar">
     <div class="breadcrumb"><span>Welcome</span></div>

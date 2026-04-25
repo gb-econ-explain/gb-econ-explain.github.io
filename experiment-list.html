@@ -35,11 +35,11 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
 
-.sidebar-footer { padding:0.875rem 1rem; border-top:1px solid var(--border); }
-.sidebar-user { display:flex; align-items:center; gap:9px; padding:6px 4px; border-radius:var(--radius); }
+
+
 .avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.user-name { font-size:13px; font-weight:500; color:var(--text); }
-.user-role { font-size:11px; color:var(--muted); }
+
+
 
 /* ── Main ── */
 .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
@@ -50,7 +50,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; }
 .icon-btn-top:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
 
-.content { padding:2rem 2rem 4rem; max-width:940px; }
+.content { padding:2rem 2rem 4rem; }
 
 /* ── Page header ── */
 .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.75rem; gap:1rem; flex-wrap:wrap; }
@@ -193,16 +193,7 @@ tbody tr:hover { background:#fafbfd; }
     </a>
   </nav>
 
-  <div class="sidebar-footer">
-    <div class="sidebar-user">
-      <div class="avatar">GB</div>
-      <div>
-        <div class="user-name">Gabriel Bayle</div>
-        <div class="user-role">Researcher · GATE</div>
-      </div>
-    </div>
-  </div>
-</aside>
+  </aside>
 
 <!-- ── Main ── -->
 <div class="main">
@@ -215,6 +206,13 @@ tbody tr:hover { background:#fafbfd; }
           <path d="M6 12.5a1.5 1.5 0 003 0"/>
         </svg>
       </button>
+      <div class="topbar-user">
+        <div class="avatar">GB</div>
+        <div class="topbar-user-info">
+          <div class="topbar-user-name">Gabriel Bayle</div>
+          <div class="topbar-user-role">Researcher · GATE</div>
+        </div>
+      </div>
     </div>
   </div>
 

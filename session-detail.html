@@ -556,6 +556,7 @@ const DEMO_INVITATIONS = [
 const urlParams  = new URLSearchParams(location.search);
 const expId  = urlParams.get('id');
 const sessId = urlParams.get('sid');
+const initTab = urlParams.get('tab') || 'overview';
 let exp, session;
 let regFilter = 'all';
 let regSortKey = 'name', regSortDir = 1;
@@ -577,6 +578,8 @@ function init() {
   renderOverview();
   renderRegistrations();
   renderInvitations();
+
+  if (initTab !== 'overview') showTab(initTab);
 }
 
 function renderHeader() {

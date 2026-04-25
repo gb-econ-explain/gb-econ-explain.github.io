@@ -987,7 +987,9 @@ function renderSessions() {
     const maxSlots = s.slots;
     const fillPct = maxSlots ? Math.round((enrolled/maxSlots)*100) : 0;
     const fillColor = fillPct >= 100 ? 'ok' : fillPct >= 75 ? '' : 'warn';
-    return `<div class="session-row" onclick="window.location='session-detail.html?id='+exp.id+'&sid='+s.id">
+    const detailUrl = `session-detail.html?id=${exp.id}&sid=${s.id}`;
+    const attendUrl = `session-detail.html?id=${exp.id}&sid=${s.id}&tab=registrations`;
+    return `<div class="session-row" onclick="window.location='${isPast ? attendUrl : detailUrl}'">
       <div class="session-date">
         <div class="session-day">${day}</div>
         <div class="session-month">${month}</div>
@@ -1002,8 +1004,9 @@ function renderSessions() {
         </div>
         <div class="quota-pills" style="margin-top:4px">
           <span class="quota-pill quota-ok">50% F / 50% M</span>
-          ${isPast ? `<span class="quota-pill ${s.noshows>2?'quota-warn':'quota-ok'}">${s.noshows} no-show${s.noshows!==1?'s':''}</span>` : ''}
+          ${isPast ? `<span class="quota-pill ${s.noshows>2?'quota-warn':'quota-ok'}">${s.noshows||0} no-show${(s.noshows||0)!==1?'s':''}</span>` : ''}
           ${!isPast && s.waitlist>0 ? `<span class="quota-pill quota-warn">${s.waitlist} on waitlist</span>` : ''}
+          ${isPast && !s.payrollDone ? `<span class="quota-pill quota-warn">⚠ Payoffs pending</span>` : ''}
         </div>
       </div>
       <div class="session-stats">
@@ -1013,6 +1016,13 @@ function renderSessions() {
         </div>
         <span class="badge ${isPast?'badge-archived':'badge-active'}">${isPast?'Past':'Active'}</span>
       </div>
+      ${isPast
+        ? `<a class="btn btn-primary btn-sm" href="${attendUrl}" onclick="event.stopPropagation()">
+             <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg>
+             Enter payoffs
+           </a>`
+        : `<button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();window.location='${detailUrl}'">View</button>`
+      }
       <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();window.location='session-create.html?id='+exp.id+'&dup=1&sid=${s.id}'">Duplicate</button>
     </div>`;
   }).join('');

@@ -327,7 +327,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
       <div class="exp-actions">
         <span id="status-badge"></span>
         <button class="btn btn-ghost btn-sm" onclick="openStatusModal()">Change status</button>
-        <button class="btn btn-primary btn-sm" onclick="showTab('sessions'); openSessionModal()">+ New session</button>
+        <button class="btn btn-primary btn-sm" onclick="window.location='session-create.html?id='+exp.id">+ New session</button>
       </div>
     </div>
 
@@ -523,7 +523,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
               <td><button class="icon-btn danger" onclick="showToast('Experimenter removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button></td>
             </tr>
             <tr>
-              <td><div class="person-cell"><div class="person-avatar" style="background:#1a7a4a">MV</div><div><div class="person-name">Marie Villeval</div><div class="person-email">marie.villeval@cnrs.fr</div></div></div></td>
+              <td><div class="person-cell"><div class="person-avatar" style="background:#1a7a4a">MCV</div><div><div class="person-name">Marie Claire Villeval</div><div class="person-email">marie-claire.villeval@cnrs.fr</div></div></div></td>
               <td><span style="font-size:13px;color:var(--muted)">Experimenter</span></td>
               <td><select class="role-select"><option selected>View only</option><option>Can edit</option><option>Full rights</option></select></td>
               <td><button class="icon-btn danger" onclick="showToast('Experimenter removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button></td>
@@ -546,7 +546,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
         <button class="filter-chip" onclick="filterSessions('upcoming',this)">Upcoming</button>
         <button class="filter-chip" onclick="filterSessions('sent',this)">Invitations sent</button>
         <button class="filter-chip" onclick="filterSessions('past',this)">Past</button>
-        <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="openSessionModal()">+ New session</button>
+        <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="window.location='session-create.html?id='+exp.id">+ New session</button>
       </div>
 
       <div id="sessions-list">
@@ -987,7 +987,7 @@ function renderSessions() {
     const maxSlots = s.slots;
     const fillPct = maxSlots ? Math.round((enrolled/maxSlots)*100) : 0;
     const fillColor = fillPct >= 100 ? 'ok' : fillPct >= 75 ? '' : 'warn';
-    return `<div class="session-row" onclick="showToast('Session management coming soon')">
+    return `<div class="session-row" onclick="window.location='session-detail.html?id='+exp.id+'&sid='+s.id">
       <div class="session-date">
         <div class="session-day">${day}</div>
         <div class="session-month">${month}</div>
@@ -1013,7 +1013,7 @@ function renderSessions() {
         </div>
         <span class="badge ${isPast?'badge-archived':'badge-active'}">${isPast?'Past':'Active'}</span>
       </div>
-      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();duplicateSession('${s.id}')">Duplicate</button>
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();window.location='session-create.html?id='+exp.id+'&dup=1&sid=${s.id}'">Duplicate</button>
     </div>`;
   }).join('');
 }

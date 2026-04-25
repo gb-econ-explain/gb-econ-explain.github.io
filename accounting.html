@@ -14,6 +14,8 @@
   --border:#dde3ed; --bg:#f6f8fc; --white:#ffffff; --text:#1a2035;
   --radius:10px; --radius-lg:16px;
   --success:#1a7a4a; --success-bg:#e6f4ed;
+  --warning:#8a6200; --warning-bg:#fff8e6; --warning-border:#f5d87a;
+  --danger:#c0392b; --danger-bg:#fff0f0; --danger-border:#f5c5c5;
   --sidebar-w:220px;
 }
 html,body { height:100%; }
@@ -31,94 +33,393 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
 .nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
-
-
-.avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-
-
 .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
 .topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0.8rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
-.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
-.breadcrumb a { color:var(--blue-mid); text-decoration:none; }
-.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); } .topbar-user { display:flex; align-items:center; gap:9px; padding:4px 6px 4px 10px; border-left:1px solid var(--border); margin-left:4px; } .topbar-user-info { display:flex; flex-direction:column; } .topbar-user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; } .topbar-user-role { font-size:11px; color:var(--muted); }
+.breadcrumb { font-size:12px; color:var(--muted); }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); }
+.topbar-user { display:flex; align-items:center; gap:9px; padding:4px 6px 4px 10px; border-left:1px solid var(--border); margin-left:4px; }
+.topbar-user-info { display:flex; flex-direction:column; }
+.topbar-user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
+.topbar-user-role { font-size:11px; color:var(--muted); }
+.avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .content { padding:2rem 2rem 4rem; }
-.page-header { margin-bottom:2.5rem; }
-.page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); margin-bottom:4px; }
-.page-header p { font-size:13.5px; color:var(--muted); }
-.placeholder-box { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:4rem 2rem; text-align:center; }
-.placeholder-icon { font-size:42px; margin-bottom:1rem; opacity:0.5; }
-.placeholder-box h2 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--navy); margin-bottom:8px; }
-.placeholder-box p { font-size:14px; color:var(--muted); max-width:420px; margin:0 auto 1.5rem; line-height:1.7; }
-.badge-wip { display:inline-flex; align-items:center; gap:6px; background:#fff8e6; border:1px solid #f5d87a; color:#8a6200; border-radius:20px; font-size:12px; font-weight:600; padding:4px 14px; margin-bottom:1.25rem; }
-.feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:2rem; text-align:left; }
-.feature-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.125rem; }
-.feature-card .fc-icon { font-size:20px; margin-bottom:8px; }
-.feature-card h4 { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
-.feature-card p { font-size:12.5px; color:var(--muted); line-height:1.5; }
+.page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap; }
+.page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); }
+.page-header p { font-size:13.5px; color:var(--muted); margin-top:2px; }
+.access-notice { display:flex; align-items:flex-start; gap:10px; background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:var(--radius); padding:11px 15px; font-size:13px; color:var(--warning); margin-bottom:1.5rem; }
+.access-notice svg { flex-shrink:0; margin-top:2px; }
+.stat-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:1.75rem; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:0.875rem 1.125rem; }
+.stat-label { font-size:11.5px; color:var(--muted); margin-bottom:3px; }
+.stat-value { font-size:24px; font-weight:600; color:var(--navy); line-height:1; }
+.stat-value.green { color:var(--success); }
+.stat-value.orange { color:#b06000; }
+.toolbar { display:flex; align-items:center; gap:10px; margin-bottom:1.1rem; flex-wrap:wrap; }
+.search-wrap { position:relative; flex:1; min-width:180px; max-width:260px; }
+.search-wrap svg { position:absolute; left:9px; top:50%; transform:translateY(-50%); pointer-events:none; }
+.search-input { width:100%; padding:7px 11px 7px 30px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13.5px; color:var(--text); background:var(--white); outline:none; }
+.search-input:focus { border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(59,111,212,0.1); }
+.filter-select { padding:7px 26px 7px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13px; color:var(--slate); background:var(--white); appearance:none; cursor:pointer; outline:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
+.filter-select:focus { border-color:var(--blue-mid); }
+.count-label { font-size:13px; color:var(--muted); }
+.export-bar { display:flex; align-items:center; gap:8px; margin-left:auto; flex-wrap:wrap; }
+.card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+table { width:100%; border-collapse:collapse; font-size:13.5px; }
+thead tr { background:var(--bg); }
+th { padding:10px 14px; text-align:left; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer; user-select:none; }
+th:hover { color:var(--slate); }
+th.sorted { color:var(--blue); }
+th .si { margin-left:3px; opacity:0.5; font-size:10px; }
+th.sorted .si { opacity:1; }
+td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tbody tr { transition:background 0.1s; }
+tbody tr:hover { background:#fafbfd; }
+.tfoot-row td { background:var(--bg); font-weight:600; border-top:2px solid var(--border); border-bottom:none; }
+.exp-row td { background:#fafbfd; padding:0; }
+.exp-inner { padding:0.75rem 1.25rem 1rem 3rem; }
+.detail-table { width:100%; border-collapse:collapse; font-size:12.5px; }
+.detail-table th { padding:6px 10px; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:1px solid var(--border); background:transparent; cursor:default; text-align:left; }
+.detail-table td { padding:7px 10px; border-bottom:1px solid #edf0f5; color:var(--slate); }
+.detail-table tr:last-child td { border-bottom:none; }
+.detail-table .oc-present { color:var(--success); font-weight:500; }
+.detail-table .oc-noshow { color:var(--danger); }
+.detail-table .oc-sentback { color:var(--warning); }
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:var(--radius); font-family:inherit; font-size:13.5px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:var(--navy); }
+.btn-ghost { background:var(--white); color:var(--slate); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg); }
+.btn-sm { padding:5px 12px; font-size:12.5px; }
+.btn-success { background:var(--success); color:#fff; }
+.btn-success:hover { background:#155e3a; }
+.pay-status { padding:4px 11px; border-radius:20px; font-size:11.5px; font-weight:600; cursor:pointer; background:var(--white); font-family:inherit; transition:all 0.15s; border:1px solid var(--border); }
+.pay-status.paid { background:var(--success-bg); border-color:var(--success); color:var(--success); }
+.pay-status.pending { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning); }
+.pay-status.partial { background:var(--blue-light); border-color:var(--blue-mid); color:var(--blue); }
+.pay-status:hover { opacity:0.8; }
+.toast { position:fixed; top:20px; left:calc(var(--sidebar-w) + 50%); transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:10px 22px; border-radius:var(--radius); font-size:13.5px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
+.toast.show { transform:translateX(-50%) translateY(0); }
 @media(max-width:768px){ .sidebar{ transform:translateX(-100%); } .main{ margin-left:0; } }
 </style>
 </head>
 <body>
+
 <aside class="sidebar">
   <a class="sidebar-logo" href="experiment-list.html">
     <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
     <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
   </a>
   <nav class="sidebar-nav">
-    <a class="nav-item " href="welcome.html">
-      <svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
-    </a>
+    <a class="nav-item" href="welcome.html"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome</a>
     <span class="nav-label">Research</span>
-    <a class="nav-item " href="experiment-list.html">
-      <svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
-    </a>
-    <a class="nav-item " href="subject-pool.html">
-      <svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
-    </a>
-    <a class="nav-item " href="calendar.html">
-      <svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
-    </a>
+    <a class="nav-item" href="experiment-list.html"><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments</a>
+    <a class="nav-item" href="subject-pool.html"><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool</a>
+    <a class="nav-item" href="calendar.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar</a>
     <span class="nav-label">Administration</span>
-    <a class="nav-item active" href="accounting.html">
-      <svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting<span class="nav-soon">soon</span>
-    </a>
-    <a class="nav-item " href="multilab.html">
-      <svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab<span class="nav-soon">soon</span>
-    </a>
+    <a class="nav-item active" href="accounting.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting</a>
+    <a class="nav-item" href="multilab.html"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab<span class="nav-soon">soon</span></a>
     <span class="nav-label">Help</span>
-    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank">
-      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
-    </a>
+    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation</a>
   </nav>
-  </aside>
+</aside>
+
 <div class="main">
   <div class="topbar">
-    <div class="breadcrumb"><span>Accounting</span></div>
-    <button class="icon-btn-top">
-      <svg width="14" height="14" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-        <path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/>
-        <path d="M6 12.5a1.5 1.5 0 003 0"/>
-      </svg>
-    </button>
+    <div class="breadcrumb">Accounting</div>
+    <div class="topbar-right">
+      <button class="icon-btn-top">
+        <svg width="14" height="14" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg>
+      </button>
+      <div class="topbar-user">
+        <div class="avatar">GB</div>
+        <div class="topbar-user-info">
+          <div class="topbar-user-name">Gabriel Bayle</div>
+          <div class="topbar-user-role">Lab Manager · GATE</div>
+        </div>
+      </div>
+    </div>
   </div>
+
   <div class="content">
     <div class="page-header">
-      <h1>Accounting</h1>
-      <p>Track participant payments, session costs, and lab budget allocation. Export reports for your institution.</p>
+      <div>
+        <h1>Accounting</h1>
+        <p>Payment summary for completed sessions — GATE · CNRS · Lyon. Data retained for 12 rolling months.</p>
+      </div>
     </div>
-    <div class="placeholder-box">
-      <div class="badge-wip">⚙ Work in progress</div>
-      <div class="placeholder-icon">💶</div>
-      <h2>Experiment accounting</h2>
-      <p>Track participant payments, session costs, and lab budget allocation. Export reports for your institution.</p>
-      <div class="feature-grid">
-    <div class="feature-card"><div class="fc-icon">💸</div><h4>Payment tracking</h4><p>Record show-up fees, performance bonuses, and reimbursements per session.</p></div>
-    <div class="feature-card"><div class="fc-icon">📋</div><h4>Budget reports</h4><p>Generate expense reports by experiment, lab, or date range.</p></div>
-    <div class="feature-card"><div class="fc-icon">🧾</div><h4>Receipts</h4><p>Generate participant payment receipts compliant with institutional requirements.</p></div>
-    <div class="feature-card"><div class="fc-icon">📈</div><h4>Cost analytics</h4><p>Compare cost per observation across experiments and modalities.</p></div>
-  </div>
+
+    <div class="access-notice">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1.5L14.5 13H1.5L8 1.5z"/><path d="M8 6v4M8 11.5v.5"/></svg>
+      Access restricted to <strong>Lab managers</strong> and <strong>Accountants</strong>. Participant personal data is anonymised in exports per GDPR.
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="stat-label">Sessions (period)</div><div class="stat-value" id="stat-sessions">—</div></div>
+      <div class="stat-card"><div class="stat-label">Participants paid</div><div class="stat-value" id="stat-participants">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total disbursed</div><div class="stat-value green" id="stat-total">—</div></div>
+      <div class="stat-card"><div class="stat-label">Pending payment</div><div class="stat-value orange" id="stat-pending">—</div></div>
+      <div class="stat-card"><div class="stat-label">Avg. payoff / participant</div><div class="stat-value" id="stat-avg">—</div></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input class="search-input" id="search" type="text" placeholder="Search experiment, session…" oninput="render()"/>
+      </div>
+      <select class="filter-select" id="filter-exp" onchange="render()">
+        <option value="">All experiments</option>
+      </select>
+      <select class="filter-select" id="filter-status" onchange="render()">
+        <option value="">All statuses</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="partial">Partial</option>
+      </select>
+      <select class="filter-select" id="filter-period" onchange="render()">
+        <option value="12">Last 12 months</option>
+        <option value="6">Last 6 months</option>
+        <option value="3">Last 3 months</option>
+        <option value="1">This month</option>
+      </select>
+      <span class="count-label" id="count-label"></span>
+      <div class="export-bar">
+        <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>CSV
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('Excel export — requires SheetJS in production')">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M5 5l4 4M9 5l-4 4"/></svg>Excel
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="showToast('PDF generated')">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M5 5h4M5 7.5h4M5 10h2"/></svg>PDF
+        </button>
+        <button class="btn btn-success btn-sm" onclick="markAllPaid()">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg>
+          Mark all paid
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:28px"></th>
+            <th onclick="sortBy('date')">Date <span class="si" id="si-date">↓</span></th>
+            <th onclick="sortBy('experiment')">Experiment <span class="si" id="si-experiment">↕</span></th>
+            <th onclick="sortBy('location')">Location <span class="si" id="si-location">↕</span></th>
+            <th onclick="sortBy('present')" style="text-align:right">Present <span class="si" id="si-present">↕</span></th>
+            <th onclick="sortBy('noshows')" style="text-align:right">No-shows <span class="si" id="si-noshows">↕</span></th>
+            <th onclick="sortBy('sentback')" style="text-align:right">Sent back <span class="si" id="si-sentback">↕</span></th>
+            <th onclick="sortBy('total')" style="text-align:right">Total (€) <span class="si" id="si-total">↕</span></th>
+            <th>Payment</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+        <tfoot id="table-foot"></tfoot>
+      </table>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SESSIONS = [
+  { id:'s101', date:'2025-06-12', experiment:'trust-game-2025-q1', expId:'a1', location:'Room B204, GATE', mode:'in-person', present:22, noshows:2, sentback:0, total:396, payStatus:'pending',
+    participants:[{pid:'SUB-1042',name:'Léa F.',outcome:'present',payoff:18,showup:true},{pid:'SUB-0871',name:'Thomas M.',outcome:'present',payoff:22,showup:true},{pid:'SUB-2210',name:'Amina D.',outcome:'present',payoff:15,showup:true},{pid:'SUB-0334',name:'Hugo P.',outcome:'noshow',payoff:0,showup:false},{pid:'SUB-1589',name:'Clara R.',outcome:'present',payoff:20,showup:true},{pid:'SUB-0770',name:'Julien M.',outcome:'present',payoff:18,showup:true}]},
+  { id:'s102', date:'2025-05-08', experiment:'trust-game-2025-q1', expId:'a1', location:'Room B102, GATE', mode:'in-person', present:19, noshows:1, sentback:0, total:361, payStatus:'paid',
+    participants:[{pid:'SUB-1042',name:'Léa F.',outcome:'present',payoff:19,showup:true},{pid:'SUB-0871',name:'Thomas M.',outcome:'noshow',payoff:0,showup:false},{pid:'SUB-2210',name:'Amina D.',outcome:'present',payoff:21,showup:true},{pid:'SUB-1589',name:'Clara R.',outcome:'present',payoff:18,showup:true}]},
+  { id:'s103', date:'2025-04-15', experiment:'trust-game-2025-q1', expId:'a1', location:'Room B102, GATE', mode:'in-person', present:18, noshows:2, sentback:1, total:324, payStatus:'paid',
+    participants:[{pid:'SUB-0771',name:'Marc L.',outcome:'present',payoff:18,showup:true},{pid:'SUB-0334',name:'Hugo P.',outcome:'present',payoff:20,showup:true},{pid:'SUB-0999',name:'Karim B.',outcome:'sentback',payoff:6,showup:true},{pid:'SUB-1876',name:'Inès L.',outcome:'present',payoff:16,showup:true}]},
+  { id:'s104', date:'2025-03-20', experiment:'risk-elicitation-online', expId:'a2', location:'Online', mode:'online', present:95, noshows:8, sentback:0, total:950, payStatus:'paid', participants:[]},
+  { id:'s105', date:'2025-02-14', experiment:'risk-elicitation-online', expId:'a2', location:'Online', mode:'online', present:87, noshows:5, sentback:0, total:870, payStatus:'paid', participants:[]},
+  { id:'s106', date:'2025-01-28', experiment:'coordination-multilab', expId:'a3', location:'Room A101, GATE', mode:'in-person', present:24, noshows:0, sentback:2, total:480, payStatus:'partial',
+    participants:[{pid:'SUB-0770',name:'Julien M.',outcome:'present',payoff:20,showup:true},{pid:'SUB-1234',name:'Sophie B.',outcome:'present',payoff:22,showup:true},{pid:'SUB-2210',name:'Amina D.',outcome:'sentback',payoff:6,showup:true}]},
+  { id:'s107', date:'2024-12-10', experiment:'social-norms-survey-2024', expId:'a4', location:'Online', mode:'online', present:142, noshows:12, sentback:0, total:710, payStatus:'paid', participants:[]},
+  { id:'s108', date:'2024-11-05', experiment:'social-norms-survey-2024', expId:'a4', location:'Online', mode:'online', present:138, noshows:15, sentback:0, total:690, payStatus:'paid', participants:[]},
+];
+
+let sortKey='date', sortDir=-1;
+let expanded = new Set();
+
+function init() {
+  const exps = [...new Set(SESSIONS.map(s=>s.experiment))];
+  const sel = document.getElementById('filter-exp');
+  exps.forEach(e => { const o=document.createElement('option'); o.value=e; o.textContent=e; sel.appendChild(o); });
+  render();
+}
+
+function getFiltered() {
+  const search  = document.getElementById('search').value.toLowerCase();
+  const filterE = document.getElementById('filter-exp').value;
+  const filterS = document.getElementById('filter-status').value;
+  const months  = parseInt(document.getElementById('filter-period').value)||12;
+  const cutoff  = new Date(); cutoff.setMonth(cutoff.getMonth()-months);
+  return SESSIONS.filter(s => {
+    if (new Date(s.date) < cutoff) return false;
+    if (search && !s.experiment.toLowerCase().includes(search) && !s.location.toLowerCase().includes(search) && !s.date.includes(search)) return false;
+    if (filterE && s.experiment !== filterE) return false;
+    if (filterS && s.payStatus !== filterS) return false;
+    return true;
+  });
+}
+
+function render() {
+  let list = [...getFiltered()].sort((a,b)=>{
+    let av=a[sortKey]||'', bv=b[sortKey]||'';
+    if(typeof av==='string'){av=av.toLowerCase();bv=bv.toLowerCase();}
+    return av<bv?-sortDir:av>bv?sortDir:0;
+  });
+
+  ['date','experiment','location','present','noshows','sentback','total'].forEach(k=>{
+    const el=document.getElementById('si-'+k); if(!el) return;
+    el.textContent=k===sortKey?(sortDir===1?'↑':'↓'):'↕';
+    el.closest('th').classList.toggle('sorted',k===sortKey);
+  });
+
+  const all=getFiltered();
+  const paidTotal   = all.filter(s=>s.payStatus==='paid').reduce((a,s)=>a+s.total,0);
+  const pendTotal   = all.filter(s=>s.payStatus!=='paid').reduce((a,s)=>a+s.total,0);
+  const totalParts  = all.reduce((a,s)=>a+s.present,0);
+  const totalAll    = all.reduce((a,s)=>a+s.total,0);
+  document.getElementById('stat-sessions').textContent    = all.length;
+  document.getElementById('stat-participants').textContent= totalParts;
+  document.getElementById('stat-total').textContent       = fmt(paidTotal)+' €';
+  document.getElementById('stat-pending').textContent     = fmt(pendTotal)+' €';
+  document.getElementById('stat-avg').textContent         = totalParts?fmt(totalAll/totalParts)+' €':'—';
+  document.getElementById('count-label').textContent      = list.length+' session'+(list.length!==1?'s':'');
+
+  const tbody=document.getElementById('table-body');
+  const tfoot=document.getElementById('table-foot');
+
+  if(!list.length){
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:3rem;color:var(--muted);font-size:13.5px">No sessions match your filters.</td></tr>`;
+    tfoot.innerHTML=''; return;
+  }
+
+  const rows=[];
+  list.forEach(s=>{
+    const isExp=expanded.has(s.id);
+    const hasDet=s.participants.length>0;
+    const chevron=hasDet?`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="transition:transform 0.2s;transform:rotate(${isExp?90:0}deg)"><path d="M3.5 2l5 4-5 4"/></svg>`:'';
+
+    rows.push(`<tr onclick="${hasDet?`toggleExpand('${s.id}')`:''}" style="${hasDet?'cursor:pointer':''}">
+      <td style="color:var(--muted);padding-right:0">${chevron}</td>
+      <td style="font-weight:500;white-space:nowrap">${fmtDate(s.date)}</td>
+      <td>
+        <div style="font-weight:500">${s.experiment}</div>
+        <div style="font-size:12px;color:var(--muted)">${s.mode==='online'?'💻 Online':'🏛 In-person'}</div>
+      </td>
+      <td style="font-size:13px;color:var(--muted)">${s.location}</td>
+      <td style="text-align:right;color:var(--success);font-weight:500">${s.present}</td>
+      <td style="text-align:right;${s.noshows>0?'color:var(--danger);font-weight:600':'color:var(--muted)'}">${s.noshows}</td>
+      <td style="text-align:right;${s.sentback>0?'color:var(--warning);font-weight:600':'color:var(--muted)'}">${s.sentback}</td>
+      <td style="text-align:right;font-weight:600">${fmt(s.total)} €</td>
+      <td onclick="event.stopPropagation()">
+        <button class="pay-status ${s.payStatus}" onclick="togglePay('${s.id}')">${capStatus(s.payStatus)}</button>
+      </td>
+      <td onclick="event.stopPropagation()">
+        <button class="btn btn-ghost btn-sm" onclick="exportSession('${s.id}')">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>
+          Export
+        </button>
+      </td>
+    </tr>`);
+
+    if(isExp && hasDet){
+      rows.push(`<tr class="exp-row"><td colspan="10"><div class="exp-inner">
+        <table class="detail-table">
+          <thead><tr><th>Subject ID</th><th>Name</th><th>Outcome</th><th>Show-up fee</th><th style="text-align:right">Payoff (€)</th></tr></thead>
+          <tbody>
+            ${s.participants.map(p=>`<tr>
+              <td style="font-family:monospace;font-size:12px">${p.pid}</td>
+              <td>${p.name}</td>
+              <td class="oc-${p.outcome}">${capOutcome(p.outcome)}</td>
+              <td>${p.showup?'<span style="color:var(--success)">✓ Included</span>':'<span style="color:var(--muted)">—</span>'}</td>
+              <td style="text-align:right;font-weight:500">${p.payoff.toFixed(2)} €</td>
+            </tr>`).join('')}
+            <tr style="border-top:2px solid var(--border)">
+              <td colspan="4" style="font-size:12px;font-weight:600;color:var(--muted)">Subtotal (attended + sent back)</td>
+              <td style="text-align:right;font-weight:700">${s.participants.filter(p=>p.outcome!=='noshow').reduce((a,p)=>a+p.payoff,0).toFixed(2)} €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div></td></tr>`);
+    }
+  });
+  tbody.innerHTML=rows.join('');
+
+  const totPresent =list.reduce((a,s)=>a+s.present,0);
+  const totNoshows =list.reduce((a,s)=>a+s.noshows,0);
+  const totSentback=list.reduce((a,s)=>a+s.sentback,0);
+  const totTotal   =list.reduce((a,s)=>a+s.total,0);
+  tfoot.innerHTML=`<tr class="tfoot-row">
+    <td></td><td colspan="3" style="font-size:12px;color:var(--muted)">${list.length} session${list.length!==1?'s':''} — total</td>
+    <td style="text-align:right;color:var(--success)">${totPresent}</td>
+    <td style="text-align:right;${totNoshows>0?'color:var(--danger)':''}">${totNoshows}</td>
+    <td style="text-align:right;${totSentback>0?'color:var(--warning)':''}">${totSentback}</td>
+    <td style="text-align:right;color:var(--navy)">${fmt(totTotal)} €</td>
+    <td colspan="2"></td>
+  </tr>`;
+}
+
+function toggleExpand(id){
+  if(expanded.has(id)) expanded.delete(id); else expanded.add(id);
+  render();
+}
+function togglePay(id){
+  const s=SESSIONS.find(x=>x.id===id); if(!s) return;
+  s.payStatus={pending:'paid',paid:'pending',partial:'paid'}[s.payStatus]||'pending';
+  render(); showToast('Payment status → '+capStatus(s.payStatus));
+}
+function markAllPaid(){
+  getFiltered().forEach(s=>{ s.payStatus='paid'; });
+  render(); showToast('All visible sessions marked as paid');
+}
+function sortBy(key){
+  if(sortKey===key) sortDir*=-1; else{sortKey=key;sortDir=1;}
+  render();
+}
+
+function exportCSV(){
+  const list=getFiltered();
+  const lines=['Date,Experiment,Location,Mode,Present,No-shows,Sent back,Total (€),Payment status'];
+  list.forEach(s=>lines.push([s.date,s.experiment,s.location,s.mode,s.present,s.noshows,s.sentback,s.total,s.payStatus].join(',')));
+  dl(lines.join('\n'),'accounting_GATE_'+today()+'.csv','text/csv');
+  showToast('CSV exported');
+}
+function exportSession(id){
+  const s=SESSIONS.find(x=>x.id===id); if(!s) return;
+  const lines=['Subject ID,Outcome,Show-up fee,Payoff (€)'];
+  if(s.participants.length) s.participants.forEach(p=>lines.push([p.pid,p.outcome,p.showup?'Yes':'No',p.payoff.toFixed(2)].join(',')));
+  else lines.push('(No individual breakdown available for online sessions)');
+  dl(lines.join('\n'),`session_${s.date}_payoffs.csv`,'text/csv');
+  showToast('Session exported');
+}
+function dl(content,filename,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename; a.click();
+}
+
+function fmt(n){return(Math.round(n*100)/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,'\u202f');}
+function fmtDate(d){return new Date(d+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function today(){return new Date().toISOString().slice(0,10);}
+function capStatus(s){return s==='paid'?'Paid ✓':s==='partial'?'Partial':s==='pending'?'Pending':'—';}
+function capOutcome(o){return o==='present'?'Present':o==='noshow'?'No-show':o==='sentback'?'Sent back':'—';}
+
+let tt;
+function showToast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=err?'#c0392b':'var(--success)';
+  t.classList.add('show'); clearTimeout(tt);
+  tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+init();
+</script>
 </body>
 </html>

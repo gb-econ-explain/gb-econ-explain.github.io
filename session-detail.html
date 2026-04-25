@@ -154,8 +154,20 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .quota-bar-target { font-size:11px; color:var(--muted); }
 
 /* ── Earnings input ── */
-.earnings-input { width:70px; padding:5px 8px; border:1px solid var(--border); border-radius:7px; font-family:inherit; font-size:13px; text-align:right; outline:none; }
+.earnings-input { width:80px; padding:5px 8px; border:1px solid var(--border); border-radius:7px; font-family:inherit; font-size:13px; text-align:right; outline:none; }
 .earnings-input:focus { border-color:var(--blue-mid); }
+
+/* ── Outcome selector ── */
+.outcome-sel { display:flex; gap:4px; }
+.out-btn { padding:4px 10px; border:1px solid var(--border); border-radius:7px; font-family:inherit; font-size:12px; cursor:pointer; background:var(--white); color:var(--muted); transition:all 0.12s; white-space:nowrap; }
+.out-btn:hover { border-color:var(--slate); color:var(--slate); }
+.out-btn.sel-present { background:var(--success-bg); border-color:var(--success); color:var(--success); font-weight:600; }
+.out-btn.sel-noshow { background:var(--danger-bg); border-color:var(--danger); color:var(--danger); font-weight:600; }
+.out-btn.sel-sentback { background:var(--warning-bg); border-color:var(--warning-border); color:var(--warning); font-weight:600; }
+
+/* ── Notes input ── */
+.notes-cell-input { width:100%; padding:5px 8px; border:1px solid var(--border); border-radius:7px; font-family:inherit; font-size:12.5px; outline:none; }
+.notes-cell-input:focus { border-color:var(--blue-mid); }
 
 /* ── Modal ── */
 .modal-overlay { position:fixed; inset:0; background:rgba(13,43,94,0.35); z-index:1000; display:none; align-items:center; justify-content:center; padding:1rem; }
@@ -315,51 +327,89 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
     <!-- ══ REGISTRATIONS ══ -->
     <div class="tab-panel" id="panel-registrations">
 
-      <div class="toolbar">
-        <div class="search-wrap">
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
-          <input class="search-input" id="reg-search" type="text" placeholder="Search participants…" oninput="renderRegistrations()"/>
-        </div>
-        <button class="filter-chip active" id="chip-all" onclick="setRegFilter('all',this)">All</button>
-        <button class="filter-chip" id="chip-registered" onclick="setRegFilter('registered',this)">Registered</button>
-        <button class="filter-chip" id="chip-reserve" onclick="setRegFilter('reserve',this)">Reserve</button>
-        <button class="filter-chip" id="chip-waitlist" onclick="setRegFilter('waitlist',this)">Waitlist</button>
-        <span class="count-label" id="reg-count"></span>
-        <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="openManualAddModal()">+ Add manually</button>
-      </div>
-
-      <div class="card" style="padding:0;overflow:hidden">
-        <table class="ptable">
-          <thead>
-            <tr>
-              <th onclick="sortReg('name')">Participant</th>
-              <th onclick="sortReg('participations')">Participations</th>
-              <th onclick="sortReg('absences')">Absences</th>
-              <th>Status</th>
-              <th id="earnings-header">Earnings (€)</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="reg-tbody"></tbody>
-        </table>
-      </div>
-
-      <!-- Past session summary -->
-      <div id="past-summary" style="display:none">
-        <div class="card" style="margin-top:1.25rem">
+      <!-- Past mode: attendance + payoff sheet -->
+      <div id="attendance-mode" style="display:none">
+        <div class="card" style="margin-bottom:1.25rem">
           <div class="card-header">
-            <span class="card-title-lg">Session summary</span>
-            <button class="btn btn-ghost btn-sm" onclick="showToast('Export ready — accounting.csv')">
-              <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>
-              Export accounting
-            </button>
+            <span class="card-title-lg">Attendance &amp; payoffs</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-sm" onclick="saveAttendance()">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg>
+                Save
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>
+                Export CSV
+              </button>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('PDF generated')">
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><rect x="2" y="1" width="10" height="12" rx="1.5"/><path d="M5 5h4M5 7.5h4M5 10h2"/></svg>
+                Export PDF
+              </button>
+            </div>
           </div>
-          <div style="display:flex;gap:2rem;flex-wrap:wrap;font-size:13.5px">
-            <div><span style="color:var(--muted)">Participants shown: </span><strong id="sum-shown">—</strong></div>
-            <div><span style="color:var(--muted)">No-shows: </span><strong id="sum-noshows" style="color:var(--danger)">—</strong></div>
-            <div><span style="color:var(--muted)">Total earnings: </span><strong id="sum-earnings">—</strong></div>
-            <div><span style="color:var(--muted)">Show-up rate: </span><strong id="sum-rate" style="color:var(--success)">—</strong></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:1.25rem">Mark attendance and enter earnings for each participant. Changes are saved locally — click <strong>Save</strong> to confirm.</p>
+
+          <div style="overflow-x:auto">
+            <table class="ptable" id="attendance-table">
+              <thead>
+                <tr>
+                  <th style="min-width:200px">Participant</th>
+                  <th style="min-width:90px">Past sessions</th>
+                  <th style="min-width:130px">Outcome <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(required)</span></th>
+                  <th style="min-width:110px">Payoff (€) <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">incl. show-up</span></th>
+                  <th style="min-width:80px">Show-up fee</th>
+                  <th style="min-width:170px">Notes</th>
+                </tr>
+              </thead>
+              <tbody id="attendance-tbody"></tbody>
+            </table>
           </div>
+        </div>
+
+        <!-- Summary bar -->
+        <div class="card" id="attendance-summary">
+          <div style="display:flex;gap:2.5rem;flex-wrap:wrap;align-items:center">
+            <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Present</div><div style="font-size:22px;font-weight:600;color:var(--success)" id="sum-present">—</div></div>
+            <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">No-show</div><div style="font-size:22px;font-weight:600;color:var(--danger)" id="sum-ns">—</div></div>
+            <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Sent back</div><div style="font-size:22px;font-weight:600;color:var(--warning)" id="sum-sb">—</div></div>
+            <div><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Not set</div><div style="font-size:22px;font-weight:600;color:var(--muted)" id="sum-unset">—</div></div>
+            <div style="margin-left:auto;text-align:right">
+              <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Total payroll</div>
+              <div style="font-size:22px;font-weight:600;color:var(--navy)" id="sum-total-pay">— €</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active / upcoming mode: registrations list -->
+      <div id="registrations-mode">
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <input class="search-input" id="reg-search" type="text" placeholder="Search participants…" oninput="renderRegistrations()"/>
+          </div>
+          <button class="filter-chip active" id="chip-all" onclick="setRegFilter('all',this)">All</button>
+          <button class="filter-chip" id="chip-registered" onclick="setRegFilter('registered',this)">Registered</button>
+          <button class="filter-chip" id="chip-reserve" onclick="setRegFilter('reserve',this)">Reserve</button>
+          <button class="filter-chip" id="chip-waitlist" onclick="setRegFilter('waitlist',this)">Waitlist</button>
+          <span class="count-label" id="reg-count"></span>
+          <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="openManualAddModal()">+ Add manually</button>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="ptable">
+            <thead>
+              <tr>
+                <th onclick="sortReg('name')">Participant</th>
+                <th onclick="sortReg('participations')">Sessions</th>
+                <th onclick="sortReg('absences')">No-shows</th>
+                <th>Status</th>
+                <th>Registered on</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="reg-tbody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -625,7 +675,135 @@ function row(label, val) {
   return `<div><div style="font-size:12px;color:var(--muted);margin-bottom:1px">${label}</div><div style="font-size:13.5px;font-weight:500">${val}</div></div>`;
 }
 
-// ── Registrations ──────────────────────────────────────────────────────────
+// ── Attendance state (persisted to localStorage) ───────────────────────────
+function attendanceKey() { return 'explain_attendance_' + exp.id + '_' + session.id; }
+function getAttendanceData() {
+  try { return JSON.parse(localStorage.getItem(attendanceKey())) || {}; } catch { return {}; }
+}
+function saveAttendance() {
+  const rows = document.querySelectorAll('#attendance-tbody tr[data-pid]');
+  const data = {};
+  rows.forEach(r => {
+    const pid = r.dataset.pid;
+    const outcome = r.dataset.outcome || '';
+    const payoff = parseFloat(r.querySelector('.earnings-input')?.value) || 0;
+    const showup = r.querySelector('.showup-input')?.checked ? 1 : 0;
+    const notes  = r.querySelector('.notes-cell-input')?.value || '';
+    data[pid] = { outcome, payoff, showup, notes };
+  });
+  localStorage.setItem(attendanceKey(), JSON.stringify(data));
+  showToast('Attendance saved');
+  updateSummary();
+}
+
+function setOutcome(pid, outcome, btn) {
+  // Update button styles in the row
+  const row = document.querySelector(`tr[data-pid="${pid}"]`);
+  if (!row) return;
+  row.dataset.outcome = outcome;
+  row.querySelectorAll('.out-btn').forEach(b => {
+    b.classList.remove('sel-present','sel-noshow','sel-sentback');
+  });
+  const cls = outcome==='present' ? 'sel-present' : outcome==='noshow' ? 'sel-noshow' : 'sel-sentback';
+  btn.classList.add(cls);
+  // Auto-zero payoff for no-shows
+  if (outcome === 'noshow') {
+    const payInput = row.querySelector('.earnings-input');
+    if (payInput && !payInput.value) payInput.value = '';
+  }
+  updateSummary();
+}
+
+function updateSummary() {
+  const rows = document.querySelectorAll('#attendance-tbody tr[data-pid]');
+  let present=0, ns=0, sb=0, unset=0, total=0;
+  rows.forEach(r => {
+    const o = r.dataset.outcome||'';
+    if (o==='present') present++;
+    else if (o==='noshow') ns++;
+    else if (o==='sentback') sb++;
+    else unset++;
+    const pay = parseFloat(r.querySelector('.earnings-input')?.value)||0;
+    total += pay;
+  });
+  document.getElementById('sum-present').textContent = present;
+  document.getElementById('sum-ns').textContent = ns;
+  document.getElementById('sum-sb').textContent = sb;
+  document.getElementById('sum-unset').textContent = unset;
+  document.getElementById('sum-total-pay').textContent = total.toFixed(2) + ' €';
+}
+
+function renderAttendance() {
+  const saved = getAttendanceData();
+  const participants = session.status === 'past' ? DEMO_PARTICIPANTS_PAST : DEMO_PARTICIPANTS_ACTIVE.filter(p => p.status !== 'waitlist');
+  const tbody = document.getElementById('attendance-tbody');
+
+  tbody.innerHTML = participants.map(p => {
+    const s = saved[p.id] || {};
+    const outcome = s.outcome || (p.status === 'attended' ? 'present' : p.status === 'noshow' ? 'noshow' : '');
+    const payoff  = s.payoff != null ? s.payoff : (p.earnings ?? '');
+    const notes   = s.notes || '';
+    const showup  = s.showup != null ? s.showup : 1;
+
+    const pBtn = `<button class="out-btn ${outcome==='present'?'sel-present':''}" onclick="setOutcome('${p.id}','present',this)">✓ Present</button>`;
+    const nBtn = `<button class="out-btn ${outcome==='noshow'?'sel-noshow':''}" onclick="setOutcome('${p.id}','noshow',this)">✗ No-show</button>`;
+    const sBtn = `<button class="out-btn ${outcome==='sentback'?'sel-sentback':''}" onclick="setOutcome('${p.id}','sentback',this)">↩ Sent back</button>`;
+
+    const bars = Array.from({length:Math.min(p.participations,8)},(_,i)=>`<div class="mini-bar" style="height:${5+i*1.5}px;background:${i<p.participations-p.absences?'var(--blue-mid)':'var(--danger)'}"></div>`).join('');
+
+    return `<tr data-pid="${p.id}" data-outcome="${outcome}">
+      <td>
+        <div class="participant-cell">
+          <div class="p-avatar" style="background:${p.color}">${p.initials}</div>
+          <div>
+            <div class="p-name">${p.name}</div>
+            <div class="p-id">${p.id} · ${p.gender==='F'?'F':'M'} · ${p.edu}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="mini-bars">${bars}</div>
+          <span style="font-size:12px;color:var(--muted)">${p.participations} / ${p.absences} abs.</span>
+        </div>
+      </td>
+      <td>
+        <div class="outcome-sel">
+          ${pBtn}${nBtn}${sBtn}
+        </div>
+      </td>
+      <td><input class="earnings-input" type="number" step="0.01" min="0" value="${payoff}" placeholder="0.00" oninput="updateSummary()"/></td>
+      <td style="text-align:center">
+        <input type="checkbox" ${showup ? 'checked' : ''} class="showup-input" style="width:15px;height:15px;accent-color:var(--blue-mid);cursor:pointer" title="Show-up fee included"/>
+      </td>
+      <td><input class="notes-cell-input" type="text" value="${notes}" placeholder="e.g. left early"/></td>
+    </tr>`;
+  }).join('');
+
+  updateSummary();
+}
+
+function exportCSV() {
+  const rows = document.querySelectorAll('#attendance-tbody tr[data-pid]');
+  const lines = ['Subject ID,Name,Gender,Education,Outcome,Payoff (€),Show-up fee,Notes'];
+  rows.forEach(r => {
+    const pid = r.dataset.pid;
+    const p   = [...DEMO_PARTICIPANTS_PAST, ...DEMO_PARTICIPANTS_ACTIVE].find(x => x.id===pid) || {};
+    const outcome = r.dataset.outcome || '';
+    const payoff  = r.querySelector('.earnings-input')?.value || '0';
+    const showup  = r.querySelector('.showup-input')?.checked ? 'Yes' : 'No';
+    const notes   = (r.querySelector('.notes-cell-input')?.value || '').replace(/,/g,' ');
+    lines.push([pid, p.name||'', p.gender==='F'?'Female':'Male', p.edu||'', outcome, payoff, showup, notes].join(','));
+  });
+  const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `session_${session.date}_payoffs.csv`;
+  a.click();
+  showToast('CSV downloaded');
+}
+
+// ── Active session registrations ───────────────────────────────────────────
 function setRegFilter(f, btn) {
   regFilter = f;
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
@@ -641,7 +819,14 @@ function sortReg(key) {
 
 function renderRegistrations() {
   const isPast = session.status === 'past';
-  const allP   = isPast ? DEMO_PARTICIPANTS_PAST : DEMO_PARTICIPANTS_ACTIVE;
+
+  // Show correct mode
+  document.getElementById('attendance-mode').style.display   = isPast ? '' : 'none';
+  document.getElementById('registrations-mode').style.display = isPast ? 'none' : '';
+
+  if (isPast) { renderAttendance(); return; }
+
+  const allP   = DEMO_PARTICIPANTS_ACTIVE;
   const search = (document.getElementById('reg-search')?.value||'').toLowerCase();
 
   let list = allP.filter(p => {
@@ -657,75 +842,32 @@ function renderRegistrations() {
 
   document.getElementById('reg-count').textContent = list.length + ' participant' + (list.length!==1?'s':'');
 
-  const earningsHeader = document.getElementById('earnings-header');
-  if (earningsHeader) earningsHeader.textContent = isPast ? 'Earnings (€)' : 'Reg. date';
-
   const tbody = document.getElementById('reg-tbody');
   if (!list.length) {
     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2.5rem;color:var(--muted);font-size:13.5px">No participants found.</td></tr>`;
-    document.getElementById('past-summary').style.display = 'none';
     return;
   }
 
+  const badge = s =>
+    s==='registered' ? '<span class="badge badge-active"><span class="badge-dot"></span>Registered</span>' :
+    s==='reserve'    ? '<span class="badge badge-reserve"><span class="badge-dot"></span>Reserve</span>' :
+                       '<span class="badge badge-waitlist"><span class="badge-dot"></span>Waitlist</span>';
+
   tbody.innerHTML = list.map(p => {
-    const badge = isPast
-      ? (p.status==='attended' ? '<span class="badge badge-attended"><span class="badge-dot"></span>Attended</span>' : '<span class="badge badge-noshow"><span class="badge-dot"></span>No-show</span>')
-      : (p.status==='registered' ? '<span class="badge badge-active"><span class="badge-dot"></span>Registered</span>'
-         : p.status==='reserve' ? '<span class="badge badge-reserve"><span class="badge-dot"></span>Reserve</span>'
-         : '<span class="badge badge-waitlist"><span class="badge-dot"></span>Waitlist</span>');
-
-    const bars = Array.from({length:Math.min(p.participations,10)},(_,i)=>`<div class="mini-bar" style="height:${5+i*1.3}px;background:${i<p.participations-p.absences?'var(--blue-mid)':'var(--danger)'}"></div>`).join('');
-
-    const lastCol = isPast
-      ? `<input class="earnings-input" type="number" value="${p.earnings??''}" placeholder="0" oninput="updateEarnings('${p.id}',this.value)"/>`
-      : `<span style="font-size:12px;color:var(--muted)">${new Date(Date.now()-Math.random()*864e6*5).toLocaleDateString('en-GB',{day:'2-digit',month:'short'})}</span>`;
-
-    const actionBtn = isPast
-      ? (p.status==='attended'
-          ? `<button class="icon-btn danger" title="Mark as no-show" onclick="openOutcomeModal('${p.id}','noshow')"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M5.5 5.5l5 5M10.5 5.5l-5 5"/></svg></button>`
-          : `<button class="btn btn-ghost btn-sm" onclick="openOutcomeModal('${p.id}','unmark')">Undo</button>`)
-      : `<button class="icon-btn danger" title="Remove" onclick="showToast('Participant removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button>`;
-
+    const bars = Array.from({length:Math.min(p.participations,8)},(_,i)=>`<div class="mini-bar" style="height:${5+i*1.5}px;background:${i<p.participations-p.absences?'var(--blue-mid)':'var(--danger)'}"></div>`).join('');
+    const regDate = new Date(Date.now()-Math.random()*864e6*5).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
     return `<tr>
-      <td>
-        <div class="participant-cell">
-          <div class="p-avatar" style="background:${p.color}">${p.initials}</div>
-          <div>
-            <div class="p-name">${p.name}</div>
-            <div class="p-id">${p.id} · ${p.gender==='F'?'Female':'Male'} · ${p.edu}</div>
-          </div>
-        </div>
-      </td>
-      <td>
-        <div style="display:flex;align-items:center;gap:8px">
-          <div class="mini-bars">${bars}</div>
-          <span style="font-size:13px;color:var(--muted)">${p.participations}</span>
-        </div>
-      </td>
+      <td><div class="participant-cell"><div class="p-avatar" style="background:${p.color}">${p.initials}</div><div><div class="p-name">${p.name}</div><div class="p-id">${p.id} · ${p.gender==='F'?'Female':'Male'} · ${p.edu}</div></div></div></td>
+      <td><div style="display:flex;align-items:center;gap:6px"><div class="mini-bars">${bars}</div><span style="font-size:12px;color:var(--muted)">${p.participations}</span></div></td>
       <td><span style="font-size:13px;${p.absences>2?'color:var(--danger);font-weight:600':'color:var(--muted)'}">${p.absences}</span></td>
-      <td>${badge}</td>
-      <td>${lastCol}</td>
-      <td><div style="display:flex;gap:5px">${actionBtn}</div></td>
+      <td>${badge(p.status)}</td>
+      <td><span style="font-size:12px;color:var(--muted)">${regDate}</span></td>
+      <td><button class="icon-btn danger" title="Remove" onclick="showToast('Participant removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button></td>
     </tr>`;
   }).join('');
-
-  // Past summary
-  if (isPast) {
-    document.getElementById('past-summary').style.display = '';
-    const shown   = list.filter(p=>p.status==='attended').length;
-    const noshows = list.filter(p=>p.status==='noshow').length;
-    const total   = list.reduce((s,p)=>s+(p.earnings||0),0);
-    document.getElementById('sum-shown').textContent   = shown;
-    document.getElementById('sum-noshows').textContent = noshows;
-    document.getElementById('sum-earnings').textContent = total.toFixed(2) + ' €';
-    document.getElementById('sum-rate').textContent = list.length ? Math.round(shown/list.length*100)+'%' : '—';
-  }
 }
 
-function updateEarnings(participantId, val) {
-  // Would update real DB — for now just updates summary
-  renderRegistrations();
-}
+function updateEarnings() { updateSummary(); }
 
 // ── Invitations ────────────────────────────────────────────────────────────
 function renderInvitations() {

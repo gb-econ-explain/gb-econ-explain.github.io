@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — Experiment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:#1a4fa0; --blue-light:#e8eff9; --blue-mid:#3b6fd4;
+  --navy:#0d2b5e; --slate:#4a5568; --muted:#718096;
+  --border:#dde3ed; --bg:#f6f8fc; --white:#ffffff; --text:#1a2035;
+  --radius:10px; --radius-lg:16px;
+  --success:#1a7a4a; --success-bg:#e6f4ed;
+  --warning:#8a6200; --warning-bg:#fff8e6; --warning-border:#f5d87a;
+  --danger:#c0392b; --danger-bg:#fff0f0; --danger-border:#f5c5c5;
+  --sidebar-w:220px;
+}
+html,body { height:100%; }
+body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg); font-size:15px; line-height:1.6; display:flex; min-height:100vh; }
+
+/* ── Sidebar ── */
+.sidebar { width:var(--sidebar-w); min-height:100vh; background:var(--white); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; overflow-y:auto; }
+.sidebar-logo { display:flex; align-items:center; gap:10px; padding:1.25rem 1.1rem 1rem; border-bottom:1px solid var(--border); text-decoration:none; }
+.logo-mark { width:32px; height:32px; background:var(--navy); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.logo-mark svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; }
+.logo-name { font-family:'DM Serif Display',serif; font-size:16px; color:var(--navy); display:block; }
+.logo-sub { font-size:10px; color:var(--muted); display:block; line-height:1.3; }
+.sidebar-nav { padding:0.75rem; flex:1; }
+.nav-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); padding:0.9rem 0.5rem 0.35rem; display:block; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:var(--radius); font-size:13.5px; color:var(--slate); text-decoration:none; transition:background 0.12s,color 0.12s; margin-bottom:1px; }
+.nav-item:hover { background:var(--bg); color:var(--navy); }
+.nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
+.nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
+
+/* ── Main ── */
+.main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+
+/* ── Topbar ── */
+.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0.8rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; }
+.breadcrumb a { color:var(--blue-mid); text-decoration:none; }
+.breadcrumb a:hover { text-decoration:underline; }
+.topbar-right { display:flex; align-items:center; gap:8px; }
+.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; }
+.icon-btn-top:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+.topbar-user { display:flex; align-items:center; gap:9px; padding:4px 6px 4px 10px; border-left:1px solid var(--border); margin-left:4px; }
+.topbar-user-info { display:flex; flex-direction:column; }
+.topbar-user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
+.topbar-user-role { font-size:11px; color:var(--muted); }
+.avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+/* ── Experiment header bar ── */
+.exp-header { background:var(--white); border-bottom:1px solid var(--border); padding:1.25rem 2rem 0; }
+.exp-title-row { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; margin-bottom:1rem; flex-wrap:wrap; }
+.exp-title { font-family:'DM Serif Display',serif; font-size:22px; color:var(--navy); }
+.exp-meta-row { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:0.25rem; }
+.exp-meta-item { display:flex; align-items:center; gap:5px; font-size:12.5px; color:var(--muted); }
+.exp-meta-item svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; flex-shrink:0; }
+.exp-actions { display:flex; gap:8px; align-items:center; flex-shrink:0; }
+
+/* ── Badges ── */
+.badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; letter-spacing:0.04em; white-space:nowrap; }
+.badge-dot { width:6px; height:6px; border-radius:50%; }
+.badge-draft { background:#f0f0f0; color:#666; } .badge-draft .badge-dot { background:#999; }
+.badge-active { background:var(--success-bg); color:var(--success); } .badge-active .badge-dot { background:var(--success); }
+.badge-closed { background:#fff0e6; color:#b06000; } .badge-closed .badge-dot { background:#e08020; }
+.badge-archived { background:#f5f5f5; color:#999; } .badge-archived .badge-dot { background:#bbb; }
+.badge-warning { background:var(--warning-bg); color:var(--warning); border:1px solid var(--warning-border); }
+.badge-info { background:var(--blue-light); color:var(--blue); }
+
+/* ── Sub-nav tabs ── */
+.subnav { display:flex; gap:0; border-top:1px solid var(--border); margin-top:0.75rem; overflow-x:auto; }
+.subnav-item { display:flex; align-items:center; gap:7px; padding:10px 18px; font-size:13.5px; color:var(--muted); text-decoration:none; border-bottom:2px solid transparent; white-space:nowrap; transition:color 0.12s; cursor:pointer; background:none; border-top:none; border-left:none; border-right:none; font-family:inherit; }
+.subnav-item:hover { color:var(--navy); }
+.subnav-item.active { color:var(--blue); border-bottom-color:var(--blue); font-weight:500; }
+.subnav-item svg { width:14px; height:14px; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; }
+.tab-count { background:var(--bg); color:var(--muted); font-size:11px; font-weight:600; padding:1px 7px; border-radius:10px; }
+.subnav-item.active .tab-count { background:var(--blue-light); color:var(--blue); }
+
+/* ── Content ── */
+.content { padding:2rem 2rem 4rem; }
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── Buttons ── */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:var(--radius); font-family:inherit; font-size:13.5px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
+.btn-primary { background:var(--blue); color:#fff; }
+.btn-primary:hover { background:var(--navy); }
+.btn-ghost { background:var(--white); color:var(--slate); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg); }
+.btn-sm { padding:5px 12px; font-size:12.5px; }
+.btn-danger { background:var(--danger-bg); color:var(--danger); border:1px solid var(--danger-border); }
+.btn-danger:hover { background:#fde8e8; }
+.btn-warning { background:var(--warning-bg); color:var(--warning); border:1px solid var(--warning-border); }
+
+/* ── Cards ── */
+.card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem 1.75rem; margin-bottom:1.25rem; }
+.card-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.1rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border); }
+.card-title { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.09em; color:var(--muted); }
+.card-title-lg { font-size:15px; font-weight:600; color:var(--navy); }
+
+/* ── Form fields ── */
+.field { margin-bottom:1.1rem; }
+.field:last-child { margin-bottom:0; }
+.field label { display:block; font-size:13px; font-weight:500; color:var(--slate); margin-bottom:5px; }
+.field-value { font-size:14px; color:var(--text); padding:8px 0; border-bottom:1px solid transparent; }
+.field-value.editable { padding:8px 11px; border:1px solid var(--border); border-radius:var(--radius); background:var(--white); }
+.hint { font-size:12px; color:var(--muted); margin-top:3px; }
+.req { color:#c0392b; margin-left:2px; }
+.field input, .field select, .field textarea {
+  width:100%; padding:8px 11px; border:1px solid var(--border); border-radius:var(--radius);
+  font-family:inherit; font-size:13.5px; color:var(--text); background:var(--white);
+  outline:none; transition:border 0.15s, box-shadow 0.15s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(59,111,212,0.1); }
+.field textarea { resize:vertical; min-height:72px; }
+.field select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; padding-right:28px; cursor:pointer; }
+.field-readonly input, .field-readonly select, .field-readonly textarea { background:var(--bg); color:var(--slate); cursor:default; pointer-events:none; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:1rem; }
+@media(max-width:700px){ .grid-2,.grid-3 { grid-template-columns:1fr; } }
+
+/* ── Tags ── */
+.tags-row { display:flex; flex-wrap:wrap; gap:6px; }
+.tag { display:inline-flex; align-items:center; gap:5px; background:var(--blue-light); color:var(--blue); font-size:12px; font-weight:500; padding:3px 10px; border-radius:20px; }
+.tag-remove { cursor:pointer; opacity:0.6; font-size:14px; line-height:1; }
+.tag-remove:hover { opacity:1; }
+.tag-add { background:var(--bg); color:var(--muted); border:1px dashed var(--border); cursor:pointer; }
+.tag-add:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+
+/* ── Documents ── */
+.doc-row { display:flex; align-items:center; gap:10px; padding:9px 12px; border:1px solid var(--border); border-radius:var(--radius); margin-bottom:8px; background:var(--white); }
+.doc-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:16px; }
+.doc-icon.pdf { background:#fff0f0; }
+.doc-icon.doc { background:#e8f0ff; }
+.doc-name { font-size:13.5px; font-weight:500; flex:1; }
+.doc-meta { font-size:12px; color:var(--muted); }
+.doc-upload { border:1.5px dashed var(--border); border-radius:var(--radius); padding:1rem; text-align:center; cursor:pointer; font-size:13px; color:var(--muted); transition:all 0.15s; margin-top:4px; }
+.doc-upload:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+
+/* ── Incomplete warning ── */
+.incomplete-banner { display:flex; align-items:flex-start; gap:10px; background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:var(--radius); padding:12px 16px; margin-bottom:1.5rem; font-size:13px; color:var(--warning); }
+.incomplete-banner svg { flex-shrink:0; margin-top:1px; }
+.incomplete-list { margin-top:6px; padding-left:1rem; }
+.incomplete-list li { margin-bottom:2px; }
+
+/* ── Experimenters table ── */
+.people-table { width:100%; border-collapse:collapse; font-size:13.5px; }
+.people-table th { padding:9px 14px; text-align:left; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:1px solid var(--border); background:var(--bg); }
+.people-table td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.people-table tr:last-child td { border-bottom:none; }
+.people-table tbody tr:hover { background:#fafbfd; }
+.person-cell { display:flex; align-items:center; gap:10px; }
+.person-avatar { width:28px; height:28px; border-radius:50%; background:var(--blue); color:#fff; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.person-name { font-weight:500; font-size:13.5px; }
+.person-email { font-size:12px; color:var(--muted); }
+.role-select { padding:4px 22px 4px 8px; border:1px solid var(--border); border-radius:7px; font-family:inherit; font-size:12px; color:var(--slate); background:var(--white); appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 7px center; }
+.add-person-row { display:flex; gap:8px; margin-top:1rem; }
+.add-person-row input { flex:1; padding:8px 11px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13.5px; outline:none; }
+.add-person-row input:focus { border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(59,111,212,0.1); }
+
+/* ── Sessions list ── */
+.session-row { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.5rem; margin-bottom:10px; display:flex; align-items:center; gap:1.5rem; cursor:pointer; transition:border-color 0.15s, box-shadow 0.15s; }
+.session-row:hover { border-color:var(--blue-mid); box-shadow:0 2px 12px rgba(26,79,160,0.07); }
+.session-date { text-align:center; min-width:48px; }
+.session-day { font-size:22px; font-weight:600; color:var(--navy); line-height:1; }
+.session-month { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; }
+.session-divider { width:1px; height:40px; background:var(--border); flex-shrink:0; }
+.session-info { flex:1; }
+.session-title { font-weight:500; font-size:14px; }
+.session-meta { font-size:12.5px; color:var(--muted); margin-top:2px; display:flex; gap:12px; flex-wrap:wrap; }
+.session-stats { display:flex; gap:16px; align-items:center; }
+.stat-pill { display:flex; flex-direction:column; align-items:center; }
+.stat-pill-val { font-size:16px; font-weight:600; color:var(--navy); line-height:1; }
+.stat-pill-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; }
+.stat-pill-val.warn { color:var(--warning); }
+.stat-pill-val.ok { color:var(--success); }
+.sessions-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+.filter-chip { padding:5px 12px; border:1px solid var(--border); border-radius:20px; font-size:12.5px; color:var(--muted); cursor:pointer; background:var(--white); font-family:inherit; transition:all 0.12s; }
+.filter-chip:hover { border-color:var(--blue-mid); color:var(--blue); }
+.filter-chip.active { background:var(--blue-light); color:var(--blue); border-color:var(--blue-mid); font-weight:500; }
+.quota-pills { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+.quota-pill { font-size:11px; padding:2px 8px; border-radius:10px; font-weight:500; }
+.quota-ok { background:var(--success-bg); color:var(--success); }
+.quota-warn { background:var(--warning-bg); color:var(--warning); }
+
+/* ── Invitations ── */
+.inv-stat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:1.5rem; }
+.inv-stat { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:0.875rem 1.125rem; }
+.inv-stat-label { font-size:11.5px; color:var(--muted); margin-bottom:3px; }
+.inv-stat-val { font-size:22px; font-weight:600; color:var(--navy); line-height:1; }
+.inv-stat-val.blue { color:var(--blue-mid); }
+.inv-stat-val.green { color:var(--success); }
+.quota-bar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:13px; }
+.quota-bar-label { width:90px; flex-shrink:0; color:var(--slate); }
+.quota-bar-track { flex:1; height:8px; background:var(--bg); border-radius:4px; overflow:hidden; border:1px solid var(--border); }
+.quota-bar-fill { height:100%; border-radius:4px; }
+.quota-bar-pct { width:36px; font-size:12px; color:var(--muted); text-align:right; }
+
+/* ── History ── */
+.history-list { list-style:none; position:relative; }
+.history-list::before { content:''; position:absolute; left:15px; top:6px; bottom:6px; width:1px; background:var(--border); }
+.history-item { display:flex; gap:14px; align-items:flex-start; padding:0 0 1.25rem; position:relative; }
+.history-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:5px; position:relative; z-index:1; border:2px solid var(--white); }
+.history-dot.blue { background:var(--blue-mid); box-shadow:0 0 0 2px var(--blue-light); }
+.history-dot.green { background:var(--success); box-shadow:0 0 0 2px var(--success-bg); }
+.history-dot.orange { background:#e08020; box-shadow:0 0 0 2px #fff0e6; }
+.history-dot.gray { background:#bbb; box-shadow:0 0 0 2px #f0f0f0; }
+.history-content { flex:1; }
+.history-action { font-size:13.5px; font-weight:500; color:var(--text); }
+.history-by { font-size:12px; color:var(--muted); margin-top:1px; }
+.history-time { font-size:11.5px; color:var(--muted); white-space:nowrap; flex-shrink:0; padding-top:3px; }
+
+/* ── Filter builder ── */
+.filter-builder { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.25rem; margin-bottom:1.25rem; }
+.filter-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap; }
+.filter-row:last-child { margin-bottom:0; }
+.filter-select-sm { padding:6px 24px 6px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13px; color:var(--text); background:var(--white); appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; outline:none; }
+.filter-select-sm:focus { border-color:var(--blue-mid); }
+.filter-val { padding:6px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13px; color:var(--text); outline:none; width:120px; }
+.filter-val:focus { border-color:var(--blue-mid); }
+.pool-count { background:var(--blue-light); color:var(--blue); font-size:13px; font-weight:600; padding:6px 14px; border-radius:var(--radius); display:inline-flex; align-items:center; gap:6px; }
+.pool-count svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; }
+
+/* ── Modals ── */
+.modal-overlay { position:fixed; inset:0; background:rgba(13,43,94,0.35); z-index:1000; display:none; align-items:center; justify-content:center; padding:1rem; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:var(--radius-lg); padding:2rem; max-width:560px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.15); max-height:90vh; overflow-y:auto; }
+.modal-lg { max-width:720px; }
+.modal h3 { font-family:'DM Serif Display',serif; font-size:20px; color:var(--navy); margin-bottom:4px; }
+.modal-sub { font-size:13px; color:var(--muted); margin-bottom:1.5rem; }
+.modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:1.5rem; padding-top:1.25rem; border-top:1px solid var(--border); }
+
+/* ── Toast ── */
+.toast { position:fixed; top:20px; left:calc(var(--sidebar-w) + 50%); transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:10px 22px; border-radius:var(--radius); font-size:13.5px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
+.toast.show { transform:translateX(-50%) translateY(0); }
+
+/* ── Misc ── */
+.section-gap { margin-bottom:1.5rem; }
+.divider { height:1px; background:var(--border); margin:1.5rem 0; }
+.empty-inline { text-align:center; padding:2.5rem 1rem; color:var(--muted); font-size:13.5px; }
+.empty-inline .ei-icon { font-size:28px; margin-bottom:8px; opacity:0.4; }
+.icon-btn { width:28px; height:28px; border-radius:7px; border:1px solid var(--border); background:var(--white); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; }
+.icon-btn:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+.icon-btn.danger:hover { border-color:var(--danger-border); color:var(--danger); background:var(--danger-bg); }
+.checkbox-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.checkbox-row input[type=checkbox] { width:15px; height:15px; accent-color:var(--blue-mid); margin-top:3px; flex-shrink:0; cursor:pointer; }
+.checkbox-row label { font-size:13.5px; color:var(--slate); cursor:pointer; }
+
+@media(max-width:768px){ .sidebar{ transform:translateX(-100%); } .main{ margin-left:0; } }
+</style>
+</head>
+<body>
+
+<!-- ── Sidebar ── -->
+<aside class="sidebar">
+  <a class="sidebar-logo" href="experiment-list.html">
+    <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+    <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
+  </a>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="welcome.html">
+      <svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
+    </a>
+    <span class="nav-label">Research</span>
+    <a class="nav-item active" href="experiment-list.html">
+      <svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
+    </a>
+    <a class="nav-item" href="subject-pool.html">
+      <svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
+    </a>
+    <a class="nav-item" href="calendar.html">
+      <svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
+    </a>
+    <span class="nav-label">Administration</span>
+    <a class="nav-item" href="accounting.html">
+      <svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting<span class="nav-soon">soon</span>
+    </a>
+    <a class="nav-item" href="multilab.html">
+      <svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab<span class="nav-soon">soon</span>
+    </a>
+    <span class="nav-label">Help</span>
+    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
+    </a>
+  </nav>
+</aside>
+
+<!-- ── Main ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="breadcrumb">
+      <a href="experiment-list.html">Experiments</a>
+      <span>›</span>
+      <span id="bc-name">…</span>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn-top" title="Notifications">
+        <svg width="14" height="14" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/>
+          <path d="M6 12.5a1.5 1.5 0 003 0"/>
+        </svg>
+      </button>
+      <div class="topbar-user">
+        <div class="avatar">GB</div>
+        <div class="topbar-user-info">
+          <div class="topbar-user-name">Gabriel Bayle</div>
+          <div class="topbar-user-role">Researcher · GATE</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiment header -->
+  <div class="exp-header">
+    <div class="exp-title-row">
+      <div>
+        <div class="exp-title" id="exp-title">Loading…</div>
+        <div class="exp-meta-row" id="exp-meta-row" style="margin-top:6px"></div>
+      </div>
+      <div class="exp-actions">
+        <span id="status-badge"></span>
+        <button class="btn btn-ghost btn-sm" onclick="openStatusModal()">Change status</button>
+        <button class="btn btn-primary btn-sm" onclick="showTab('sessions'); openSessionModal()">+ New session</button>
+      </div>
+    </div>
+
+    <!-- Sub-nav -->
+    <nav class="subnav">
+      <button class="subnav-item active" onclick="showTab('settings')" id="tab-settings">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg>
+        Settings
+      </button>
+      <button class="subnav-item" onclick="showTab('experimenters')" id="tab-experimenters">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+        Experimenters <span class="tab-count" id="tc-experimenters">3</span>
+      </button>
+      <button class="subnav-item" onclick="showTab('sessions')" id="tab-sessions">
+        <svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>
+        Sessions <span class="tab-count" id="tc-sessions">4</span>
+      </button>
+      <button class="subnav-item" onclick="showTab('invitations')" id="tab-invitations">
+        <svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>
+        Invitations
+      </button>
+      <button class="subnav-item" onclick="showTab('history')" id="tab-history">
+        <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l3 2"/></svg>
+        History
+      </button>
+    </nav>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ══════════════ SETTINGS ══════════════ -->
+    <div class="tab-panel active" id="panel-settings">
+
+      <div class="incomplete-banner" id="incomplete-banner">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.5L14.5 13H1.5L8 1.5z" stroke="#8a6200" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 6v4M8 11.5v.5" stroke="#8a6200" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div>
+          <strong>This experiment is still a Draft.</strong> Complete the following fields to activate it:
+          <ul class="incomplete-list" id="incomplete-list">
+            <li>Description</li>
+            <li>Ethics document</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid-2 section-gap">
+
+        <!-- General -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">General</span>
+              <button class="btn btn-ghost btn-sm" id="btn-edit-general" onclick="toggleEdit('general')">Edit</button>
+            </div>
+
+            <div class="field" id="field-name">
+              <label>Internal name <span class="req">*</span></label>
+              <div class="field-value" id="val-name">—</div>
+              <input type="text" id="inp-name" style="display:none" placeholder="e.g. trust-game-2025"/>
+              <div class="hint">Not visible to participants.</div>
+            </div>
+
+            <div class="field">
+              <label>Description</label>
+              <div class="field-value" id="val-desc" style="white-space:pre-wrap">—</div>
+              <textarea id="inp-desc" style="display:none" placeholder="Internal description for your team…"></textarea>
+            </div>
+
+            <div class="field">
+              <label>Tags</label>
+              <div class="tags-row" id="tags-row">
+                <span class="tag">Dictator game <span class="tag-remove" onclick="removeTag(this)">×</span></span>
+                <span class="tag">Individual decision <span class="tag-remove" onclick="removeTag(this)">×</span></span>
+                <span class="tag tag-add" onclick="addTag()" id="btn-add-tag" style="display:none">+ Add tag</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Laboratory</label>
+              <div class="field-value" id="val-lab">—</div>
+              <select id="inp-lab" style="display:none">
+                <option>GATE · CNRS · Lyon</option>
+                <option>CREST · Paris</option>
+                <option>LEEM · Montpellier</option>
+                <option>CIRANO · Aix-Marseille</option>
+              </select>
+            </div>
+
+            <div class="grid-2">
+              <div class="field">
+                <label>Mode</label>
+                <div class="field-value" id="val-mode">—</div>
+                <select id="inp-mode" style="display:none">
+                  <option value="in-person">In-person</option>
+                  <option value="online">Online</option>
+                  <option value="hybrid">Hybrid</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Multilab project</label>
+                <div class="field-value" id="val-project">None</div>
+                <select id="inp-project" style="display:none">
+                  <option value="">— None —</option>
+                  <option>TRUST-FR 2025</option>
+                  <option>META-COORD</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="edit-actions-general" style="display:none; margin-top:1rem; display:none">
+              <div style="display:flex;gap:8px;justify-content:flex-end">
+                <button class="btn btn-ghost btn-sm" onclick="cancelEdit('general')">Cancel</button>
+                <button class="btn btn-primary btn-sm" onclick="saveEdit('general')">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Budget & Documents -->
+        <div>
+          <div class="card section-gap">
+            <div class="card-header">
+              <span class="card-title">Payment budget</span>
+              <button class="btn btn-ghost btn-sm">Edit</button>
+            </div>
+            <div class="grid-2">
+              <div class="field">
+                <label>Max payment / session (€)</label>
+                <div class="field-value">—</div>
+              </div>
+              <div class="field">
+                <label>Online cap (%)</label>
+                <div class="field-value">—</div>
+              </div>
+            </div>
+            <div class="field">
+              <label>Payment notes</label>
+              <div class="field-value" style="color:var(--muted);font-size:13px">No payment constraints defined.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Documents</span>
+              <button class="btn btn-ghost btn-sm">Upload</button>
+            </div>
+            <div id="docs-list">
+              <div class="doc-row">
+                <div class="doc-icon pdf">📄</div>
+                <div style="flex:1">
+                  <div class="doc-name">ethics-approval-2025.pdf</div>
+                  <div class="doc-meta">Ethics · Uploaded 14 Jan 2025</div>
+                </div>
+                <button class="icon-btn danger"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button>
+              </div>
+            </div>
+            <div class="doc-upload" onclick="showToast('File upload coming soon')">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:4px"><path d="M8 11V3M5 6l3-3 3 3"/><path d="M2 13h12"/></svg><br>
+              Drop files here or click to upload
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /settings -->
+
+    <!-- ══════════════ EXPERIMENTERS ══════════════ -->
+    <div class="tab-panel" id="panel-experimenters">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title-lg">Experimenters</span>
+        </div>
+
+        <table class="people-table">
+          <thead>
+            <tr>
+              <th>Researcher</th>
+              <th>Role</th>
+              <th>Edit rights</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="experimenters-tbody">
+            <tr>
+              <td><div class="person-cell"><div class="person-avatar">GB</div><div><div class="person-name">Gabriel Bayle</div><div class="person-email">gabriel.bayle@cnrs.fr</div></div></div></td>
+              <td><span class="badge badge-info">Owner</span></td>
+              <td><span style="font-size:13px;color:var(--success)">Full rights</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><div class="person-cell"><div class="person-avatar" style="background:#3b6fd4">IV</div><div><div class="person-name">Iane Vallanzasca</div><div class="person-email">iane.vallanzasca@cnrs.fr</div></div></div></td>
+              <td><span style="font-size:13px;color:var(--muted)">Experimenter</span></td>
+              <td><select class="role-select"><option>View only</option><option selected>Can edit</option><option>Full rights</option></select></td>
+              <td><button class="icon-btn danger" onclick="showToast('Experimenter removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button></td>
+            </tr>
+            <tr>
+              <td><div class="person-cell"><div class="person-avatar" style="background:#1a7a4a">MV</div><div><div class="person-name">Marie Villeval</div><div class="person-email">marie.villeval@cnrs.fr</div></div></div></td>
+              <td><span style="font-size:13px;color:var(--muted)">Experimenter</span></td>
+              <td><select class="role-select"><option selected>View only</option><option>Can edit</option><option>Full rights</option></select></td>
+              <td><button class="icon-btn danger" onclick="showToast('Experimenter removed')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="add-person-row">
+          <input type="text" id="add-experimenter-input" placeholder="Search by name or email…" oninput="filterExperimenters(this.value)"/>
+          <button class="btn btn-ghost" onclick="showToast('Experimenter added')">Add</button>
+        </div>
+      </div>
+    </div><!-- /experimenters -->
+
+    <!-- ══════════════ SESSIONS ══════════════ -->
+    <div class="tab-panel" id="panel-sessions">
+
+      <div class="sessions-toolbar">
+        <button class="filter-chip active" onclick="filterSessions('all',this)">All</button>
+        <button class="filter-chip" onclick="filterSessions('upcoming',this)">Upcoming</button>
+        <button class="filter-chip" onclick="filterSessions('sent',this)">Invitations sent</button>
+        <button class="filter-chip" onclick="filterSessions('past',this)">Past</button>
+        <button class="btn btn-primary btn-sm" style="margin-left:auto" onclick="openSessionModal()">+ New session</button>
+      </div>
+
+      <div id="sessions-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div><!-- /sessions -->
+
+    <!-- ══════════════ INVITATIONS ══════════════ -->
+    <div class="tab-panel" id="panel-invitations">
+
+      <div class="inv-stat-grid">
+        <div class="inv-stat"><div class="inv-stat-label">Total sent</div><div class="inv-stat-val blue">247</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">Registered</div><div class="inv-stat-val green">68</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">Pending</div><div class="inv-stat-val">179</div></div>
+        <div class="inv-stat"><div class="inv-stat-label">No-show rate</div><div class="inv-stat-val">8%</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title-lg">Send invitations</span>
+          <button class="btn btn-primary btn-sm" onclick="openInviteModal()">Configure &amp; send</button>
+        </div>
+
+        <div class="field">
+          <label>Select sessions to invite for</label>
+          <div id="session-checkboxes" style="margin-top:6px">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div style="margin-bottom:1rem">
+          <div style="font-size:13px;font-weight:500;color:var(--slate);margin-bottom:10px">Current quota distribution (all active sessions)</div>
+          <div class="quota-bar-row"><span class="quota-bar-label">Female</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:52%;background:var(--blue-mid)"></div></div><span class="quota-bar-pct">52%</span></div>
+          <div class="quota-bar-row"><span class="quota-bar-label">Male</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:48%;background:#3b6fd4aa"></div></div><span class="quota-bar-pct">48%</span></div>
+          <div class="quota-bar-row"><span class="quota-bar-label">Master's+</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:65%;background:#1a7a4aaa"></div></div><span class="quota-bar-pct">65%</span></div>
+          <div class="quota-bar-row"><span class="quota-bar-label">Bachelor's</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:35%;background:#1a7a4a55"></div></div><span class="quota-bar-pct">35%</span></div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="reinvite">
+          <label for="reinvite">Include participants already invited but not yet registered <span style="color:var(--muted)">(not prioritised by default)</span></label>
+        </div>
+      </div>
+    </div><!-- /invitations -->
+
+    <!-- ══════════════ HISTORY ══════════════ -->
+    <div class="tab-panel" id="panel-history">
+      <div class="card">
+        <div class="card-header"><span class="card-title-lg">Activity log</span></div>
+        <ul class="history-list" id="history-list">
+          <li class="history-item">
+            <div class="history-dot blue"></div>
+            <div class="history-content"><div class="history-action">Session created — 12 Jun 2025, 09:00</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">2h ago</span>
+          </li>
+          <li class="history-item">
+            <div class="history-dot blue"></div>
+            <div class="history-content"><div class="history-action">Invitations sent — 60 invitations for session 12 Jun</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">2h ago</span>
+          </li>
+          <li class="history-item">
+            <div class="history-dot green"></div>
+            <div class="history-content"><div class="history-action">Status changed from Draft → Active</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">14 Jan 2025</span>
+          </li>
+          <li class="history-item">
+            <div class="history-dot orange"></div>
+            <div class="history-content"><div class="history-action">Experimenter added — Iane Vallanzasca</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">14 Jan 2025</span>
+          </li>
+          <li class="history-item">
+            <div class="history-dot gray"></div>
+            <div class="history-content"><div class="history-action">Document uploaded — ethics-approval-2025.pdf</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">12 Jan 2025</span>
+          </li>
+          <li class="history-item">
+            <div class="history-dot gray"></div>
+            <div class="history-content"><div class="history-action">Experiment created</div><div class="history-by">By Gabriel Bayle</div></div>
+            <span class="history-time">12 Jan 2025</span>
+          </li>
+        </ul>
+      </div>
+    </div><!-- /history -->
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ── Modal: Status change ── -->
+<div class="modal-overlay" id="status-modal">
+  <div class="modal">
+    <h3>Change experiment status</h3>
+    <p class="modal-sub">Changing the status affects what actions are available on this experiment.</p>
+    <div class="field">
+      <label>New status</label>
+      <select id="new-status-select">
+        <option value="draft">Draft — incomplete, not visible to participants</option>
+        <option value="active">Active — sessions can be created, invitations sent</option>
+        <option value="archived">Archived — no new sessions or invitations</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeAllModals()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="applyStatusChange()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: New session ── -->
+<div class="modal-overlay" id="session-modal">
+  <div class="modal modal-lg">
+    <h3>Create a session</h3>
+    <p class="modal-sub">Define the details for this new session.</p>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Date <span class="req">*</span></label>
+        <input type="date" id="s-date"/>
+      </div>
+      <div class="field">
+        <label>Time <span class="req">*</span></label>
+        <input type="time" id="s-time" value="09:00"/>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Location</label>
+        <input type="text" id="s-location" placeholder="e.g. Room B204, GATE"/>
+      </div>
+      <div class="field">
+        <label>Duration</label>
+        <input type="text" id="s-duration" placeholder="e.g. 90 min"/>
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Participants required <span class="req">*</span></label>
+        <input type="number" id="s-slots" placeholder="24" min="1"/>
+      </div>
+      <div class="field">
+        <label>Reserves</label>
+        <input type="number" id="s-reserves" placeholder="4" min="0"/>
+      </div>
+      <div class="field">
+        <label>Registration closes</label>
+        <input type="datetime-local" id="s-closes"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Internal notes <span style="font-size:12px;color:var(--muted);font-weight:400">(experimental conditions, etc.)</span></label>
+      <textarea id="s-notes" placeholder="Notes visible only to experimenters…"></textarea>
+    </div>
+    <div class="field">
+      <label>Instructions for participants</label>
+      <textarea id="s-instructions" placeholder="Information visible to registered subjects…"></textarea>
+    </div>
+
+    <div style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:0.5rem">
+      <div style="font-size:13px;font-weight:500;color:var(--slate);margin-bottom:0.75rem">Participant filters</div>
+      <div class="filter-builder">
+        <div class="filter-row">
+          <select class="filter-select-sm"><option>Gender</option><option>Education level</option><option>Age</option><option>French level</option><option>Participation history</option><option>Lab affiliation</option></select>
+          <select class="filter-select-sm"><option>is</option><option>is not</option><option>≥</option><option>≤</option></select>
+          <input class="filter-val" type="text" placeholder="Female"/>
+          <button class="btn btn-ghost btn-sm" onclick="this.closest('.filter-row').remove()">×</button>
+        </div>
+        <div class="filter-row">
+          <select class="filter-select-sm"><option>Education level</option><option>Gender</option><option>Age</option><option>Participation history</option></select>
+          <select class="filter-select-sm"><option>≥</option><option>is</option><option>is not</option><option>≤</option></select>
+          <input class="filter-val" type="text" placeholder="Bachelor's"/>
+          <button class="btn btn-ghost btn-sm" onclick="this.closest('.filter-row').remove()">×</button>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="addFilterRow()" style="margin-top:6px">+ Add filter</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div class="pool-count">
+          <svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>
+          <span id="pool-count-val">342 matching participants</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--slate)">
+          <label>Quota type:</label>
+          <select class="filter-select-sm">
+            <option>Flexible (default)</option>
+            <option>Rigid</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeAllModals()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="createSession()">Create session</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: Invite ── -->
+<div class="modal-overlay" id="invite-modal">
+  <div class="modal">
+    <h3>Send invitations</h3>
+    <p class="modal-sub">Configure and send invitations for the selected sessions.</p>
+    <div class="field">
+      <label>Number of invitations to send</label>
+      <input type="number" value="60" min="1"/>
+      <div class="hint">Distributed according to quota settings below.</div>
+    </div>
+    <div style="margin:1rem 0">
+      <div style="font-size:13px;font-weight:500;margin-bottom:10px;color:var(--slate)">Invitation quota breakdown</div>
+      <div class="quota-bar-row"><span class="quota-bar-label">Female</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:50%;background:var(--blue-mid)"></div></div><span class="quota-bar-pct">50%</span></div>
+      <div class="quota-bar-row"><span class="quota-bar-label">Male</span><div class="quota-bar-track"><div class="quota-bar-fill" style="width:50%;background:#3b6fd4aa"></div></div><span class="quota-bar-pct">50%</span></div>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="auto-inv">
+      <label for="auto-inv">Enable automatic invitations for online sessions</label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeAllModals()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="sendInvitations()">Send invitations</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DB ─────────────────────────────────────────────────────────────────────
+const ExplainDB = (() => {
+  const KEY = 'explain_experiments';
+  function getAll() { try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; } }
+  function save(list) { localStorage.setItem(KEY, JSON.stringify(list)); }
+  function getById(id) { return getAll().find(e => e.id === id) || null; }
+  function update(id, data) { save(getAll().map(e => e.id === id ? { ...e, ...data } : e)); }
+  return { getAll, getById, update };
+})();
+
+// ── Sessions local store ───────────────────────────────────────────────────
+const SessionsDB = (() => {
+  function key(expId) { return 'explain_sessions_' + expId; }
+  function getAll(expId) { try { return JSON.parse(localStorage.getItem(key(expId))) || []; } catch { return []; } }
+  function save(expId, list) { localStorage.setItem(key(expId), JSON.stringify(list)); }
+  function add(expId, data) {
+    const list = getAll(expId);
+    const s = { id: Date.now().toString(36), ...data };
+    list.push(s);
+    save(expId, list);
+    return s;
+  }
+  function seed(expId) {
+    if (getAll(expId).length > 0) return;
+    save(expId, [
+      { id:'s1', date:'2025-06-12', time:'09:00', location:'Room B204, GATE', duration:'90 min', slots:24, reserves:4, enrolled:18, waitlist:2, status:'active', notes:'Condition A only', invitesSent:60 },
+      { id:'s2', date:'2025-06-19', time:'14:00', location:'Room B204, GATE', duration:'90 min', slots:24, reserves:4, enrolled:0, waitlist:0, status:'upcoming', notes:'', invitesSent:0 },
+      { id:'s3', date:'2025-05-08', time:'09:00', location:'Room B102, GATE', duration:'90 min', slots:20, reserves:2, enrolled:20, waitlist:0, status:'past', participants:19, noshows:1, invitesSent:60 },
+      { id:'s4', date:'2025-04-15', time:'09:00', location:'Room B102, GATE', duration:'90 min', slots:20, reserves:2, enrolled:20, waitlist:0, status:'past', participants:18, noshows:2, invitesSent:55 },
+    ]);
+  }
+  return { getAll, add, seed };
+})();
+
+// ── Init ───────────────────────────────────────────────────────────────────
+const params = new URLSearchParams(location.search);
+const expId  = params.get('id');
+let exp = null;
+
+function init() {
+  exp = ExplainDB.getById(expId);
+
+  // Fallback: use first experiment or a demo object
+  if (!exp) {
+    const all = ExplainDB.getAll();
+    if (all.length) { exp = all[0]; history.replaceState(null,'','?id='+exp.id); }
+    else {
+      exp = { id:'demo', name:'trust-game-2025-q1', lab:'GATE · CNRS · Lyon', mode:'in-person', status:'active', description:'Trust and reciprocity in dictator game variants.', expectedParticipants:'80', duration:'90 min', createdAt:'2025-01-14T10:23:00Z' };
+    }
+  }
+
+  SessionsDB.seed(exp.id);
+
+  // Populate header
+  document.getElementById('bc-name').textContent = exp.name;
+  document.getElementById('exp-title').textContent = exp.name;
+  document.title = 'EXPLAIN — ' + exp.name;
+
+  const metaRow = document.getElementById('exp-meta-row');
+  const modeIcon = {'in-person':'🏛','online':'💻','hybrid':'🔁'}[exp.mode]||'';
+  const modeLabel = {'in-person':'In-person','online':'Online','hybrid':'Hybrid'}[exp.mode]||exp.mode;
+  const created = exp.createdAt ? new Date(exp.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '';
+  metaRow.innerHTML = `
+    <span class="exp-meta-item"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13"/></svg>${exp.lab||'—'}</span>
+    <span class="exp-meta-item">${modeIcon} ${modeLabel}</span>
+    <span class="exp-meta-item"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l3 2"/></svg>Created ${created}</span>
+  `;
+
+  document.getElementById('status-badge').innerHTML = statusBadge(exp.status);
+  document.getElementById('new-status-select') && (document.getElementById('new-status-select').value = exp.status);
+
+  // Populate settings fields
+  document.getElementById('val-name').textContent = exp.name;
+  document.getElementById('inp-name').value = exp.name;
+  document.getElementById('val-desc').textContent = exp.description || '—';
+  document.getElementById('inp-desc').value = exp.description || '';
+  document.getElementById('val-lab').textContent = exp.lab || '—';
+  document.getElementById('val-mode').textContent = modeLabel;
+
+  // Show/hide incomplete banner
+  const missing = [];
+  if (!exp.description) missing.push('Description');
+  if (exp.status === 'draft' && missing.length === 0) missing.push('No issues — ready to activate');
+  const banner = document.getElementById('incomplete-banner');
+  const list = document.getElementById('incomplete-list');
+  if (exp.status !== 'draft') { banner.style.display = 'none'; }
+  else {
+    list.innerHTML = missing.map(m => `<li>${m}</li>`).join('');
+  }
+
+  renderSessions();
+  renderSessionCheckboxes();
+}
+
+function statusBadge(s) {
+  const map = { draft:'badge-draft', active:'badge-active', closed:'badge-closed', archived:'badge-archived' };
+  const labels = { draft:'Draft', active:'Active', closed:'Closed', archived:'Archived' };
+  return `<span class="badge ${map[s]||'badge-draft'}"><span class="badge-dot"></span>${labels[s]||s}</span>`;
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.subnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ── Edit settings ──────────────────────────────────────────────────────────
+let editActive = {};
+function toggleEdit(section) {
+  if (editActive[section]) return;
+  editActive[section] = true;
+  // Show inputs, hide display values
+  ['name','desc','lab','mode','project'].forEach(f => {
+    const v = document.getElementById('val-'+f);
+    const i = document.getElementById('inp-'+f);
+    if (v) v.style.display = 'none';
+    if (i) i.style.display = '';
+  });
+  document.getElementById('btn-add-tag').style.display = '';
+  document.getElementById('edit-actions-general').style.display = '';
+  document.getElementById('btn-edit-general').style.display = 'none';
+}
+function cancelEdit(section) {
+  editActive[section] = false;
+  ['name','desc','lab','mode','project'].forEach(f => {
+    const v = document.getElementById('val-'+f);
+    const i = document.getElementById('inp-'+f);
+    if (v) v.style.display = '';
+    if (i) i.style.display = 'none';
+  });
+  document.getElementById('btn-add-tag').style.display = 'none';
+  document.getElementById('edit-actions-general').style.display = 'none';
+  document.getElementById('btn-edit-general').style.display = '';
+}
+function saveEdit(section) {
+  const name = document.getElementById('inp-name').value.trim();
+  const desc = document.getElementById('inp-desc').value.trim();
+  if (!name) { showToast('Name is required', true); return; }
+  exp.name = name; exp.description = desc;
+  ExplainDB.update(exp.id, { name, description: desc });
+  document.getElementById('val-name').textContent = name;
+  document.getElementById('val-desc').textContent = desc || '—';
+  document.getElementById('exp-title').textContent = name;
+  document.getElementById('bc-name').textContent = name;
+  cancelEdit(section);
+  showToast('Changes saved');
+}
+
+// ── Tags ───────────────────────────────────────────────────────────────────
+function removeTag(btn) { btn.closest('.tag').remove(); }
+function addTag() {
+  const val = prompt('New tag:');
+  if (!val) return;
+  const row = document.getElementById('tags-row');
+  const addBtn = document.getElementById('btn-add-tag');
+  const tag = document.createElement('span');
+  tag.className = 'tag';
+  tag.innerHTML = `${val} <span class="tag-remove" onclick="removeTag(this)">×</span>`;
+  row.insertBefore(tag, addBtn);
+}
+
+// ── Status change ──────────────────────────────────────────────────────────
+function openStatusModal() {
+  document.getElementById('new-status-select').value = exp.status;
+  document.getElementById('status-modal').classList.add('open');
+}
+function applyStatusChange() {
+  const newStatus = document.getElementById('new-status-select').value;
+  exp.status = newStatus;
+  ExplainDB.update(exp.id, { status: newStatus });
+  document.getElementById('status-badge').innerHTML = statusBadge(newStatus);
+  const banner = document.getElementById('incomplete-banner');
+  if (newStatus !== 'draft') banner.style.display = 'none'; else banner.style.display = '';
+  closeAllModals();
+  showToast('Status updated to ' + newStatus.charAt(0).toUpperCase() + newStatus.slice(1));
+}
+
+// ── Sessions ───────────────────────────────────────────────────────────────
+let sessionFilter = 'all';
+function filterSessions(f, btn) {
+  sessionFilter = f;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderSessions();
+}
+
+function renderSessions() {
+  const sessions = SessionsDB.getAll(exp.id);
+  document.getElementById('tc-sessions').textContent = sessions.length;
+
+  let list = sessions;
+  if (sessionFilter === 'upcoming') list = sessions.filter(s => s.status !== 'past');
+  else if (sessionFilter === 'past') list = sessions.filter(s => s.status === 'past');
+  else if (sessionFilter === 'sent') list = sessions.filter(s => s.invitesSent > 0);
+
+  list = [...list].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  const container = document.getElementById('sessions-list');
+  if (!list.length) {
+    container.innerHTML = `<div class="empty-inline"><div class="ei-icon">📅</div>No sessions found.</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(s => {
+    const d = new Date(s.date + 'T' + (s.time||'00:00'));
+    const day = d.getDate().toString().padStart(2,'0');
+    const month = d.toLocaleDateString('en-GB',{month:'short'}).toUpperCase();
+    const isPast = s.status === 'past';
+    const enrolled = isPast ? s.participants : s.enrolled;
+    const maxSlots = s.slots;
+    const fillPct = maxSlots ? Math.round((enrolled/maxSlots)*100) : 0;
+    const fillColor = fillPct >= 100 ? 'ok' : fillPct >= 75 ? '' : 'warn';
+    return `<div class="session-row" onclick="showToast('Session management coming soon')">
+      <div class="session-date">
+        <div class="session-day">${day}</div>
+        <div class="session-month">${month}</div>
+      </div>
+      <div class="session-divider"></div>
+      <div class="session-info">
+        <div class="session-title">${s.time} · ${s.location||'No location'}</div>
+        <div class="session-meta">
+          <span>⏱ ${s.duration||'—'}</span>
+          ${s.notes ? `<span>📝 ${s.notes}</span>` : ''}
+          <span>✉ ${s.invitesSent||0} invitations sent</span>
+        </div>
+        <div class="quota-pills" style="margin-top:4px">
+          <span class="quota-pill quota-ok">50% F / 50% M</span>
+          ${isPast ? `<span class="quota-pill ${s.noshows>2?'quota-warn':'quota-ok'}">${s.noshows} no-show${s.noshows!==1?'s':''}</span>` : ''}
+          ${!isPast && s.waitlist>0 ? `<span class="quota-pill quota-warn">${s.waitlist} on waitlist</span>` : ''}
+        </div>
+      </div>
+      <div class="session-stats">
+        <div class="stat-pill">
+          <div class="stat-pill-val ${fillColor}">${enrolled}</div>
+          <div class="stat-pill-lbl">/ ${maxSlots}</div>
+        </div>
+        <span class="badge ${isPast?'badge-archived':'badge-active'}">${isPast?'Past':'Active'}</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();duplicateSession('${s.id}')">Duplicate</button>
+    </div>`;
+  }).join('');
+}
+
+function duplicateSession(id) {
+  const s = SessionsDB.getAll(exp.id).find(x => x.id===id);
+  if (!s) return;
+  // Pre-fill modal (minus date/time)
+  document.getElementById('s-location').value = s.location||'';
+  document.getElementById('s-duration').value = s.duration||'';
+  document.getElementById('s-slots').value = s.slots||'';
+  document.getElementById('s-reserves').value = s.reserves||'';
+  document.getElementById('s-notes').value = s.notes||'';
+  document.getElementById('s-date').value = '';
+  document.getElementById('s-time').value = '';
+  openSessionModal();
+  showToast('Form pre-filled — set date and time');
+}
+
+function renderSessionCheckboxes() {
+  const sessions = SessionsDB.getAll(exp.id).filter(s => s.status !== 'past');
+  const container = document.getElementById('session-checkboxes');
+  if (!sessions.length) { container.innerHTML = '<div style="font-size:13px;color:var(--muted)">No active sessions.</div>'; return; }
+  container.innerHTML = sessions.map(s => `
+    <div class="checkbox-row">
+      <input type="checkbox" id="ics-${s.id}" checked>
+      <label for="ics-${s.id}">${s.date} at ${s.time} — ${s.location||'No location'} (${s.slots} slots)</label>
+    </div>`).join('');
+}
+
+// ── Session modal ──────────────────────────────────────────────────────────
+function openSessionModal() { document.getElementById('session-modal').classList.add('open'); }
+function createSession() {
+  const date = document.getElementById('s-date').value;
+  const time = document.getElementById('s-time').value;
+  const slots = parseInt(document.getElementById('s-slots').value) || 0;
+  if (!date || !time || !slots) { showToast('Date, time and participant count are required', true); return; }
+  SessionsDB.add(exp.id, {
+    date, time, slots,
+    location: document.getElementById('s-location').value,
+    duration: document.getElementById('s-duration').value,
+    reserves: parseInt(document.getElementById('s-reserves').value)||0,
+    notes: document.getElementById('s-notes').value,
+    instructions: document.getElementById('s-instructions').value,
+    status: 'upcoming', enrolled:0, waitlist:0, invitesSent:0
+  });
+  closeAllModals();
+  renderSessions();
+  renderSessionCheckboxes();
+  showToast('Session created');
+}
+function addFilterRow() {
+  const builder = document.querySelector('.filter-builder');
+  const addBtn = builder.querySelector('button');
+  const row = document.createElement('div');
+  row.className = 'filter-row';
+  row.innerHTML = `<select class="filter-select-sm"><option>Gender</option><option>Education level</option><option>Age</option><option>French level</option><option>Participation history</option><option>Lab affiliation</option></select><select class="filter-select-sm"><option>is</option><option>is not</option><option>≥</option><option>≤</option></select><input class="filter-val" type="text" placeholder="Value"/><button class="btn btn-ghost btn-sm" onclick="this.closest('.filter-row').remove()">×</button>`;
+  builder.insertBefore(row, addBtn);
+  // simulate pool count change
+  const c = document.getElementById('pool-count-val');
+  const n = Math.max(50, parseInt(c.textContent)-Math.floor(Math.random()*40+10));
+  c.textContent = n + ' matching participants';
+}
+
+// ── Invitations ────────────────────────────────────────────────────────────
+function openInviteModal() { document.getElementById('invite-modal').classList.add('open'); }
+function sendInvitations() {
+  closeAllModals();
+  showToast('Invitations sent successfully');
+}
+
+// ── Modals ─────────────────────────────────────────────────────────────────
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target===m) closeAllModals(); });
+});
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isError ? '#c0392b' : 'var(--success)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function filterExperimenters(val) { /* wire to API later */ }
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — Create a participant account</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue: #1a4fa0;
+    --blue-light: #e8eff9;
+    --blue-mid: #3b6fd4;
+    --navy: #0d2b5e;
+    --slate: #4a5568;
+    --muted: #718096;
+    --border: #dde3ed;
+    --bg: #f6f8fc;
+    --white: #ffffff;
+    --text: #1a2035;
+    --radius: 10px;
+    --radius-lg: 16px;
+    --success: #1a7a4a;
+    --success-bg: #e6f4ed;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Layout ── */
+  .shell {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── Top nav ── */
+  .topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-mark {
+    width: 34px; height: 34px;
+    background: var(--navy); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; }
+  .logo-name { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--navy); }
+  .logo-sub { font-size: 11px; color: var(--muted); margin-top: -2px; }
+  .nav-signin { font-size: 13px; color: var(--muted); }
+  .nav-signin a { color: var(--blue-mid); text-decoration: none; font-weight: 500; }
+  .nav-signin a:hover { text-decoration: underline; }
+
+  /* ── Page header ── */
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; color: var(--navy); margin-bottom: 4px;
+  }
+  .page-header p { font-size: 14px; color: var(--muted); max-width: 560px; }
+
+  /* ── Info box ── */
+  .info-box {
+    background: var(--blue-light);
+    border: 1px solid #b8cef2;
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    font-size: 13px; color: #1e3d7e;
+    display: flex; gap: 10px;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+  .info-box svg { flex-shrink: 0; margin-top: 2px; }
+
+  /* ── SSO Buttons ── */
+  .sso-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .sso-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    background: var(--white);
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: background 0.15s;
+    text-decoration: none;
+  }
+  .sso-btn-fc { border: 1px solid #003189; color: #003189; }
+  .sso-btn-fc:hover { background: #eef2fb; }
+  .sso-btn-renater { border: 1px solid #003b7a; color: #003b7a; }
+  .sso-btn-renater:hover { background: #eef2fb; }
+  .fc-flag {
+    width: 22px; height: 15px; border-radius: 2px; overflow: hidden;
+    display: flex; flex-shrink: 0;
+  }
+  .fc-flag span { flex: 1; }
+  .fc-flag .blue-band { background: #002395; }
+  .fc-flag .white-band { background: #fff; }
+  .fc-flag .red-band { background: #ED2939; }
+  .renater-badge {
+    background: #003b7a; color: #fff;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.05em;
+    flex-shrink: 0;
+  }
+
+  /* ── Divider ── */
+  .or-divider {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.75rem;
+  }
+  .or-divider::before,
+  .or-divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+  .or-divider span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.25rem;
+  }
+  .card-title {
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Form ── */
+  .field { margin-bottom: 1.25rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 13px; font-weight: 500;
+    color: var(--slate); margin-bottom: 6px;
+  }
+  .req { color: #c0392b; margin-left: 2px; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: inherit; font-size: 14px;
+    color: var(--text); background: var(--white);
+    outline: none; transition: border 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--blue-mid);
+    box-shadow: 0 0 0 3px rgba(59, 111, 212, 0.12);
+  }
+  .field textarea { resize: vertical; min-height: 85px; }
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+
+  /* ── Grids ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ── Radio cards ── */
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-card { position: relative; flex: 1; min-width: 110px; }
+  .radio-card input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .radio-card label {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 5px;
+    padding: 12px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer; transition: all 0.15s;
+    text-align: center; font-size: 13px; color: var(--slate);
+  }
+  .radio-card input:checked + label {
+    border-color: var(--blue-mid);
+    background: var(--blue-light);
+    color: var(--blue);
+  }
+  .radio-card label:hover { border-color: var(--blue-mid); }
+  .rc-icon { font-size: 20px; }
+
+  /* ── Checkboxes ── */
+  .check-row {
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-bottom: 10px;
+  }
+  .check-row:last-child { margin-bottom: 0; }
+  .check-row input[type=checkbox] {
+    width: 16px; height: 16px;
+    accent-color: var(--blue-mid);
+    margin-top: 3px; flex-shrink: 0;
+    cursor: pointer;
+  }
+  .check-row label { font-size: 13px; color: var(--slate); cursor: pointer; }
+  .check-row label a { color: var(--blue-mid); text-decoration: none; }
+  .check-row label a:hover { text-decoration: underline; }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 0.5rem;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 22px;
+    border-radius: var(--radius);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer; border: none; transition: all 0.15s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: var(--navy); }
+  .btn-ghost {
+    background: transparent; color: var(--slate);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  /* ── Confirm block ── */
+  .confirm-block {
+    background: var(--success-bg);
+    border: 1px solid #9fd4b8;
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1.5rem;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .confirm-block .confirm-icon { font-size: 40px; margin-bottom: 10px; }
+  .confirm-block h3 { font-size: 20px; color: var(--success); margin-bottom: 6px; font-family: 'DM Serif Display', serif; }
+  .confirm-block p { font-size: 13px; color: #2d6b47; line-height: 1.7; }
+  .confirm-block strong { color: var(--success); }
+
+  /* ── Error state ── */
+  .field-error input,
+  .field-error select {
+    border-color: #e74c3c;
+  }
+  .field-error .hint { color: #e74c3c; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Nav -->
+  <nav class="topnav">
+    <a class="logo" href="#">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">EXPLAIN</div>
+        <div class="logo-sub">Experimental Platform for Large-scale Investigations</div>
+      </div>
+    </a>
+    <div class="nav-signin">
+      Already registered? <a href="#">Sign in</a>
+    </div>
+  </nav>
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h1>Create a participant account</h1>
+    <p>Join the EXPLAIN subject pool. You will be contacted by partner laboratories matching your profile to participate in research experiments.</p>
+  </div>
+
+  <!-- SSO -->
+  <div class="info-box">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <circle cx="8" cy="8" r="7" stroke="#3b6fd4" stroke-width="1.5"/>
+      <path d="M8 7v5M8 5v1" stroke="#3b6fd4" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    You can verify your identity and pre-fill your information using <strong>FranceConnect</strong> or <strong>Renater</strong> (for students and staff of higher education institutions).
+  </div>
+
+  <div class="sso-row">
+    <button class="sso-btn sso-btn-fc">
+      <div class="fc-flag">
+        <span class="blue-band"></span>
+        <span class="white-band"></span>
+        <span class="red-band"></span>
+      </div>
+      Sign in with FranceConnect
+    </button>
+    <button class="sso-btn sso-btn-renater">
+      <span class="renater-badge">R</span>
+      Sign in with Renater (ESR)
+    </button>
+  </div>
+
+  <div class="or-divider"><span>or fill in manually</span></div>
+
+  <!-- Card: Personal info -->
+  <div class="card">
+    <div class="card-title">Personal information</div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Last name <span class="req">*</span></label>
+        <input type="text" id="lastname" placeholder="Dupont" autocomplete="family-name"/>
+      </div>
+      <div class="field">
+        <label>First name <span class="req">*</span></label>
+        <input type="text" id="firstname" placeholder="Marie" autocomplete="given-name"/>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Email address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="marie.dupont@univ-lyon.fr" autocomplete="email"/>
+        <div class="hint">Must be unique. A confirmation email will be sent.</div>
+      </div>
+      <div class="field">
+        <label>Phone number</label>
+        <input type="tel" placeholder="+33 6 00 00 00 00" autocomplete="tel"/>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Date of birth <span class="req">*</span></label>
+        <input type="date" id="dob"/>
+      </div>
+      <div class="field">
+        <label>Gender <span class="req">*</span></label>
+        <select id="gender">
+          <option value="">— Select —</option>
+          <option>Female</option>
+          <option>Male</option>
+          <option>Non-binary / Other</option>
+          <option>Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Education -->
+  <div class="card">
+    <div class="card-title">Education &amp; occupation</div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Level of education <span class="req">*</span></label>
+        <select id="edu-level">
+          <option value="">— Select —</option>
+          <option>Baccalauréat (or equivalent)</option>
+          <option>Bac+2 (BTS, DUT…)</option>
+          <option>Licence / Bachelor's</option>
+          <option>Master's (M1 / M2)</option>
+          <option>PhD / Doctorate</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Field of study</label>
+        <input type="text" placeholder="e.g. Economics, Psychology…"/>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Institution / School</label>
+        <input type="text" placeholder="e.g. Université Lyon 2"/>
+      </div>
+      <div class="field">
+        <label>Start year of studies</label>
+        <input type="number" placeholder="2022" min="1960" max="2030"/>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Current occupation</label>
+      <input type="text" placeholder="e.g. Student, Employed, Seeking employment…"/>
+    </div>
+  </div>
+
+  <!-- Card: Preferences & Language -->
+  <div class="card">
+    <div class="card-title">Participation preferences &amp; languages</div>
+
+    <div class="field">
+      <label>Preferred participation mode <span class="req">*</span></label>
+      <div class="radio-group">
+        <div class="radio-card">
+          <input type="radio" name="pref" id="pref-p" checked>
+          <label for="pref-p">
+            <span class="rc-icon">🏛</span>
+            In-person
+          </label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="pref" id="pref-o">
+          <label for="pref-o">
+            <span class="rc-icon">💻</span>
+            Online
+          </label>
+        </div>
+        <div class="radio-card">
+          <input type="radio" name="pref" id="pref-b">
+          <label for="pref-b">
+            <span class="rc-icon">🔁</span>
+            Both
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>French level <span class="req">*</span></label>
+        <select id="french-level">
+          <option value="">— Select —</option>
+          <option>A1 – Beginner</option>
+          <option>A2 – Elementary</option>
+          <option>B1 – Intermediate</option>
+          <option>B2 – Upper intermediate</option>
+          <option>C1 – Advanced</option>
+          <option selected>C2 – Native / Mastery</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>English level <span class="req">*</span></label>
+        <select id="english-level">
+          <option value="">— Select —</option>
+          <option>A1 – Beginner</option>
+          <option>A2 – Elementary</option>
+          <option>B1 – Intermediate</option>
+          <option selected>B2 – Upper intermediate</option>
+          <option>C1 – Advanced</option>
+          <option>C2 – Native / Mastery</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card: Laboratory -->
+  <div class="card">
+    <div class="card-title">Laboratory affiliation</div>
+
+    <div class="field">
+      <label>Select a laboratory <span class="req">*</span></label>
+      <select id="lab">
+        <option value="">— Select a partner laboratory —</option>
+        <option selected>GATE · CNRS · Lyon</option>
+        <option>CREST · Paris</option>
+        <option>LEEM · Montpellier</option>
+        <option>CIRANO · Aix-Marseille</option>
+        <option>LEEP · Clermont-Ferrand</option>
+      </select>
+      <div class="hint">Your primary affiliation. You may join additional labs' pools after registration.</div>
+    </div>
+  </div>
+
+  <!-- Card: CGU -->
+  <div class="card">
+    <div class="card-title">Terms &amp; conditions</div>
+
+    <div class="check-row">
+      <input type="checkbox" id="cgu">
+      <label for="cgu">
+        I have read and agree to the <a href="#">Terms and Conditions of Use (CGU)</a> and the <a href="#">EXPLAIN privacy policy</a> (GDPR compliance). <span class="req">*</span>
+      </label>
+    </div>
+    <div class="check-row">
+      <input type="checkbox" id="newsletter">
+      <label for="newsletter">
+        I agree to receive information about upcoming experiments from affiliated laboratories. <span style="color:var(--muted)">(optional)</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="btn-row">
+    <a href="#" class="btn btn-ghost">Back</a>
+    <button class="btn btn-primary" onclick="handleSubmit(event)">Create my account &rarr;</button>
+  </div>
+
+  <!-- Confirm -->
+  <div class="confirm-block" id="confirm-block">
+    <div class="confirm-icon">✉️</div>
+    <h3>Check your inbox</h3>
+    <p>
+      A confirmation email has been sent to <strong id="confirm-email">—</strong>.<br>
+      Please click the link in the email to activate your account.<br><br>
+      Once confirmed, you can sign in and start participating in experiments.
+    </p>
+  </div>
+
+</div>
+
+<script>
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    // Basic required field validation
+    const required = [
+      { id: 'lastname', label: 'Last name' },
+      { id: 'firstname', label: 'First name' },
+      { id: 'email', label: 'Email address' },
+      { id: 'dob', label: 'Date of birth' },
+      { id: 'gender', label: 'Gender' },
+      { id: 'edu-level', label: 'Level of education' },
+      { id: 'french-level', label: 'French level' },
+      { id: 'english-level', label: 'English level' },
+      { id: 'lab', label: 'Laboratory' },
+    ];
+
+    let firstError = null;
+    required.forEach(({ id, label }) => {
+      const el = document.getElementById(id);
+      const field = el.closest('.field');
+      if (!el.value) {
+        field.classList.add('field-error');
+        if (!firstError) firstError = { el, label };
+      } else {
+        field.classList.remove('field-error');
+      }
+    });
+
+    // Email format
+    const emailEl = document.getElementById('email');
+    if (emailEl.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value)) {
+      emailEl.closest('.field').classList.add('field-error');
+      if (!firstError) firstError = { el: emailEl, label: 'Email address (invalid format)' };
+    }
+
+    // CGU
+    if (!document.getElementById('cgu').checked) {
+      if (!firstError) {
+        alert('You must accept the Terms and Conditions to create your account.');
+        return;
+      }
+    }
+
+    if (firstError) {
+      firstError.el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      firstError.el.focus();
+      return;
+    }
+
+    // All good — show confirm
+    document.getElementById('confirm-email').textContent = emailEl.value;
+    const cb = document.getElementById('confirm-block');
+    cb.style.display = 'block';
+    cb.scrollIntoView({ behavior: 'smooth' });
+
+    // Disable the submit button
+    e.target.disabled = true;
+    e.target.textContent = '✓ Account created';
+    e.target.style.background = '#1a7a4a';
+  }
+
+  // Clear error state on input
+  document.querySelectorAll('.field input, .field select').forEach(el => {
+    el.addEventListener('input', () => {
+      el.closest('.field').classList.remove('field-error');
+    });
+  });
+</script>
+</body>
+</html>

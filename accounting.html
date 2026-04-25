@@ -34,14 +34,14 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
 .main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
-.topbar { background:var(--white); border-bottom:1px solid var(--border); padding:0.8rem 2rem; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
-.breadcrumb { font-size:12px; color:var(--muted); }
-.topbar-right { display:flex; align-items:center; gap:8px; }
-.icon-btn-top { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); }
-.topbar-user { display:flex; align-items:center; gap:9px; padding:4px 6px 4px 10px; border-left:1px solid var(--border); margin-left:4px; }
-.topbar-user-info { display:flex; flex-direction:column; }
-.topbar-user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
-.topbar-user-role { font-size:11px; color:var(--muted); }
+
+
+
+
+
+
+
+
 .avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
 .content { padding:2rem 2rem 4rem; }
 .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap; }
@@ -102,6 +102,16 @@ tbody tr:hover { background:#fafbfd; }
 .toast { position:fixed; top:20px; left:calc(var(--sidebar-w) + 50%); transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:10px 22px; border-radius:var(--radius); font-size:13.5px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); }
 @media(max-width:768px){ .sidebar{ transform:translateX(-100%); } .main{ margin-left:0; } }
+.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; margin-bottom:1.5rem; }
+.breadcrumb a { color:var(--blue-mid); text-decoration:none; }
+.breadcrumb a:hover { text-decoration:underline; }
+.sidebar-footer { padding:0.875rem 1rem 1rem; border-top:1px solid var(--border); flex-shrink:0; }
+.sidebar-user { display:flex; align-items:center; gap:9px; padding:6px 8px; border-radius:var(--radius); transition:background 0.12s; cursor:default; }
+.sidebar-user:hover { background:var(--bg); }
+.user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
+.user-role { font-size:11px; color:var(--muted); }
+.notif-btn { width:28px; height:28px; border-radius:7px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; margin-left:auto; flex-shrink:0; }
+.notif-btn:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
 </style>
 </head>
 <body>
@@ -123,26 +133,29 @@ tbody tr:hover { background:#fafbfd; }
     <span class="nav-label">Help</span>
     <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation</a>
   </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar">GB</div>
+      <div>
+        <div class="user-name">Gabriel Bayle</div>
+        <div class="user-role">Researcher · GATE</div>
+      </div>
+      <button class="notif-btn" title="Notifications">
+        <svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/>
+          <path d="M6 12.5a1.5 1.5 0 003 0"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 </aside>
 
 <div class="main">
-  <div class="topbar">
-    <div class="breadcrumb">Accounting</div>
-    <div class="topbar-right">
-      <button class="icon-btn-top">
-        <svg width="14" height="14" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg>
-      </button>
-      <div class="topbar-user">
-        <div class="avatar">GB</div>
-        <div class="topbar-user-info">
-          <div class="topbar-user-name">Gabriel Bayle</div>
-          <div class="topbar-user-role">Lab Manager · GATE</div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="content">
+    <div class="breadcrumb">Accounting</div>
     <div class="page-header">
       <div>
         <h1>Accounting</h1>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — Experiments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --blue:#1a4fa0; --blue-light:#e8eff9; --blue-mid:#3b6fd4;
+    --navy:#0d2b5e; --slate:#4a5568; --muted:#718096;
+    --border:#dde3ed; --bg:#f6f8fc; --white:#ffffff; --text:#1a2035;
+    --radius:10px; --radius-lg:16px;
+    --success:#1a7a4a; --success-bg:#e6f4ed;
+  }
+  body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg); font-size:15px; line-height:1.6; min-height:100vh; }
+  .shell { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
+
+  /* Nav */
+  .topnav { display:flex; align-items:center; justify-content:space-between; padding-bottom:1.5rem; border-bottom:1px solid var(--border); margin-bottom:2rem; }
+  .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+  .logo-mark { width:34px; height:34px; background:var(--navy); border-radius:8px; display:flex; align-items:center; justify-content:center; }
+  .logo-mark svg { width:18px; height:18px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; }
+  .logo-name { font-family:'DM Serif Display',serif; font-size:18px; color:var(--navy); }
+  .logo-sub { font-size:11px; color:var(--muted); margin-top:-2px; }
+  .nav-right { display:flex; align-items:center; gap:16px; }
+  .nav-link { font-size:13px; color:var(--muted); text-decoration:none; }
+  .nav-link:hover { color:var(--blue); }
+  .nav-link.active { color:var(--blue); font-weight:500; }
+  .nav-user { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); }
+  .avatar { width:32px; height:32px; border-radius:50%; background:var(--blue); color:#fff; font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+
+  /* Page header */
+  .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.75rem; gap:1rem; flex-wrap:wrap; }
+  .page-header h1 { font-family:'DM Serif Display',serif; font-size:28px; color:var(--navy); }
+  .page-header p { font-size:14px; color:var(--muted); margin-top:2px; }
+
+  /* Btn */
+  .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 20px; border-radius:var(--radius); font-family:inherit; font-size:14px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
+  .btn-primary { background:var(--blue); color:#fff; }
+  .btn-primary:hover { background:var(--navy); }
+  .btn-ghost { background:var(--white); color:var(--slate); border:1px solid var(--border); }
+  .btn-ghost:hover { background:var(--bg); }
+  .btn-sm { padding:6px 14px; font-size:13px; }
+  .btn-danger { background:#fff0f0; color:#c0392b; border:1px solid #f5c5c5; }
+  .btn-danger:hover { background:#fde8e8; }
+
+  /* Toolbar */
+  .toolbar { display:flex; align-items:center; gap:10px; margin-bottom:1.25rem; flex-wrap:wrap; }
+  .search-wrap { position:relative; flex:1; min-width:200px; max-width:340px; }
+  .search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); pointer-events:none; }
+  .search-input {
+    width:100%; padding:8px 12px 8px 34px;
+    border:1px solid var(--border); border-radius:var(--radius);
+    font-family:inherit; font-size:14px; color:var(--text); background:var(--white);
+    outline:none; transition:border 0.15s;
+  }
+  .search-input:focus { border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(59,111,212,0.1); }
+  .filter-select {
+    padding:8px 30px 8px 12px; border:1px solid var(--border); border-radius:var(--radius);
+    font-family:inherit; font-size:13px; color:var(--slate); background:var(--white);
+    appearance:none; cursor:pointer; outline:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+  }
+  .filter-select:focus { border-color:var(--blue-mid); }
+  .count-label { font-size:13px; color:var(--muted); margin-left:auto; }
+
+  /* Stats row */
+  .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:1.75rem; }
+  .stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1rem 1.25rem; }
+  .stat-label { font-size:12px; color:var(--muted); margin-bottom:4px; }
+  .stat-value { font-size:24px; font-weight:600; color:var(--navy); line-height:1; }
+  .stat-value.blue { color:var(--blue-mid); }
+  .stat-value.green { color:var(--success); }
+  .stat-value.orange { color:#b06000; }
+
+  /* Table */
+  .table-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  thead tr { background:var(--bg); }
+  th { padding:11px 16px; text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer; user-select:none; }
+  th:hover { color:var(--slate); }
+  th .sort-icon { margin-left:4px; opacity:0.4; font-size:10px; }
+  th.sorted .sort-icon { opacity:1; }
+  td { padding:13px 16px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tbody tr { transition:background 0.1s; }
+  tbody tr:hover { background:#fafbfd; }
+
+  /* Badges */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; letter-spacing:0.04em; white-space:nowrap; }
+  .badge-dot { width:6px; height:6px; border-radius:50%; }
+  .badge-draft { background:#f0f0f0; color:#666; }
+  .badge-draft .badge-dot { background:#999; }
+  .badge-active { background:#e6f4ed; color:var(--success); }
+  .badge-active .badge-dot { background:var(--success); }
+  .badge-closed { background:#fff0e6; color:#b06000; }
+  .badge-closed .badge-dot { background:#e08020; }
+  .badge-archived { background:#f5f5f5; color:#999; }
+  .badge-archived .badge-dot { background:#bbb; }
+
+  /* Mode chip */
+  .mode-chip { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:var(--muted); }
+
+  /* Experiment name cell */
+  .exp-name { font-weight:500; color:var(--text); }
+  .exp-meta { font-size:12px; color:var(--muted); margin-top:1px; }
+
+  /* Actions */
+  .actions { display:flex; align-items:center; gap:6px; }
+  .icon-btn { width:30px; height:30px; border-radius:8px; border:1px solid var(--border); background:var(--white); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; }
+  .icon-btn:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+  .icon-btn.delete:hover { border-color:#f5c5c5; color:#c0392b; background:#fff0f0; }
+
+  /* Empty state */
+  .empty-state { padding:4rem 2rem; text-align:center; }
+  .empty-icon { font-size:40px; margin-bottom:12px; opacity:0.5; }
+  .empty-state h3 { font-size:18px; color:var(--slate); margin-bottom:6px; }
+  .empty-state p { font-size:14px; color:var(--muted); max-width:340px; margin:0 auto 1.5rem; }
+
+  /* Modal */
+  .modal-overlay { position:fixed; inset:0; background:rgba(13,43,94,0.35); z-index:1000; display:none; align-items:center; justify-content:center; padding:1rem; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--white); border-radius:var(--radius-lg); padding:2rem; max-width:400px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.15); }
+  .modal h3 { font-family:'DM Serif Display',serif; font-size:20px; color:var(--navy); margin-bottom:8px; }
+  .modal p { font-size:14px; color:var(--muted); margin-bottom:1.5rem; line-height:1.6; }
+  .modal-actions { display:flex; justify-content:flex-end; gap:10px; }
+
+  /* Toast */
+  .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:12px 24px; border-radius:var(--radius); font-size:14px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.error { background:#c0392b; }
+
+  @media(max-width:700px) {
+    .col-lab, .col-created, .col-participants { display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="topnav">
+    <a class="logo" href="#">
+      <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+      <div>
+        <div class="logo-name">EXPLAIN</div>
+        <div class="logo-sub">Experimental Platform for Large-scale Investigations</div>
+      </div>
+    </a>
+    <div class="nav-right">
+      <a class="nav-link active" href="explain-experiments.html">Experiments</a>
+      <a class="nav-link" href="#">Laboratories</a>
+      <div class="nav-user">
+        <span>Gabriel Bayle</span>
+        <div class="avatar">GB</div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div>
+      <h1>Experiments</h1>
+      <p>All experiments you own or collaborate on.</p>
+    </div>
+    <a href="explain-create-experiment.html" class="btn btn-primary">+ New experiment</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card"><div class="stat-label">Total</div><div class="stat-value" id="stat-total">0</div></div>
+    <div class="stat-card"><div class="stat-label">Draft</div><div class="stat-value" id="stat-draft">0</div></div>
+    <div class="stat-card"><div class="stat-label">Active</div><div class="stat-value green" id="stat-active">0</div></div>
+    <div class="stat-card"><div class="stat-label">Closed</div><div class="stat-value orange" id="stat-closed">0</div></div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="6" cy="6" r="4.5" stroke="#718096" stroke-width="1.4"/>
+        <path d="M9.5 9.5L13 13" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      <input class="search-input" id="search" type="text" placeholder="Search experiments…" oninput="render()"/>
+    </div>
+    <select class="filter-select" id="filter-status" onchange="render()">
+      <option value="">All statuses</option>
+      <option value="draft">Draft</option>
+      <option value="active">Active</option>
+      <option value="closed">Closed</option>
+      <option value="archived">Archived</option>
+    </select>
+    <select class="filter-select" id="filter-mode" onchange="render()">
+      <option value="">All modes</option>
+      <option value="in-person">In-person</option>
+      <option value="online">Online</option>
+      <option value="hybrid">Hybrid</option>
+    </select>
+    <span class="count-label" id="count-label"></span>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('name')">Name <span class="sort-icon" id="sort-name">↕</span></th>
+          <th class="col-lab" onclick="sortBy('lab')">Laboratory <span class="sort-icon" id="sort-lab">↕</span></th>
+          <th onclick="sortBy('status')">Status <span class="sort-icon" id="sort-status">↕</span></th>
+          <th>Mode</th>
+          <th class="col-participants" onclick="sortBy('expectedParticipants')">Participants <span class="sort-icon" id="sort-expectedParticipants">↕</span></th>
+          <th class="col-created" onclick="sortBy('createdAt')">Created <span class="sort-icon" id="sort-createdAt">↕</span></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="exp-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- Delete modal -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <h3>Delete experiment?</h3>
+    <p>This will permanently delete <strong id="delete-name"></strong>. This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── DB ──────────────────────────────────────────────────────────────────────
+  const ExplainDB = (() => {
+    const KEY = 'explain_experiments';
+    function getAll() {
+      try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+      catch { return []; }
+    }
+    function save(list) { localStorage.setItem(KEY, JSON.stringify(list)); }
+    function remove(id) { save(getAll().filter(e => e.id !== id)); }
+    function update(id, data) { save(getAll().map(e => e.id === id ? { ...e, ...data } : e)); }
+    return { getAll, remove, update };
+  })();
+
+  // ── Seed demo data if empty ─────────────────────────────────────────────────
+  function seed() {
+    if (ExplainDB.getAll().length > 0) return;
+    const demos = [
+      { name:'trust-game-2025-q1', lab:'GATE · CNRS · Lyon', mode:'in-person', status:'active', description:'Trust and reciprocity in dictator game variants.', expectedParticipants:'80', duration:'90 min', createdAt:'2025-01-14T10:23:00Z' },
+      { name:'risk-elicitation-online', lab:'CREST · Paris', mode:'online', status:'draft', description:'Online risk preference elicitation via lottery choices.', expectedParticipants:'200', duration:'45 min', createdAt:'2025-02-03T14:07:00Z' },
+      { name:'coordination-multilab', lab:'GATE · CNRS · Lyon', mode:'hybrid', status:'draft', description:'Multi-lab coordination experiment across 5 sites.', expectedParticipants:'300', duration:'120 min', createdAt:'2025-03-20T09:15:00Z' },
+      { name:'social-norms-survey-2024', lab:'LEEM · Montpellier', mode:'online', status:'closed', description:'Survey on perceived social norms in redistribution tasks.', expectedParticipants:'500', duration:'30 min', createdAt:'2024-11-05T08:00:00Z' },
+      { name:'public-goods-replication', lab:'GATE · CNRS · Lyon', mode:'in-person', status:'archived', description:'Replication of Fehr &amp; Gächter (2000).', expectedParticipants:'120', duration:'90 min', createdAt:'2024-07-22T11:30:00Z' },
+    ];
+    const KEY = 'explain_experiments';
+    localStorage.setItem(KEY, JSON.stringify(
+      demos.map(d => ({ id: Math.random().toString(36).slice(2), owner:'Gabriel Bayle', ...d }))
+    ));
+  }
+  seed();
+
+  // ── State ───────────────────────────────────────────────────────────────────
+  let sortKey = 'createdAt';
+  let sortDir = -1; // -1 = desc
+  let pendingDeleteId = null;
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  function render() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const filterStatus = document.getElementById('filter-status').value;
+    const filterMode   = document.getElementById('filter-mode').value;
+
+    let list = ExplainDB.getAll();
+
+    // Update stats (on full list)
+    document.getElementById('stat-total').textContent  = list.length;
+    document.getElementById('stat-draft').textContent  = list.filter(e=>e.status==='draft').length;
+    document.getElementById('stat-active').textContent = list.filter(e=>e.status==='active').length;
+    document.getElementById('stat-closed').textContent = list.filter(e=>e.status==='closed').length;
+
+    // Filter
+    if (search)       list = list.filter(e => (e.name+e.lab+e.description).toLowerCase().includes(search));
+    if (filterStatus) list = list.filter(e => e.status === filterStatus);
+    if (filterMode)   list = list.filter(e => e.mode   === filterMode);
+
+    // Sort
+    list = [...list].sort((a,b) => {
+      let av = a[sortKey] || '', bv = b[sortKey] || '';
+      if (typeof av === 'string') av = av.toLowerCase(), bv = bv.toLowerCase();
+      return av < bv ? -sortDir : av > bv ? sortDir : 0;
+    });
+
+    // Update sort icons
+    ['name','lab','status','createdAt','expectedParticipants'].forEach(k => {
+      const el = document.getElementById('sort-' + k);
+      if (!el) return;
+      el.textContent = k === sortKey ? (sortDir === 1 ? '↑' : '↓') : '↕';
+      el.closest('th').classList.toggle('sorted', k === sortKey);
+    });
+
+    document.getElementById('count-label').textContent = list.length + (list.length === 1 ? ' experiment' : ' experiments');
+
+    const tbody = document.getElementById('exp-tbody');
+
+    if (list.length === 0) {
+      tbody.innerHTML = `
+        <tr><td colspan="7">
+          <div class="empty-state">
+            <div class="empty-icon">🔬</div>
+            <h3>${search || filterStatus || filterMode ? 'No experiments match your filters' : 'No experiments yet'}</h3>
+            <p>${search || filterStatus || filterMode ? 'Try adjusting the search or filters.' : 'Create your first experiment to get started.'}</p>
+            ${(!search && !filterStatus && !filterMode) ? '<a href="explain-create-experiment.html" class="btn btn-primary">+ New experiment</a>' : ''}
+          </div>
+        </td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(exp => {
+      const badge = statusBadge(exp.status);
+      const modeIcon = { 'in-person':'🏛', 'online':'💻', 'hybrid':'🔁' }[exp.mode] || '—';
+      const modeLabel = { 'in-person':'In-person', 'online':'Online', 'hybrid':'Hybrid' }[exp.mode] || exp.mode;
+      const created = exp.createdAt ? new Date(exp.createdAt).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+      return `
+        <tr>
+          <td>
+            <div class="exp-name">${escHtml(exp.name)}</div>
+            ${exp.description ? `<div class="exp-meta">${escHtml(exp.description.substring(0,60))}${exp.description.length>60?'…':''}</div>` : ''}
+          </td>
+          <td class="col-lab" style="font-size:13px;color:var(--muted)">${escHtml(exp.lab||'—')}</td>
+          <td>
+            <span class="badge badge-${exp.status}">
+              <span class="badge-dot"></span>
+              ${cap(exp.status)}
+            </span>
+          </td>
+          <td><span class="mode-chip">${modeIcon} ${modeLabel}</span></td>
+          <td class="col-participants" style="font-size:13px;color:var(--muted)">${exp.expectedParticipants||'—'}</td>
+          <td class="col-created" style="font-size:13px;color:var(--muted)">${created}</td>
+          <td>
+            <div class="actions">
+              <select class="filter-select" style="padding:5px 28px 5px 8px;font-size:12px;border-radius:8px" onchange="changeStatus('${exp.id}',this.value)">
+                <option value="draft"     ${exp.status==='draft'    ?'selected':''}>Draft</option>
+                <option value="active"    ${exp.status==='active'   ?'selected':''}>Active</option>
+                <option value="closed"    ${exp.status==='closed'   ?'selected':''}>Closed</option>
+                <option value="archived"  ${exp.status==='archived' ?'selected':''}>Archived</option>
+              </select>
+              <button class="icon-btn delete" title="Delete" onclick="askDelete('${exp.id}','${escAttr(exp.name)}')">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function statusBadge(s) {
+    const map = { draft:'badge-draft', active:'badge-active', closed:'badge-closed', archived:'badge-archived' };
+    return map[s] || 'badge-draft';
+  }
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function escAttr(s) { return String(s).replace(/'/g,"\\'"); }
+
+  // ── Sort ────────────────────────────────────────────────────────────────────
+  function sortBy(key) {
+    if (sortKey === key) sortDir *= -1;
+    else { sortKey = key; sortDir = 1; }
+    render();
+  }
+
+  // ── Status change ───────────────────────────────────────────────────────────
+  function changeStatus(id, status) {
+    ExplainDB.update(id, { status });
+    render();
+    showToast('Status updated to ' + cap(status));
+  }
+
+  // ── Delete ──────────────────────────────────────────────────────────────────
+  function askDelete(id, name) {
+    pendingDeleteId = id;
+    document.getElementById('delete-name').textContent = name;
+    document.getElementById('delete-modal').classList.add('open');
+  }
+  function closeModal() {
+    pendingDeleteId = null;
+    document.getElementById('delete-modal').classList.remove('open');
+  }
+  function confirmDelete() {
+    if (!pendingDeleteId) return;
+    ExplainDB.remove(pendingDeleteId);
+    closeModal();
+    render();
+    showToast('Experiment deleted');
+  }
+  document.getElementById('delete-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+
+  // ── Toast ───────────────────────────────────────────────────────────────────
+  let toastTimer;
+  function showToast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── Init ────────────────────────────────────────────────────────────────────
+  render();
+</script>
+</body>
+</html>

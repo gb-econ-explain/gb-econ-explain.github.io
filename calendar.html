@@ -7,137 +7,584 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --blue:#1a4fa0; --blue-light:#e8eff9; --blue-mid:#3b6fd4;
-  --navy:#0d2b5e; --slate:#4a5568; --muted:#718096;
-  --border:#dde3ed; --bg:#f6f8fc; --white:#ffffff; --text:#1a2035;
-  --radius:10px; --radius-lg:16px;
-  --success:#1a7a4a; --success-bg:#e6f4ed;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a4fa0;--blue-light:#e8eff9;--blue-mid:#3b6fd4;
+  --navy:#0d2b5e;--slate:#4a5568;--muted:#718096;
+  --border:#dde3ed;--bg:#f6f8fc;--white:#fff;--text:#1a2035;
+  --radius:10px;--radius-lg:16px;
+  --success:#1a7a4a;--success-bg:#e6f4ed;
+  --warning:#8a6200;--warning-bg:#fff8e6;--warning-border:#f5d87a;
+  --danger:#c0392b;--danger-bg:#fff0f0;
   --sidebar-w:220px;
 }
-html,body { height:100%; }
-body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg); font-size:15px; line-height:1.6; display:flex; min-height:100vh; }
-.sidebar { width:var(--sidebar-w); min-height:100vh; background:var(--white); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; overflow-y:auto; }
-.sidebar-logo { display:flex; align-items:center; gap:10px; padding:1.25rem 1.1rem 1rem; border-bottom:1px solid var(--border); text-decoration:none; }
-.logo-mark { width:32px; height:32px; background:var(--navy); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.logo-mark svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; }
-.logo-name { font-family:'DM Serif Display',serif; font-size:16px; color:var(--navy); display:block; }
-.logo-sub { font-size:10px; color:var(--muted); display:block; line-height:1.3; }
-.sidebar-nav { padding:0.75rem; flex:1; }
-.nav-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); padding:0.9rem 0.5rem 0.35rem; display:block; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:var(--radius); font-size:13.5px; color:var(--slate); text-decoration:none; transition:background 0.12s,color 0.12s; margin-bottom:1px; }
-.nav-item:hover { background:var(--bg); color:var(--navy); }
-.nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
-.nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
-.nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.6;display:flex;min-height:100vh}
 
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);display:block}
+.logo-sub{font-size:10px;color:var(--muted);display:block;line-height:1.3}
+.sidebar-nav{padding:0.75rem;flex:1}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.9rem 0.5rem 0.35rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);font-size:13.5px;color:var(--slate);text-decoration:none;transition:background 0.12s,color 0.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg);color:var(--navy)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:500}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-soon{font-size:10px;font-weight:600;color:var(--muted);background:#f0f0f0;border-radius:4px;padding:1px 6px;margin-left:auto}
+.sidebar-footer{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius);cursor:default}
+.sidebar-user:hover{background:var(--bg)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:11px;color:var(--muted)}
+.notif-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.15s;margin-left:auto;flex-shrink:0}
+.notif-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
 
-.avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+/* ── Main ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh;overflow:hidden}
 
+/* ── Calendar chrome ── */
+.cal-chrome{display:flex;flex-direction:column;height:100vh;padding:1.5rem 1.5rem 0}
+.cal-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+.cal-nav{display:flex;align-items:center;gap:10px}
+.cal-month{font-family:'DM Serif Display',serif;font-size:22px;color:var(--navy);min-width:200px}
+.nav-btn{width:30px;height:30px;border:1px solid var(--border);border-radius:8px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s}
+.nav-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.today-btn{padding:6px 14px;border:1px solid var(--border);border-radius:8px;background:var(--white);font-family:inherit;font-size:13px;cursor:pointer;color:var(--slate);transition:all .15s}
+.today-btn:hover{border-color:var(--blue-mid);color:var(--blue)}
+.cal-actions{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--navy)}
+.btn-ghost{background:var(--white);color:var(--slate);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
 
-.main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
+/* ── Legend ── */
+.legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:1rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;transition:opacity .15s}
+.legend-item:hover{opacity:.7}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
 
+/* ── Calendar grid ── */
+.cal-wrap{flex:1;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg) var(--radius-lg) 0 0;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);background:var(--bg)}
+.cal-weekday{padding:8px 0;text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:minmax(100px,1fr);flex:1;overflow-y:auto}
+.cal-cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:5px 6px;position:relative;transition:background .1s}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell:hover{background:#fafcff}
+.cal-cell.clickable{cursor:pointer}
+.cal-cell.other-month .day-num{color:#c8d0dc}
+.cal-cell.other-month .session-chip{opacity:.45}
+.cal-cell.today{background:#f0f5ff}
+.cal-cell.today .day-num{background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.day-num{font-size:12px;font-weight:500;color:var(--slate);margin-bottom:3px;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 
+/* Session chips */
+.session-chip{display:flex;align-items:center;gap:4px;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:500;margin-bottom:2px;cursor:pointer;transition:opacity .12s,filter .12s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;user-select:none}
+.session-chip:hover{opacity:.8;filter:brightness(.95)}
+.chip-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.chip-past{opacity:.5}
+.more-chip{font-size:11px;color:var(--muted);padding:1px 4px;cursor:pointer}
+.more-chip:hover{color:var(--blue)}
 
-    
-.content { padding:2rem 2rem 4rem; }
-.page-header { margin-bottom:2.5rem; }
-.page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); margin-bottom:4px; }
-.page-header p { font-size:13.5px; color:var(--muted); }
-.placeholder-box { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:4rem 2rem; text-align:center; }
-.placeholder-icon { font-size:42px; margin-bottom:1rem; opacity:0.5; }
-.placeholder-box h2 { font-family:'DM Serif Display',serif; font-size:22px; color:var(--navy); margin-bottom:8px; }
-.placeholder-box p { font-size:14px; color:var(--muted); max-width:420px; margin:0 auto 1.5rem; line-height:1.7; }
-.badge-wip { display:inline-flex; align-items:center; gap:6px; background:#fff8e6; border:1px solid #f5d87a; color:#8a6200; border-radius:20px; font-size:12px; font-weight:600; padding:4px 14px; margin-bottom:1.25rem; }
-.feature-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:2rem; text-align:left; }
-.feature-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.125rem; }
-.feature-card .fc-icon { font-size:20px; margin-bottom:8px; }
-.feature-card h4 { font-size:13.5px; font-weight:600; color:var(--navy); margin-bottom:3px; }
-.feature-card p { font-size:12.5px; color:var(--muted); line-height:1.5; }
-@media(max-width:768px){ .sidebar{ transform:translateX(-100%); } .main{ margin-left:0; } }
-.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; margin-bottom:1.5rem; }
-.breadcrumb a { color:var(--blue-mid); text-decoration:none; }
-.breadcrumb a:hover { text-decoration:underline; }
-.sidebar-footer { padding:0.875rem 1rem 1rem; border-top:1px solid var(--border); flex-shrink:0; }
-.sidebar-user { display:flex; align-items:center; gap:9px; padding:6px 8px; border-radius:var(--radius); transition:background 0.12s; cursor:default; }
-.sidebar-user:hover { background:var(--bg); }
-.user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
-.user-role { font-size:11px; color:var(--muted); }
-.notif-btn { width:28px; height:28px; border-radius:7px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; margin-left:auto; flex-shrink:0; }
-.notif-btn:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
+/* ── Side panel ── */
+.side-panel{position:fixed;top:0;right:-390px;width:380px;height:100vh;background:var(--white);border-left:1px solid var(--border);z-index:200;transition:right .25s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column;box-shadow:-4px 0 24px rgba(0,0,0,.1)}
+.side-panel.open{right:0}
+.sp-header{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;position:sticky;top:0;background:var(--white);z-index:1}
+.sp-title{font-family:'DM Serif Display',serif;font-size:18px;color:var(--navy);line-height:1.3}
+.sp-close{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);flex-shrink:0}
+.sp-close:hover{background:var(--bg)}
+.sp-body{padding:1.25rem 1.5rem;flex:1}
+.sp-section{margin-bottom:1.25rem}
+.sp-lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.sp-val{font-size:14px;color:var(--text)}
+.sp-meta-row{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--slate);margin-bottom:7px}
+.sp-meta-row svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;flex-shrink:0;color:var(--muted)}
+.fill-bar{background:var(--bg);border:1px solid var(--border);border-radius:5px;height:8px;overflow:hidden;margin-top:5px}
+.fill-bar-inner{height:100%;border-radius:5px;transition:width .3s}
+.sp-tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:1rem}
+.sp-tab{padding:8px 14px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:color .12s}
+.sp-tab:hover{color:var(--navy)}
+.sp-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.sp-tab-panel{display:none}
+.sp-tab-panel.active{display:block}
+
+/* Registrations mini-table */
+.reg-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.reg-table th{padding:6px 8px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);text-align:left}
+.reg-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--slate)}
+.reg-table tr:last-child td{border-bottom:none}
+.r-av{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;flex-shrink:0;vertical-align:middle;margin-right:5px}
+
+/* Quota bars in panel */
+.quota-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:12.5px}
+.quota-bar-label{width:70px;flex-shrink:0;color:var(--slate)}
+.quota-bar-track{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.quota-bar-fill{height:100%;border-radius:4px}
+.quota-bar-pct{width:32px;font-size:11.5px;color:var(--muted);text-align:right}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-dot{width:6px;height:6px;border-radius:50%}
+.badge-active{background:var(--success-bg);color:var(--success)}.badge-active .badge-dot{background:var(--success)}
+.badge-past{background:#f0f0f0;color:#666}.badge-past .badge-dot{background:#999}
+.badge-upcoming{background:var(--blue-light);color:var(--blue)}.badge-upcoming .badge-dot{background:var(--blue-mid)}
+
+.sp-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap}
+
+/* ── New session modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,43,94,.35);z-index:500;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--radius-lg);max-width:600px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;overflow-y:auto}
+.modal-header{padding:1.25rem 1.5rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1}
+.modal-title{font-family:'DM Serif Display',serif;font-size:19px;color:var(--navy)}
+.modal-close{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-body{padding:1.25rem 1.5rem}
+.modal-footer{padding:.875rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:0;background:var(--white)}
+.field{margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--slate);margin-bottom:5px}
+.req{color:#c0392b;margin-left:2px}
+.hint{font-size:12px;color:var(--muted);margin-top:3px}
+.field input,.field select,.field textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+.field textarea{resize:vertical;min-height:72px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.875rem}
+@media(max-width:600px){.grid-2{grid-template-columns:1fr}}
+.conflict-alert{background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:var(--radius);padding:9px 13px;font-size:12.5px;color:var(--warning);display:none;align-items:center;gap:8px;margin-top:.5rem}
+
+/* ── Toast ── */
+.toast{position:fixed;top:20px;left:calc(var(--sidebar-w) + 50%);transform:translateX(-50%) translateY(-80px);background:var(--success);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:13.5px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
 </style>
 </head>
 <body>
+
 <aside class="sidebar">
-  <a class="sidebar-logo" href="experiment-list.html">
+  <a class="sidebar-logo" href="welcome.html">
     <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
     <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
   </a>
   <nav class="sidebar-nav">
-    <a class="nav-item" href="welcome.html" ><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
-    </a>
+    <a class="nav-item" href="welcome.html"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome</a>
     <span class="nav-label">Research</span>
-    <a class="nav-item" href="experiment-list.html" ><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
-    </a>
-    <a class="nav-item active" href="calendar.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
-    </a>
-    <a class="nav-item" href="multilab.html" ><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab
-      <span class="nav-soon">soon</span>
-    </a>
+    <a class="nav-item" href="experiment-list.html"><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments</a>
+    <a class="nav-item active" href="calendar.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar</a>
+    <a class="nav-item" href="multilab.html"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab</a>
     <span class="nav-label">Administration</span>
-    <a class="nav-item" href="subject-pool.html" ><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
-    </a>
-    <a class="nav-item" href="accounting.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting
-    </a>
-    <a class="nav-item" href="statistics.html" ><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Statistics
-    </a>
-    <a class="nav-item" href="users.html" ><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users
-    </a>
-    <a class="nav-item" href="mailing.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing
-    </a>
+    <a class="nav-item" href="subject-pool.html"><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool</a>
+    <a class="nav-item" href="accounting.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting</a>
+    <a class="nav-item" href="dashboard.html"><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Dashboard</a>
+    <a class="nav-item" href="users.html"><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users</a>
+    <a class="nav-item" href="mailing.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing</a>
+    <a class="nav-item" href="new-feature.html"><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span></a>
     <span class="nav-label">Help</span>
-    <a class="nav-item" href="https://explain.cnrs.fr" ><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
-    </a>
-    <a class="nav-item" href="contact.html" ><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact
-    </a>
+    <a class="nav-item" href="recruit.html"><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit</a>
+    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation</a>
+    <a class="nav-item" href="contact.html"><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact</a>
   </nav>
-
   <div class="sidebar-footer">
     <div class="sidebar-user">
       <div class="avatar">GB</div>
-      <div>
-        <div class="user-name">Gabriel Bayle</div>
-        <div class="user-role">Researcher · GATE</div>
-      </div>
-      <button class="notif-btn" title="Notifications">
-        <svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-          <path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/>
-          <path d="M6 12.5a1.5 1.5 0 003 0"/>
-        </svg>
-      </button>
+      <div><div class="user-name">Gabriel Bayle</div><div class="user-role">Lab Manager · GATE</div></div>
+      <button class="notif-btn"><svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg></button>
     </div>
   </div>
-  </aside>
+</aside>
+
 <div class="main">
-<div class="content">
-    <div class="page-header">
-      <h1>Calendar</h1>
-      <p>View and manage all scheduled experiment sessions across your laboratories. Export to your calendar app.</p>
+<div class="cal-chrome">
+
+  <div class="cal-topbar">
+    <div class="cal-nav">
+      <button class="nav-btn" onclick="changeMonth(-1)"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 2L4 6l4 4"/></svg></button>
+      <div class="cal-month" id="cal-month">—</div>
+      <button class="nav-btn" onclick="changeMonth(1)"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg></button>
+      <button class="today-btn" onclick="goToday()">Today</button>
     </div>
-    <div class="placeholder-box">
-      <div class="badge-wip">⚙ Work in progress</div>
-      <div class="placeholder-icon">📅</div>
-      <h2>Sessions calendar</h2>
-      <p>View and manage all scheduled experiment sessions across your laboratories. Export to your calendar app.</p>
-      <div class="feature-grid">
-    <div class="feature-card"><div class="fc-icon">📆</div><h4>Session scheduling</h4><p>Create and manage experiment sessions with date, time, location, and capacity.</p></div>
-    <div class="feature-card"><div class="fc-icon">🔔</div><h4>Reminders</h4><p>Automatic email reminders sent to participants before their session.</p></div>
-    <div class="feature-card"><div class="fc-icon">📤</div><h4>Export</h4><p>Sync with Google Calendar, Outlook, or export as .ics file.</p></div>
-    <div class="feature-card"><div class="fc-icon">👁</div><h4>Multi-lab view</h4><p>See sessions across all laboratories you collaborate with.</p></div>
+    <div class="cal-actions">
+      <button class="btn btn-ghost" onclick="exportICal()">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>
+        Export .ics
+      </button>
+      <button class="btn btn-primary" onclick="openNewSession(null)">+ New session</button>
+    </div>
   </div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="cal-wrap">
+    <div class="cal-weekdays">
+      <div class="cal-weekday">Mon</div><div class="cal-weekday">Tue</div><div class="cal-weekday">Wed</div>
+      <div class="cal-weekday">Thu</div><div class="cal-weekday">Fri</div><div class="cal-weekday">Sat</div><div class="cal-weekday">Sun</div>
+    </div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ── Side panel ── -->
+<div class="side-panel" id="side-panel">
+  <div class="sp-header">
+    <div>
+      <div class="sp-title" id="sp-date">—</div>
+      <div style="margin-top:4px;display:flex;align-items:center;gap:8px" id="sp-badges"></div>
+    </div>
+    <button class="sp-close" onclick="closePanel()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+  </div>
+  <div class="sp-body">
+    <div class="sp-meta-row" id="sp-exp" style="font-weight:500;font-size:14px;margin-bottom:1rem"></div>
+    <div class="sp-meta-row" id="sp-time"></div>
+    <div class="sp-meta-row" id="sp-loc"></div>
+    <div class="sp-meta-row" id="sp-dur"></div>
+    <div id="sp-registrations" style="margin-top:1.25rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="sp-lbl" style="margin:0">Registrations</div>
+        <span id="sp-fill-text" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <div class="fill-bar"><div class="fill-bar-inner" id="sp-fill-bar"></div></div>
+      <div id="sp-waitlist-row" style="font-size:12px;color:var(--warning);margin-top:4px;display:none"></div>
+    </div>
+    <div class="sp-tabs" style="margin-top:1.25rem">
+      <button class="sp-tab active" onclick="spTab('subs',this)">Registrations</button>
+      <button class="sp-tab" onclick="spTab('quotas',this)">Quotas</button>
+      <button class="sp-tab" onclick="spTab('notes',this)">Notes</button>
+    </div>
+    <div class="sp-tab-panel active" id="spt-subs">
+      <div id="sp-reg-table"></div>
+    </div>
+    <div class="sp-tab-panel" id="spt-quotas">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:.75rem">Target quota: 50% F / 50% M</div>
+      <div class="quota-bar-row"><span class="quota-bar-label">Female</span><div class="quota-bar-track"><div class="quota-bar-fill" style="background:var(--blue-mid)" id="qbf"></div></div><span class="quota-bar-pct" id="qpf"></span></div>
+      <div class="quota-bar-row"><span class="quota-bar-label">Male</span><div class="quota-bar-track"><div class="quota-bar-fill" style="background:#3b6fd4aa" id="qbm"></div></div><span class="quota-bar-pct" id="qpm"></span></div>
+    </div>
+    <div class="sp-tab-panel" id="spt-notes">
+      <div id="sp-notes-text" style="font-size:13.5px;color:var(--slate);line-height:1.7"></div>
+    </div>
+  </div>
+  <div class="sp-footer">
+    <a id="sp-open-session" class="btn btn-primary" href="#" style="flex:1;justify-content:center">Open session</a>
+    <a id="sp-open-exp" class="btn btn-ghost" href="#">Open experiment</a>
+    <button class="btn btn-ghost" onclick="duplicateSess()">Duplicate</button>
+  </div>
+</div>
+
+<!-- ── New session modal ── -->
+<div class="modal-overlay" id="sess-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="sm-title">New session</div>
+      <button class="modal-close" onclick="closeModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Experiment <span class="req">*</span></label>
+        <select id="sm-exp">
+          <option value="">— Select an experiment —</option>
+          <option value="a1">trust-game-2025-q1</option>
+          <option value="a2">risk-elicitation-online</option>
+          <option value="a3">coordination-multilab</option>
+          <option value="a4">social-norms-survey</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="field" id="sm-date-field">
+          <label>Date <span class="req">*</span></label>
+          <input type="date" id="sm-date" onchange="checkConflict()"/>
+          <div class="conflict-alert" id="sm-conflict">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1.5L14.5 13H1.5L8 1.5z"/><path d="M8 6v4M8 11.5v.5"/></svg>
+            Conflict: another session is already scheduled at this time.
+          </div>
+        </div>
+        <div class="field">
+          <label>Start time <span class="req">*</span></label>
+          <input type="time" id="sm-time" value="09:00" onchange="checkConflict()"/>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Location</label>
+          <input type="text" id="sm-location" placeholder="e.g. Room B204, GATE"/>
+        </div>
+        <div class="field">
+          <label>Duration</label>
+          <input type="text" id="sm-duration" placeholder="e.g. 90 min"/>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Participant slots <span class="req">*</span></label>
+          <input type="number" id="sm-slots" placeholder="24" min="1"/>
+        </div>
+        <div class="field">
+          <label>Reserves</label>
+          <input type="number" id="sm-reserves" placeholder="4" min="0"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Internal notes</label>
+        <textarea id="sm-notes" placeholder="Experimental conditions, instructions…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="createSession()">Create session</button>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Experiments + colours ──────────────────────────────────────────────────
+const EXPS = {
+  a1:{name:'trust-game-2025-q1',    color:'#3b6fd4', bg:'#e8eff9'},
+  a2:{name:'risk-elicitation-online',color:'#1a7a4a', bg:'#e6f4ed'},
+  a3:{name:'coordination-multilab', color:'#8a3fc0', bg:'#f3e8ff'},
+  a4:{name:'social-norms-survey',   color:'#b06000', bg:'#fff3e0'},
+};
+
+// ── Session store (localStorage) ──────────────────────────────────────────
+const SKEY = 'explain_cal_sessions';
+function getSessions(){ try{return JSON.parse(localStorage.getItem(SKEY))||[]}catch{return[]} }
+function saveSessions(list){ localStorage.setItem(SKEY,JSON.stringify(list)) }
+function addSession(s){ const list=getSessions(); list.push({id:'s'+Date.now(),...s}); saveSessions(list); return list[list.length-1]; }
+
+function seedSessions(){
+  if(getSessions().length>0) return;
+  const today = new Date();
+  const y=today.getFullYear(), m=today.getMonth();
+  saveSessions([
+    {id:'s1',expId:'a1',date:`${y}-${String(m+1).padStart(2,'0')}-05`,time:'09:00',duration:'90 min',location:'Room B204, GATE',slots:24,reserves:4,enrolled:18,waitlist:2,status:'active',notes:'Condition A',noshows:0,
+     participants:[{name:'Léa F.',initials:'LF',color:'#3b6fd4',gender:'F',status:'registered'},{name:'Thomas M.',initials:'TM',color:'#1a7a4a',gender:'M',status:'registered'},{name:'Amina D.',initials:'AD',color:'#8a3fc0',gender:'F',status:'registered'},{name:'Hugo P.',initials:'HP',color:'#b06000',gender:'M',status:'reserve'}]},
+    {id:'s2',expId:'a2',date:`${y}-${String(m+1).padStart(2,'0')}-12`,time:'10:00',duration:'45 min',location:'Online',slots:80,reserves:0,enrolled:60,waitlist:5,status:'active',notes:'Online cohort',noshows:0,
+     participants:[{name:'Clara R.',initials:'CR',color:'#c0392b',gender:'F',status:'registered'},{name:'Julien M.',initials:'JM',color:'#1a4fa0',gender:'M',status:'registered'},{name:'Sophie B.',initials:'SB',color:'#6b46c1',gender:'F',status:'registered'}]},
+    {id:'s3',expId:'a3',date:`${y}-${String(m+1).padStart(2,'0')}-19`,time:'14:00',duration:'120 min',location:'Room A101, GATE',slots:30,reserves:2,enrolled:8,waitlist:0,status:'upcoming',notes:'Multi-lab pilot round 2',noshows:0,participants:[]},
+    {id:'s4',expId:'a1',date:`${y}-${String(m).padStart(2,'0')}-15`,time:'09:00',duration:'90 min',location:'Room B102, GATE',slots:20,reserves:2,enrolled:20,waitlist:0,status:'past',notes:'',noshows:1,
+     participants:[{name:'Léa F.',initials:'LF',color:'#3b6fd4',gender:'F',status:'attended'},{name:'Thomas M.',initials:'TM',color:'#1a7a4a',gender:'M',status:'attended'},{name:'Amina D.',initials:'AD',color:'#8a3fc0',gender:'F',status:'noshow'}]},
+    {id:'s5',expId:'a4',date:`${y}-${String(m+2).padStart(2,'0')}-03`,time:'13:00',duration:'30 min',location:'Online',slots:150,reserves:0,enrolled:0,waitlist:0,status:'upcoming',notes:'',noshows:0,participants:[]},
+  ]);
+}
+seedSessions();
+
+// ── Calendar state ─────────────────────────────────────────────────────────
+const todayD = new Date();
+let current  = new Date(todayD.getFullYear(), todayD.getMonth(), 1);
+let openSessId = null;
+
+function changeMonth(d){ current.setMonth(current.getMonth()+d); render(); }
+function goToday(){ current=new Date(todayD.getFullYear(),todayD.getMonth(),1); render(); }
+
+function render(){
+  const y=current.getFullYear(), m=current.getMonth();
+  document.getElementById('cal-month').textContent=new Date(y,m,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+
+  let dow=new Date(y,m,1).getDay(); if(dow===0)dow=7;
+  const start=new Date(y,m,1); start.setDate(start.getDate()-(dow-1));
+
+  const sessions=getSessions();
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+
+  for(let w=0;w<6;w++){
+    for(let d=0;d<7;d++){
+      const date=new Date(start); date.setDate(start.getDate()+w*7+d);
+      const isToday=date.toDateString()===todayD.toDateString();
+      const isOther=date.getMonth()!==m;
+      const ds=toISO(date);
+      const daySess=sessions.filter(s=>s.date===ds);
+
+      const cell=document.createElement('div');
+      cell.className='cal-cell'+(isOther?' other-month':'')+(isToday?' today':'');
+
+      const dn=document.createElement('div');
+      dn.className='day-num'; dn.textContent=date.getDate(); cell.appendChild(dn);
+
+      // Click empty area → open new session modal with pre-filled date
+      cell.addEventListener('click', e=>{
+        if(e.target===cell||e.target===dn) openNewSession(ds);
+      });
+
+      const show=daySess.slice(0,3);
+      show.forEach(s=>{
+        const exp=EXPS[s.expId]||{color:'#999',bg:'#eee',name:'Unknown'};
+        const chip=document.createElement('div');
+        chip.className='session-chip'+(s.status==='past'?' chip-past':'');
+        chip.style.background=exp.bg; chip.style.color=exp.color;
+        chip.innerHTML=`<div class="chip-dot" style="background:${exp.color}"></div>${s.time} ${exp.name.split('-')[0]}`;
+        chip.onclick=e=>{ e.stopPropagation(); openPanel(s.id); };
+        cell.appendChild(chip);
+      });
+      if(daySess.length>3){
+        const more=document.createElement('div');
+        more.className='more-chip'; more.textContent=`+${daySess.length-3} more`;
+        more.onclick=e=>{ e.stopPropagation(); openPanel(daySess[3].id); };
+        cell.appendChild(more);
+      }
+
+      grid.appendChild(cell);
+    }
+  }
+  renderLegend();
+}
+
+function toISO(d){ return d.toISOString().slice(0,10); }
+
+function renderLegend(){
+  const legend=document.getElementById('legend');
+  const statuses=[{l:'Past',c:'#bbb'},{l:'Active',c:'var(--success)'},{l:'Upcoming',c:'var(--blue-mid)'}];
+  let html=statuses.map(s=>`<div class="legend-item"><div class="legend-dot" style="background:${s.c}"></div>${s.l}</div>`).join('');
+  html+='<span style="width:1px;height:14px;background:var(--border);display:inline-block;margin:0 4px"></span>';
+  html+=Object.values(EXPS).map(e=>`<div class="legend-item"><div class="legend-dot" style="background:${e.color}"></div>${e.name}</div>`).join('');
+  legend.innerHTML=html;
+}
+
+// ── Side panel ─────────────────────────────────────────────────────────────
+function openPanel(sid){
+  const s=getSessions().find(x=>x.id===sid); if(!s) return;
+  openSessId=sid;
+  const exp=EXPS[s.expId]||{color:'#999',name:'Unknown'};
+  const d=new Date(s.date+'T00:00');
+  const dateStr=d.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+  document.getElementById('sp-date').textContent=dateStr;
+  document.getElementById('sp-badges').innerHTML=statusBadge(s.status)+` <span style="font-size:12px;color:var(--muted)">${exp.name}</span>`;
+  document.getElementById('sp-exp').innerHTML=`<svg viewBox="0 0 16 16" style="width:13px;height:13px;stroke:${exp.color};fill:none;stroke-width:1.6;stroke-linecap:round"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/></svg><span style="color:${exp.color};font-weight:600">${exp.name}</span>`;
+  document.getElementById('sp-time').innerHTML=`<svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg>${s.time}${s.duration?' · '+s.duration:''}`;
+  document.getElementById('sp-loc').innerHTML=`<svg viewBox="0 0 16 16"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" stroke-linejoin="round"/><circle cx="8" cy="6" r="1.5"/></svg>${s.location||'No location'}`;
+  document.getElementById('sp-dur').innerHTML=`<svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>${s.enrolled||0} / ${s.slots} registered${s.reserves?` · ${s.reserves} reserves`:''}`;
+
+  // Fill bar
+  const pct=s.slots?Math.round((s.enrolled||0)/s.slots*100):0;
+  document.getElementById('sp-fill-text').textContent=`${s.enrolled||0} / ${s.slots}`;
+  document.getElementById('sp-fill-bar').style.width=pct+'%';
+  document.getElementById('sp-fill-bar').style.background=pct>=100?'var(--success)':pct>=70?'var(--blue-mid)':'#e08020';
+  const wl=document.getElementById('sp-waitlist-row');
+  if(s.waitlist>0){ wl.style.display=''; wl.textContent=`⚠ ${s.waitlist} on waitlist`; }else wl.style.display='none';
+
+  // Registrations tab
+  const parts=s.participants||[];
+  const regEl=document.getElementById('sp-reg-table');
+  if(!parts.length){ regEl.innerHTML='<div style="font-size:13px;color:var(--muted);padding:8px 0">No registrations yet.</div>'; }
+  else {
+    regEl.innerHTML=`<table class="reg-table"><thead><tr><th>Participant</th><th>Gender</th><th>Status</th></tr></thead><tbody>`+
+    parts.map(p=>`<tr><td><span class="r-av" style="background:${p.color}">${p.initials}</span>${p.name}</td><td>${p.gender}</td><td><span style="font-size:11.5px;color:${p.status==='noshow'?'var(--danger)':p.status==='attended'?'var(--success)':'var(--muted)'}">${p.status}</span></td></tr>`).join('')+
+    '</tbody></table>';
+  }
+
+  // Quotas tab
+  const female=parts.filter(p=>p.gender==='F').length;
+  const total=parts.length||1;
+  const fp=Math.round(female/total*100), mp=100-fp;
+  document.getElementById('qbf').style.width=fp+'%';
+  document.getElementById('qbm').style.width=mp+'%';
+  document.getElementById('qpf').textContent=fp+'%';
+  document.getElementById('qpm').textContent=mp+'%';
+
+  // Notes tab
+  document.getElementById('sp-notes-text').textContent=s.notes||'No internal notes.';
+
+  // Links
+  document.getElementById('sp-open-session').href=`session-detail.html?id=${s.expId}&sid=${s.id}&tab=${s.status==='past'?'registrations':'overview'}`;
+  document.getElementById('sp-open-exp').href=`experiment-detail.html?id=${s.expId}`;
+
+  // Reset to first tab
+  spTab('subs', document.querySelector('.sp-tab'));
+
+  document.getElementById('side-panel').classList.add('open');
+}
+
+function spTab(name, btn){
+  document.querySelectorAll('.sp-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.sp-tab-panel').forEach(p=>p.classList.remove('active'));
+  if(btn) btn.classList.add('active'); else document.querySelectorAll('.sp-tab')[0].classList.add('active');
+  document.getElementById('spt-'+name).classList.add('active');
+}
+
+function closePanel(){ document.getElementById('side-panel').classList.remove('open'); openSessId=null; }
+
+function statusBadge(s){
+  const m={past:'badge-past Past',active:'badge-active Active',upcoming:'badge-upcoming Upcoming'};
+  const [cls,lbl]=(m[s]||'badge-past —').split(' ');
+  return `<span class="badge ${cls}"><span class="badge-dot"></span>${lbl}</span>`;
+}
+
+function duplicateSess(){
+  const s=getSessions().find(x=>x.id===openSessId); if(!s) return;
+  openNewSession(null, s);
+  closePanel();
+}
+
+// ── New session modal ──────────────────────────────────────────────────────
+let prefillDate=null;
+function openNewSession(date, dup=null){
+  prefillDate=date;
+  document.getElementById('sm-title').textContent=dup?'Duplicate session':'New session';
+  document.getElementById('sm-exp').value=dup?.expId||'';
+  document.getElementById('sm-date').value=date||'';
+  document.getElementById('sm-time').value=dup?'':( date?'09:00':'09:00');
+  document.getElementById('sm-location').value=dup?.location||'';
+  document.getElementById('sm-duration').value=dup?.duration||'';
+  document.getElementById('sm-slots').value=dup?.slots||'';
+  document.getElementById('sm-reserves').value=dup?.reserves||'';
+  document.getElementById('sm-notes').value=dup?.notes||'';
+  document.getElementById('sm-conflict').style.display='none';
+  document.getElementById('sess-modal').classList.add('open');
+}
+
+function checkConflict(){
+  const date=document.getElementById('sm-date').value;
+  const time=document.getElementById('sm-time').value;
+  const existing=getSessions().find(s=>s.date===date&&s.time===time&&s.location&&!s.location.toLowerCase().includes('online'));
+  document.getElementById('sm-conflict').style.display=existing?'flex':'none';
+}
+
+function createSession(){
+  const expId=document.getElementById('sm-exp').value;
+  const date =document.getElementById('sm-date').value;
+  const time =document.getElementById('sm-time').value;
+  const slots=parseInt(document.getElementById('sm-slots').value)||0;
+  if(!expId||!date||!time||!slots){ showToast('Please fill required fields',true); return; }
+  const s=addSession({
+    expId, date, time,
+    location: document.getElementById('sm-location').value.trim(),
+    duration: document.getElementById('sm-duration').value.trim(),
+    slots, reserves: parseInt(document.getElementById('sm-reserves').value)||0,
+    notes: document.getElementById('sm-notes').value.trim(),
+    enrolled:0, waitlist:0, status:'upcoming', noshows:0, participants:[]
+  });
+  closeModal();
+  // Navigate calendar to session's month
+  const d=new Date(date+'T00:00');
+  current=new Date(d.getFullYear(),d.getMonth(),1);
+  render();
+  showToast('Session created');
+  setTimeout(()=>openPanel(s.id), 200);
+}
+
+function closeModal(){ document.getElementById('sess-modal').classList.remove('open'); }
+document.getElementById('sess-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget)closeModal(); });
+
+function exportICal(){ showToast('Exporting .ics calendar…'); }
+
+let tt;
+function showToast(msg,err){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.style.background=err?'#c0392b':'var(--success)';
+  t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+render();
+</script>
 </body>
 </html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EXPLAIN — Contact</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--brand:#1a4fa0;--brand-light:#e8eff9;--brand-mid:#3b6fd4;--brand-dark:#0d2b5e;--accent:#f59e0b;--accent-light:#fff8e6;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--white:#ffffff;--text:#111827;--radius:12px;--radius-lg:18px;--nav-h:64px}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:16px;line-height:1.6}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:500;transition:color .15s;cursor:pointer;background:none;border:none;font-family:inherit;position:relative}
+.bn-item:hover{color:var(--brand)}
+.bn-item.active{color:var(--brand)}
+.bn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.bn-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item.active .bn-icon svg{stroke:var(--brand)}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+.page{min-height:100vh;padding-bottom:calc(var(--nav-h) + 16px)}
+.page-content{max-width:680px;margin:0 auto;padding:0 16px}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.page-header-inner{max-width:680px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.page-header-title{font-size:17px;font-weight:600;color:var(--text)}
+.logo-pill{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:28px;height:28px;background:var(--brand-dark);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-text{font-family:'DM Serif Display',serif;font-size:17px;color:var(--brand-dark)}
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden}
+.card-pad{padding:20px}
+.card+.card{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-brand{background:var(--brand);color:#fff}
+.btn-brand:hover{background:var(--brand-dark)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn-outline:hover{background:var(--brand-light)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(.9)}
+.btn-full{width:100%}
+.btn-sm{padding:8px 16px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,111,212,.12)}
+.field textarea{resize:vertical;min-height:100px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.required{color:var(--red);margin-left:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.chip-blue{background:var(--brand-light);color:var(--brand)}
+.chip-green{background:var(--green-light);color:var(--green)}
+.chip-amber{background:var(--accent-light);color:#92400e}
+.chip-red{background:var(--red-light);color:var(--red)}
+.chip-grey{background:#f3f4f6;color:var(--muted)}
+.chip-dot{width:6px;height:6px;border-radius:50%}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px}
+.toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(80px);background:#111827;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.lab-info-card{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;border-radius:var(--radius-lg);padding:22px 20px;margin-bottom:20px}
+.lab-info-name{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:4px}
+.lab-info-sub{font-size:14px;opacity:.8}
+.lab-info-contact{margin-top:14px;font-size:13.5px;opacity:.85}
+.contact-option{display:flex;align-items:center;gap:14px;padding:16px;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;text-decoration:none;color:inherit;transition:border-color .15s}
+.contact-option:hover{border-color:var(--brand-mid)}
+.co-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.co-title{font-size:15px;font-weight:600;margin-bottom:2px}
+.co-sub{font-size:13px;color:var(--muted)}
+</style></head><body>
+<div class="page-header"><div class="page-header-inner"><div class="page-header-title">Contact</div></div></div>
+<div class="page"><div class="page-content" style="padding-top:20px">
+<div class="lab-info-card">
+  <div class="lab-info-name">GATE · CNRS · Lyon</div>
+  <div class="lab-info-sub">Groupe d'Analyse et de Théorie Économique</div>
+  <div class="lab-info-contact">📍 93 Chemin des Mouilles, 69130 Écully<br>📧 gate-subjects@cnrs.fr</div>
+</div>
+
+<div class="section-title">Contact options</div>
+
+<div class="contact-option" onclick="openForm()">
+  <div class="co-icon" style="background:var(--brand-light)">✉️</div>
+  <div><div class="co-title">Send a message</div><div class="co-sub">We reply within 2 working days</div></div>
+</div>
+
+<a class="contact-option" href="mailto:gate-subjects@cnrs.fr">
+  <div class="co-icon" style="background:#fef3c7">📬</div>
+  <div><div class="co-title">Email directly</div><div class="co-sub">gate-subjects@cnrs.fr</div></div>
+</a>
+
+<div id="contact-form" style="display:none;margin-top:8px">
+  <div class="card card-pad">
+    <div class="field"><label>Subject <span class="required">*</span></label>
+      <select id="cf-subject">
+        <option value="">— Select a topic —</option>
+        <option>Question about a session</option>
+        <option>Payment issue</option>
+        <option>Account or profile</option>
+        <option>Technical problem</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="field"><label>Message <span class="required">*</span></label>
+      <textarea id="cf-message" placeholder="Describe your question or issue…" rows="5"></textarea>
+    </div>
+    <button class="btn btn-brand btn-full" onclick="sendMessage()">Send message</button>
+  </div>
+</div>
+
+<div class="section-title" style="margin-top:24px">FAQ</div>
+<div class="card">
+  <div style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="toggleFaq(this)">
+    <div style="font-size:15px;font-weight:500">How do I cancel a registration?</div>
+    <div style="font-size:13.5px;color:var(--muted);margin-top:4px;display:none">Go to Sessions → Your registrations and tap "Cancel". Please cancel at least 24h in advance.</div>
+  </div>
+  <div style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer" onclick="toggleFaq(this)">
+    <div style="font-size:15px;font-weight:500">When will I receive my payment?</div>
+    <div style="font-size:13.5px;color:var(--muted);margin-top:4px;display:none">Payments are processed within 2 weeks of the session date by the lab's accounting team.</div>
+  </div>
+  <div style="padding:14px 16px;cursor:pointer" onclick="toggleFaq(this)">
+    <div style="font-size:15px;font-weight:500">Can I change my lab affiliation?</div>
+    <div style="font-size:13.5px;color:var(--muted);margin-top:4px;display:none">Yes — contact your current lab manager who can transfer your account to another lab.</div>
+  </div>
+</div></div></div>
+<nav class="bottom-nav">
+  <a class="bn-item" href="subj-home.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg></div>Home</a>
+  <a class="bn-item" href="subj-invitations.html"><div class="bn-badge">2</div><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg></div>Invitations</a>
+  <a class="bn-item" href="subj-calendar.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg></div>Sessions</a>
+  <a class="bn-item" href="subj-history.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg></div>History</a>
+  <a class="bn-item active" href="subj-profile.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>Profile</a>
+</nav><div class="toast" id="toast"></div>
+<script>let _tt;function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'');t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show')},2800)}
+function openForm(){var f=document.getElementById('contact-form');f.style.display=f.style.display==='none'?'block':'none'}
+function sendMessage(){
+  var subj=document.getElementById('cf-subject').value;
+  var msg=document.getElementById('cf-message').value;
+  if(!subj||!msg){showToast('Please fill all fields','error');return;}
+  document.getElementById('cf-message').value='';
+  document.getElementById('cf-subject').value='';
+  document.getElementById('contact-form').style.display='none';
+  showToast('Message sent — we will reply within 2 days','success');
+}
+function toggleFaq(el){var detail=el.querySelector('div:last-child');var open=detail.style.display!=='none';el.parentElement.querySelectorAll('div:last-child').forEach(function(d){d.style.display='none'});if(!open)detail.style.display='block'}</script></body></html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EXPLAIN — Invitations</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--brand:#1a4fa0;--brand-light:#e8eff9;--brand-mid:#3b6fd4;--brand-dark:#0d2b5e;--accent:#f59e0b;--accent-light:#fff8e6;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--white:#ffffff;--text:#111827;--radius:12px;--radius-lg:18px;--nav-h:64px}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:16px;line-height:1.6}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:500;transition:color .15s;cursor:pointer;background:none;border:none;font-family:inherit;position:relative}
+.bn-item:hover{color:var(--brand)}
+.bn-item.active{color:var(--brand)}
+.bn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.bn-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item.active .bn-icon svg{stroke:var(--brand)}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+.page{min-height:100vh;padding-bottom:calc(var(--nav-h) + 16px)}
+.page-content{max-width:680px;margin:0 auto;padding:0 16px}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.page-header-inner{max-width:680px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.page-header-title{font-size:17px;font-weight:600;color:var(--text)}
+.logo-pill{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:28px;height:28px;background:var(--brand-dark);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-text{font-family:'DM Serif Display',serif;font-size:17px;color:var(--brand-dark)}
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden}
+.card-pad{padding:20px}
+.card+.card{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-brand{background:var(--brand);color:#fff}
+.btn-brand:hover{background:var(--brand-dark)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn-outline:hover{background:var(--brand-light)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(.9)}
+.btn-full{width:100%}
+.btn-sm{padding:8px 16px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,111,212,.12)}
+.field textarea{resize:vertical;min-height:100px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.required{color:var(--red);margin-left:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.chip-blue{background:var(--brand-light);color:var(--brand)}
+.chip-green{background:var(--green-light);color:var(--green)}
+.chip-amber{background:var(--accent-light);color:#92400e}
+.chip-red{background:var(--red-light);color:var(--red)}
+.chip-grey{background:#f3f4f6;color:var(--muted)}
+.chip-dot{width:6px;height:6px;border-radius:50%}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px}
+.toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(80px);background:#111827;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.inv-full{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);margin-bottom:14px;overflow:hidden}
+.inv-full-header{padding:18px 18px 14px;border-bottom:1px solid var(--border)}
+.inv-exp-name{font-size:13px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.inv-full-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text);margin-bottom:4px}
+.inv-date-big{font-size:15px;font-weight:600;color:var(--text)}
+.inv-full-body{padding:16px 18px}
+.info-row{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin-bottom:10px}
+.info-row svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;flex-shrink:0;color:var(--brand)}
+.inv-instructions{background:var(--bg);border-radius:var(--radius);padding:14px;font-size:13.5px;color:#374151;line-height:1.7;margin-bottom:14px}
+.inv-full-footer{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:10px}
+.deadline{font-size:12.5px;color:var(--muted);padding:10px 0;text-align:center}
+.empty-state{text-align:center;padding:60px 20px}
+.empty-icon{font-size:48px;margin-bottom:16px}
+.empty-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:14px;color:var(--muted)}
+.filter-tabs{display:flex;gap:8px;margin-bottom:20px;overflow-x:auto;padding-bottom:2px}
+.ftab{padding:7px 16px;border-radius:20px;font-size:13.5px;font-weight:500;border:1.5px solid var(--border);background:var(--white);cursor:pointer;color:var(--muted);white-space:nowrap;font-family:inherit;transition:all .15s}
+.ftab.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.registered-banner{background:var(--green-light);border:1px solid #86efac;border-radius:var(--radius);padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:14px;color:var(--green);font-weight:500;margin-bottom:14px}
+</style></head><body>
+<div class="page-header"><div class="page-header-inner"><div class="page-header-title">Invitations</div></div></div>
+<div class="page"><div class="page-content" style="padding-top:20px">
+<div class="filter-tabs">
+  <button class="ftab active" onclick="filterInv('all',this)">All (2)</button>
+  <button class="ftab" onclick="filterInv('pending',this)">Pending (2)</button>
+  <button class="ftab" onclick="filterInv('registered',this)">Registered (0)</button>
+</div>
+
+<div class="inv-full" id="inv-1">
+  <div class="inv-full-header">
+    <div class="inv-exp-name">🔬 Economics experiment</div>
+    <div class="inv-full-title">Decision-making study</div>
+    <div class="inv-date-big">Thursday, 19 June 2025 at 09:00</div>
+  </div>
+  <div class="inv-full-body">
+    <div class="info-row"><svg viewBox="0 0 16 16"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" stroke-linejoin="round"/><circle cx="8" cy="6" r="1.5"/></svg>Room B204, GATE · CNRS · Lyon</div>
+    <div class="info-row"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg>Approximately 90 minutes</div>
+    <div class="info-row"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg>Show-up fee + performance bonus (avg. 18 €)</div>
+    <div class="inv-instructions">Please bring your student card. The experiment involves economic decisions and will last approximately 90 minutes. No prior knowledge required.</div>
+    <div class="deadline">⏰ Registration closes <strong>17 June 2025 at 18:00</strong></div>
+  </div>
+  <div class="inv-full-footer">
+    <button class="btn btn-green btn-full" onclick="registerInv('inv-1',this)">Register for this session</button>
+  </div>
+</div>
+
+<div class="inv-full" id="inv-2">
+  <div class="inv-full-header">
+    <div class="inv-exp-name">💻 Online survey</div>
+    <div class="inv-full-title">Social preferences survey</div>
+    <div class="inv-date-big">Tuesday, 24 June 2025 — online</div>
+  </div>
+  <div class="inv-full-body">
+    <div class="info-row"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="10" rx="1.5"/><path d="M5 13.5h6M8 13v1"/></svg>Online — accessible from home</div>
+    <div class="info-row"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg>Approximately 30 minutes</div>
+    <div class="info-row"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg>5–10 € depending on decisions</div>
+    <div class="inv-instructions">This is an online experiment. You will receive a link by email on the session day. Complete in one sitting from a computer (not phone).</div>
+    <div class="deadline">⏰ Registration closes <strong>22 June 2025 at 23:59</strong></div>
+  </div>
+  <div class="inv-full-footer">
+    <button class="btn btn-green btn-full" onclick="registerInv('inv-2',this)">Register for this session</button>
+  </div>
+</div></div></div>
+<nav class="bottom-nav">
+  <a class="bn-item" href="subj-home.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg></div>Home</a>
+  <a class="bn-item active" href="subj-invitations.html"><div class="bn-badge">2</div><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg></div>Invitations</a>
+  <a class="bn-item" href="subj-calendar.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg></div>Sessions</a>
+  <a class="bn-item" href="subj-history.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg></div>History</a>
+  <a class="bn-item" href="subj-profile.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>Profile</a>
+</nav><div class="toast" id="toast"></div>
+<script>let _tt;function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'');t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show')},2800)}
+function filterInv(f,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');showToast('Filter: '+f)}
+function registerInv(id,btn){
+  var card=document.getElementById(id);
+  btn.disabled=true; btn.textContent='Registered ✓'; btn.className='btn btn-ghost btn-full';
+  var banner=document.createElement('div');
+  banner.className='registered-banner';
+  banner.innerHTML='<svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M5 8l2 2 4-4"/></svg>You are registered! A confirmation email has been sent.';
+  card.querySelector('.inv-full-body').prepend(banner);
+  showToast('Registration confirmed!','success');
+}</script></body></html>

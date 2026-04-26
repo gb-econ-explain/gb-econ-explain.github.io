@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>EXPLAIN — Join the participant pool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--brand:#1a4fa0;--brand-light:#e8eff9;--brand-mid:#3b6fd4;--brand-dark:#0d2b5e;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--white:#ffffff;--text:#111827;--radius:12px;--radius-lg:18px}
+html,body{min-height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:16px;line-height:1.6}
+
+/* ── Landing hero ── */
+.hero{background:linear-gradient(145deg,var(--brand-dark) 0%,#1e3a8a 40%,#2563eb 100%);min-height:100vh;display:flex;flex-direction:column;padding:0}
+.hero-nav{display:flex;align-items:center;justify-content:space-between;padding:20px 24px}
+.logo-pill{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.logo-icon svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-text{font-family:'DM Serif Display',serif;font-size:20px;color:#fff}
+.hero-signin{font-size:14px;font-weight:500;color:rgba(255,255,255,.8);text-decoration:none;padding:8px 16px;border:1px solid rgba(255,255,255,.3);border-radius:20px}
+.hero-signin:hover{background:rgba(255,255,255,.1)}
+
+.hero-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px 60px;text-align:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px;backdrop-filter:blur(6px)}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(32px,7vw,52px);color:#fff;line-height:1.2;margin-bottom:16px;max-width:600px}
+.hero-title em{font-style:italic;color:#93c5fd}
+.hero-sub{font-size:17px;color:rgba(255,255,255,.75);max-width:480px;margin:0 auto 40px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-hero{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:var(--radius-lg);font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;border:none;text-decoration:none;transition:all .15s}
+.btn-white{background:#fff;color:var(--brand-dark)}
+.btn-white:hover{background:#e8eff9}
+.btn-clear{background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.4);backdrop-filter:blur(6px)}
+.btn-clear:hover{background:rgba(255,255,255,.25)}
+
+.hero-perks{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;padding:0 24px 40px}
+.perk{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.8);font-size:14px}
+.perk-icon{font-size:18px}
+
+/* ── How it works ── */
+.how-section{background:var(--white);padding:64px 24px}
+.how-inner{max-width:680px;margin:0 auto}
+.how-title{font-family:'DM Serif Display',serif;font-size:32px;color:var(--text);text-align:center;margin-bottom:8px}
+.how-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:48px}
+.steps-list{display:flex;flex-direction:column;gap:24px}
+.step-item{display:flex;gap:20px;align-items:flex-start}
+.step-num{width:42px;height:42px;border-radius:12px;background:var(--brand-light);color:var(--brand);font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:17px;font-weight:600;margin-bottom:4px}
+.step-desc{font-size:14.5px;color:var(--muted);line-height:1.6}
+
+/* ── Form section ── */
+.form-section{background:var(--bg);padding:64px 24px}
+.form-inner{max-width:600px;margin:0 auto}
+.form-title{font-family:'DM Serif Display',serif;font-size:30px;color:var(--text);margin-bottom:6px}
+.form-sub{color:var(--muted);font-size:15px;margin-bottom:32px}
+.form-card{background:var(--white);border-radius:24px;border:1px solid var(--border);padding:28px 24px}
+.section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0 0 10px;margin:24px 0 0;display:block}
+.section-label:first-child{margin-top:0}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.required{color:var(--red);margin-left:2px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.field-error input,.field-error select{border-color:var(--red)!important}
+
+/* Participation mode radio cards */
+.mode-cards{display:flex;gap:10px}
+.mode-card{flex:1;position:relative}
+.mode-card input{position:absolute;opacity:0;width:0;height:0}
+.mode-card label{display:flex;flex-direction:column;align-items:center;gap:5px;padding:14px 8px;border:1.5px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;text-align:center;font-size:14px;font-weight:500;color:var(--muted)}
+.mode-card input:checked+label{border-color:var(--brand-mid);background:var(--brand-light);color:var(--brand)}
+.mode-card label:hover{border-color:var(--brand-mid)}
+.mode-icon{font-size:20px}
+
+/* SSO row */
+.sso-row{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+.sso-btn{display:flex;align-items:center;gap:8px;padding:11px 18px;border:1.5px solid var(--border);border-radius:var(--radius);background:var(--white);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;flex:1;justify-content:center}
+.sso-btn:hover{background:var(--bg)}
+.or-divider{display:flex;align-items:center;gap:12px;margin-bottom:24px;color:var(--muted);font-size:13px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CGU checkbox */
+.cgu-row{display:flex;align-items:flex-start;gap:10px;background:#f8faff;border:1px solid #dbeafe;border-radius:var(--radius);padding:14px;margin:20px 0}
+.cgu-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand-mid);margin-top:2px;flex-shrink:0;cursor:pointer}
+.cgu-row label{font-size:13.5px;color:var(--muted);cursor:pointer;line-height:1.5}
+.cgu-row label a{color:var(--brand);text-decoration:none;font-weight:500}
+
+/* Success */
+.success-screen{display:none;text-align:center;padding:40px 0}
+.success-icon{font-size:64px;margin-bottom:16px}
+.success-title{font-family:'DM Serif Display',serif;font-size:28px;color:var(--text);margin-bottom:8px}
+.success-sub{font-size:15px;color:var(--muted);max-width:380px;margin:0 auto 28px}
+
+/* Footer */
+.page-footer{background:var(--brand-dark);color:rgba(255,255,255,.6);padding:32px 24px;text-align:center;font-size:13.5px}
+.page-footer a{color:rgba(255,255,255,.8);text-decoration:none}
+</style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <nav class="hero-nav">
+    <div class="logo-pill">
+      <div class="logo-icon"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+      <span class="logo-text">EXPLAIN</span>
+    </div>
+    <a href="subj-home.html" class="hero-signin">Sign in</a>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-tag">🎓 For students &amp; participants</div>
+    <h1 class="hero-title">Earn money by taking part in <em>economic experiments</em></h1>
+    <p class="hero-sub">Join the EXPLAIN participant pool. Get invited to experiments, attend sessions, and receive payments — all in one place.</p>
+    <div class="hero-cta">
+      <a href="#register" class="btn-hero btn-white">Join now — it's free</a>
+      <a href="#how-it-works" class="btn-hero btn-clear">How does it work?</a>
+    </div>
+  </div>
+
+  <div class="hero-perks">
+    <div class="perk"><span class="perk-icon">💶</span>Earn 10–30 € per session</div>
+    <div class="perk"><span class="perk-icon">⏱</span>Sessions last 30–120 min</div>
+    <div class="perk"><span class="perk-icon">🏛</span>In-person &amp; online options</div>
+    <div class="perk"><span class="perk-icon">🔒</span>GDPR-compliant, data stays safe</div>
+  </div>
+</div>
+
+<!-- ── How it works ── -->
+<div class="how-section" id="how-it-works">
+  <div class="how-inner">
+    <h2 class="how-title">How it works</h2>
+    <p class="how-sub">Participate in research and get paid — in four simple steps.</p>
+    <div class="steps-list">
+      <div class="step-item"><div class="step-num">1</div><div><div class="step-title">Create your account</div><div class="step-desc">Fill in the registration form below. Verify your email address to activate your account.</div></div></div>
+      <div class="step-item"><div class="step-num">2</div><div><div class="step-title">Receive invitations</div><div class="step-desc">Based on your profile, the lab will send you email invitations to upcoming sessions that match your characteristics.</div></div></div>
+      <div class="step-item"><div class="step-num">3</div><div><div class="step-title">Register &amp; attend</div><div class="step-desc">Sign up for sessions that fit your schedule. Show up on time — sessions typically last 30 to 120 minutes.</div></div></div>
+      <div class="step-item"><div class="step-num">4</div><div><div class="step-title">Get paid</div><div class="step-desc">Receive your earnings within 2 weeks. Amounts depend on the experiment — there is always a guaranteed show-up fee.</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Registration form ── -->
+<div class="form-section" id="register">
+  <div class="form-inner">
+    <h2 class="form-title">Create your account</h2>
+    <p class="form-sub">Join in under 3 minutes. Your data is kept strictly confidential.</p>
+
+    <div class="form-card">
+
+      <!-- Success state -->
+      <div class="success-screen" id="success-screen">
+        <div class="success-icon">✉️</div>
+        <div class="success-title">Check your inbox!</div>
+        <p class="success-sub">We sent a confirmation link to <strong id="confirm-email-display">—</strong>. Click it to activate your account and start receiving invitations.</p>
+        <a href="subj-home.html" class="btn-hero btn-white" style="background:var(--brand);color:#fff">Go to my account →</a>
+      </div>
+
+      <!-- Form -->
+      <div id="reg-form">
+        <div class="sso-row">
+          <button class="sso-btn" onclick="showToast('FranceConnect coming soon')">
+            <div style="width:20px;height:14px;border-radius:2px;overflow:hidden;display:flex;flex-shrink:0"><div style="flex:1;background:#002395"></div><div style="flex:1;background:#fff"></div><div style="flex:1;background:#ED2939"></div></div>
+            FranceConnect
+          </button>
+          <button class="sso-btn" onclick="showToast('Renater SSO coming soon')">
+            <div style="width:20px;height:14px;background:#003b7a;border-radius:2px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="color:#fff;font-size:8px;font-weight:700">R</span></div>
+            Renater (ESR)
+          </button>
+        </div>
+        <div class="or-divider"><span>or fill in manually</span></div>
+
+        <span class="section-label">Personal information</span>
+        <div class="field-row">
+          <div class="field" id="f-firstname"><label>First name <span class="required">*</span></label><input type="text" id="inp-firstname" placeholder="Léa" autocomplete="given-name"/></div>
+          <div class="field" id="f-lastname"><label>Last name <span class="required">*</span></label><input type="text" id="inp-lastname" placeholder="Fontaine" autocomplete="family-name"/></div>
+        </div>
+        <div class="field" id="f-email"><label>Email address <span class="required">*</span></label><input type="email" id="inp-email" placeholder="lea.fontaine@univ-lyon.fr" autocomplete="email"/><div class="hint">Must be unique. A confirmation email will be sent.</div></div>
+        <div class="field-row">
+          <div class="field"><label>Phone</label><input type="tel" id="inp-phone" placeholder="+33 6 00 00 00 00" autocomplete="tel"/></div>
+          <div class="field" id="f-dob"><label>Date of birth <span class="required">*</span></label><input type="date" id="inp-dob"/></div>
+        </div>
+        <div class="field" id="f-gender"><label>Gender <span class="required">*</span></label>
+          <select id="inp-gender"><option value="">— Select —</option><option>Female</option><option>Male</option><option>Non-binary / Other</option><option>Prefer not to say</option></select>
+        </div>
+
+        <span class="section-label">Education &amp; occupation</span>
+        <div class="field" id="f-edu"><label>Education level <span class="required">*</span></label>
+          <select id="inp-edu"><option value="">— Select —</option><option>Baccalauréat (or equivalent)</option><option>Bac+2 (BTS, DUT…)</option><option>Licence / Bachelor's</option><option>Master's (M1 / M2)</option><option>PhD / Doctorate</option><option>Other</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Field of study</label><input type="text" id="inp-field" placeholder="e.g. Economics, Psychology"/></div>
+          <div class="field"><label>Institution</label><input type="text" id="inp-school" placeholder="e.g. Université Lyon 2"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Start year of studies</label><input type="number" id="inp-year" placeholder="2022" min="1960" max="2030"/></div>
+          <div class="field"><label>Occupation</label><input type="text" id="inp-job" placeholder="Student, Employed…"/></div>
+        </div>
+
+        <span class="section-label">Participation preferences</span>
+        <div class="field"><label>Preferred mode <span class="required">*</span></label>
+          <div class="mode-cards">
+            <div class="mode-card"><input type="radio" name="mode" id="m-inperson" value="in-person" checked><label for="m-inperson"><span class="mode-icon">🏛</span>In-person</label></div>
+            <div class="mode-card"><input type="radio" name="mode" id="m-online" value="online"><label for="m-online"><span class="mode-icon">💻</span>Online</label></div>
+            <div class="mode-card"><input type="radio" name="mode" id="m-both" value="both"><label for="m-both"><span class="mode-icon">🔁</span>Both</label></div>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field" id="f-fr"><label>French level <span class="required">*</span></label>
+            <select id="inp-fr"><option value="">— Select —</option><option>A1 – Beginner</option><option>A2 – Elementary</option><option>B1 – Intermediate</option><option>B2 – Upper intermediate</option><option>C1 – Advanced</option><option value="C2" selected>C2 – Native</option></select>
+          </div>
+          <div class="field" id="f-en"><label>English level <span class="required">*</span></label>
+            <select id="inp-en"><option value="">— Select —</option><option>A1 – Beginner</option><option>A2 – Elementary</option><option>B1 – Intermediate</option><option value="B2">B2 – Upper intermediate</option><option>C1 – Advanced</option><option>C2 – Native</option></select>
+          </div>
+        </div>
+
+        <span class="section-label">Laboratory</span>
+        <div class="field" id="f-lab"><label>Choose a laboratory <span class="required">*</span></label>
+          <select id="inp-lab"><option value="">— Select a partner lab —</option><option value="gate">GATE · CNRS · Lyon</option><option value="crest">CREST · Paris</option><option value="leem">LEEM · Montpellier</option><option value="cirano">CIRANO · Aix-Marseille</option><option value="leep">LEEP · Clermont-Ferrand</option></select>
+          <div class="hint">Your sessions and invitations will come from this lab. You can join others later.</div>
+        </div>
+
+        <span class="section-label">Terms &amp; conditions</span>
+        <div class="cgu-row">
+          <input type="checkbox" id="cgu-check">
+          <label for="cgu-check">I have read and agree to the <a href="#">Terms and Conditions of Use</a> and the <a href="#">EXPLAIN Privacy Policy</a> (GDPR). I understand that my data will be used only for participant management purposes. <span class="required">*</span></label>
+        </div>
+        <div class="cgu-row" style="border-color:var(--border);background:var(--bg)">
+          <input type="checkbox" id="newsletter-check">
+          <label for="newsletter-check">I agree to receive informational emails about upcoming experiments from my affiliated laboratory. (optional)</label>
+        </div>
+
+        <button class="btn-hero btn-white" style="background:var(--brand);color:#fff;width:100%;margin-top:8px;font-size:16px;border-radius:var(--radius-lg)" onclick="submitForm()">Create my account →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="page-footer">
+  <div style="margin-bottom:8px"><strong style="color:#fff">EXPLAIN</strong> — Experimental Platform for Large-scale Investigations</div>
+  <div>A CNRS research infrastructure · <a href="#">Privacy policy</a> · <a href="#">Terms of use</a> · <a href="contact.html">Contact</a></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let _tt;
+function showToast(msg,type){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+(type||'');
+  t.classList.add('show');clearTimeout(_tt);
+  _tt=setTimeout(function(){t.classList.remove('show')},2800);
+}
+
+function submitForm(){
+  var required=[
+    {id:'inp-firstname',fid:'f-firstname',msg:'First name required'},
+    {id:'inp-lastname', fid:'f-lastname', msg:'Last name required'},
+    {id:'inp-email',    fid:'f-email',    msg:'Email required'},
+    {id:'inp-dob',      fid:'f-dob',      msg:'Date of birth required'},
+    {id:'inp-gender',   fid:'f-gender',   msg:'Please select a gender'},
+    {id:'inp-edu',      fid:'f-edu',      msg:'Education level required'},
+    {id:'inp-fr',       fid:'f-fr',       msg:'French level required'},
+    {id:'inp-en',       fid:'f-en',       msg:'English level required'},
+    {id:'inp-lab',      fid:'f-lab',      msg:'Please select a laboratory'},
+  ];
+  var ok=true, first=null;
+  required.forEach(function(r){
+    var el=document.getElementById(r.id);
+    var f=document.getElementById(r.fid);
+    if(!el||!el.value.trim()){
+      if(f)f.style.outline='2px solid var(--red)';
+      el.style.borderColor='var(--red)';
+      if(!first){first=el;showToast(r.msg,'error');}
+      ok=false;
+    } else {
+      el.style.borderColor='';
+      if(f)f.style.outline='';
+    }
+  });
+  if(!document.getElementById('cgu-check').checked){
+    showToast('You must accept the terms and conditions','error');
+    ok=false;
+  }
+  if(!ok){if(first)first.scrollIntoView({behavior:'smooth',block:'center'});return;}
+
+  var email=document.getElementById('inp-email').value;
+  document.getElementById('confirm-email-display').textContent=email;
+  document.getElementById('reg-form').style.display='none';
+  document.getElementById('success-screen').style.display='block';
+  document.getElementById('success-screen').scrollIntoView({behavior:'smooth'});
+}
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var target=document.querySelector(this.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'});}
+  });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EXPLAIN — History</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--brand:#1a4fa0;--brand-light:#e8eff9;--brand-mid:#3b6fd4;--brand-dark:#0d2b5e;--accent:#f59e0b;--accent-light:#fff8e6;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--white:#ffffff;--text:#111827;--radius:12px;--radius-lg:18px;--nav-h:64px}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:16px;line-height:1.6}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:500;transition:color .15s;cursor:pointer;background:none;border:none;font-family:inherit;position:relative}
+.bn-item:hover{color:var(--brand)}
+.bn-item.active{color:var(--brand)}
+.bn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.bn-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item.active .bn-icon svg{stroke:var(--brand)}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+.page{min-height:100vh;padding-bottom:calc(var(--nav-h) + 16px)}
+.page-content{max-width:680px;margin:0 auto;padding:0 16px}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.page-header-inner{max-width:680px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.page-header-title{font-size:17px;font-weight:600;color:var(--text)}
+.logo-pill{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:28px;height:28px;background:var(--brand-dark);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-text{font-family:'DM Serif Display',serif;font-size:17px;color:var(--brand-dark)}
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden}
+.card-pad{padding:20px}
+.card+.card{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-brand{background:var(--brand);color:#fff}
+.btn-brand:hover{background:var(--brand-dark)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn-outline:hover{background:var(--brand-light)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(.9)}
+.btn-full{width:100%}
+.btn-sm{padding:8px 16px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,111,212,.12)}
+.field textarea{resize:vertical;min-height:100px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.required{color:var(--red);margin-left:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.chip-blue{background:var(--brand-light);color:var(--brand)}
+.chip-green{background:var(--green-light);color:var(--green)}
+.chip-amber{background:var(--accent-light);color:#92400e}
+.chip-red{background:var(--red-light);color:var(--red)}
+.chip-grey{background:#f3f4f6;color:var(--muted)}
+.chip-dot{width:6px;height:6px;border-radius:50%}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px}
+.toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(80px);background:#111827;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.total-banner{background:linear-gradient(135deg,var(--brand-dark),var(--brand));color:#fff;border-radius:var(--radius-lg);padding:24px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between}
+.total-label{font-size:13px;opacity:.8;margin-bottom:4px}
+.total-amount{font-family:'DM Serif Display',serif;font-size:36px}
+.total-count{text-align:right;font-size:13px;opacity:.8}
+.total-count strong{font-size:22px;display:block;opacity:1}
+.hist-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)}
+.hist-item:last-child{border-bottom:none}
+.hist-date-box{min-width:44px;text-align:center}
+.hist-date-day{font-size:18px;font-weight:700;color:var(--text);line-height:1}
+.hist-date-mon{font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--muted)}
+.hist-info{flex:1;min-width:0}
+.hist-title{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-meta{font-size:13px;color:var(--muted);margin-top:2px}
+.hist-right{text-align:right;flex-shrink:0}
+.hist-amount{font-size:16px;font-weight:700;color:var(--text)}
+.hist-status{font-size:12px;margin-top:2px}
+.kpi-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.kpi-cell{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;text-align:center}
+.kpi-val{font-size:22px;font-weight:700;color:var(--text)}
+.kpi-lbl{font-size:12px;color:var(--muted);margin-top:2px}
+</style></head><body>
+<div class="page-header"><div class="page-header-inner"><div class="page-header-title">My history</div></div></div>
+<div class="page"><div class="page-content" style="padding-top:20px">
+<div class="total-banner">
+  <div><div class="total-label">Total earned</div><div class="total-amount">126.00 €</div><div style="font-size:13px;opacity:.7;margin-top:4px">GATE · CNRS · Lyon</div></div>
+  <div class="total-count"><span>Sessions</span><strong>7</strong></div>
+</div>
+<div class="kpi-strip">
+  <div class="kpi-cell"><div class="kpi-val">7</div><div class="kpi-lbl">Attended</div></div>
+  <div class="kpi-cell"><div class="kpi-val">0</div><div class="kpi-lbl">No-shows</div></div>
+  <div class="kpi-cell"><div class="kpi-val">18 €</div><div class="kpi-lbl">Avg. payoff</div></div>
+</div>
+<div class="section-title">Participation history</div>
+<div class="card card-pad">
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">12</div><div class="hist-date-mon">Jun</div></div><div class="hist-info"><div class="hist-title">Decision-making study</div><div class="hist-meta">🏛 Room B204, GATE · 90 min</div></div><div class="hist-right"><div class="hist-amount">22.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">08</div><div class="hist-date-mon">May</div></div><div class="hist-info"><div class="hist-title">Risk elicitation online</div><div class="hist-meta">💻 Online · 45 min</div></div><div class="hist-right"><div class="hist-amount">19.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">15</div><div class="hist-date-mon">Apr</div></div><div class="hist-info"><div class="hist-title">Decision-making study</div><div class="hist-meta">🏛 Room B102, GATE · 90 min</div></div><div class="hist-right"><div class="hist-amount">18.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">20</div><div class="hist-date-mon">Mar</div></div><div class="hist-info"><div class="hist-title">Social norms survey</div><div class="hist-meta">💻 Online · 30 min</div></div><div class="hist-right"><div class="hist-amount">8.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">14</div><div class="hist-date-mon">Feb</div></div><div class="hist-info"><div class="hist-title">Risk elicitation online</div><div class="hist-meta">💻 Online · 45 min</div></div><div class="hist-right"><div class="hist-amount">21.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">28</div><div class="hist-date-mon">Jan</div></div><div class="hist-info"><div class="hist-title">Decision-making study</div><div class="hist-meta">🏛 Room B204, GATE · 90 min</div></div><div class="hist-right"><div class="hist-amount">20.00 €</div><span class="chip chip-amber" style="font-size:11px">Pending</span></div></div>
+  <div class="hist-item"><div class="hist-date-box"><div class="hist-date-day">10</div><div class="hist-date-mon">Dec</div></div><div class="hist-info"><div class="hist-title">Coordination study</div><div class="hist-meta">🏛 Room A101, GATE · 120 min</div></div><div class="hist-right"><div class="hist-amount">18.00 €</div><span class="chip chip-green" style="font-size:11px">Paid</span></div></div>
+</div></div></div>
+<nav class="bottom-nav">
+  <a class="bn-item" href="subj-home.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg></div>Home</a>
+  <a class="bn-item" href="subj-invitations.html"><div class="bn-badge">2</div><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg></div>Invitations</a>
+  <a class="bn-item" href="subj-calendar.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg></div>Sessions</a>
+  <a class="bn-item active" href="subj-history.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg></div>History</a>
+  <a class="bn-item" href="subj-profile.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>Profile</a>
+</nav><div class="toast" id="toast"></div>
+<script>let _tt;function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'');t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show')},2800)}</script></body></html>

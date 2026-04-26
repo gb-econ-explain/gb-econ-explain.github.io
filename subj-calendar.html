@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>EXPLAIN — Sessions</title><link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"><style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--brand:#1a4fa0;--brand-light:#e8eff9;--brand-mid:#3b6fd4;--brand-dark:#0d2b5e;--accent:#f59e0b;--accent-light:#fff8e6;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--red-light:#fee2e2;--muted:#6b7280;--border:#e5e7eb;--bg:#f9fafb;--white:#ffffff;--text:#111827;--radius:12px;--radius-lg:18px;--nav-h:64px}
+html,body{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:16px;line-height:1.6}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);display:flex;z-index:100;padding-bottom:env(safe-area-inset-bottom,0)}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 4px 8px;text-decoration:none;color:var(--muted);font-size:10.5px;font-weight:500;transition:color .15s;cursor:pointer;background:none;border:none;font-family:inherit;position:relative}
+.bn-item:hover{color:var(--brand)}
+.bn-item.active{color:var(--brand)}
+.bn-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.bn-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item.active .bn-icon svg{stroke:var(--brand)}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 16px);background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:10px;min-width:16px;text-align:center}
+.page{min-height:100vh;padding-bottom:calc(var(--nav-h) + 16px)}
+.page-content{max-width:680px;margin:0 auto;padding:0 16px}
+.page-header{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.page-header-inner{max-width:680px;margin:0 auto;padding:0 16px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.page-header-title{font-size:17px;font-weight:600;color:var(--text)}
+.logo-pill{display:flex;align-items:center;gap:8px;text-decoration:none}
+.logo-icon{width:28px;height:28px;background:var(--brand-dark);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-text{font-family:'DM Serif Display',serif;font-size:17px;color:var(--brand-dark)}
+.card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);overflow:hidden}
+.card-pad{padding:20px}
+.card+.card{margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-brand{background:var(--brand);color:#fff}
+.btn-brand:hover{background:var(--brand-dark)}
+.btn-outline{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn-outline:hover{background:var(--brand-light)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--border)}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{filter:brightness(.9)}
+.btn-full{width:100%}
+.btn-sm{padding:8px 16px;font-size:13.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:15px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--brand-mid);box-shadow:0 0 0 3px rgba(59,111,212,.12)}
+.field textarea{resize:vertical;min-height:100px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:5px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:480px){.field-row{grid-template-columns:1fr}}
+.required{color:var(--red);margin-left:2px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-size:13px;font-weight:500}
+.chip-blue{background:var(--brand-light);color:var(--brand)}
+.chip-green{background:var(--green-light);color:var(--green)}
+.chip-amber{background:var(--accent-light);color:#92400e}
+.chip-red{background:var(--red-light);color:var(--red)}
+.chip-grey{background:#f3f4f6;color:var(--muted)}
+.chip-dot{width:6px;height:6px;border-radius:50%}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.section-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px}
+.toast{position:fixed;bottom:calc(var(--nav-h) + 16px);left:50%;transform:translateX(-50%) translateY(80px);background:#111827;color:#fff;padding:12px 24px;border-radius:var(--radius);font-size:14px;font-weight:500;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0 12px}
+.cal-month-label{font-family:'DM Serif Display',serif;font-size:20px;color:var(--text)}
+.cal-nav-btn{width:34px;height:34px;border:1.5px solid var(--border);border-radius:10px;background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.cal-nav-btn:hover{border-color:var(--brand-mid);color:var(--brand)}
+.weekdays{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;margin-bottom:4px}
+.weekday{font-size:11.5px;font-weight:600;color:var(--muted);padding:4px 0;text-transform:uppercase;letter-spacing:.04em}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-day{min-height:42px;border-radius:10px;display:flex;flex-direction:column;align-items:center;padding:4px 2px;cursor:pointer;transition:background .12s;position:relative}
+.cal-day:hover{background:var(--bg)}
+.cal-day.has-session{background:var(--brand-light)}
+.cal-day.has-session:hover{background:#d4e2f7}
+.cal-day.today .day-n{background:var(--brand);color:#fff;border-radius:50%}
+.cal-day.other-month .day-n{color:#d1d5db}
+.day-n{font-size:14px;font-weight:500;color:var(--text);width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.day-dot{width:5px;height:5px;border-radius:50%;margin-top:2px}
+.session-list-title{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:22px 0 12px;display:flex;align-items:center;justify-content:space-between}
+.sess-card{background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--border);padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.sess-card:hover{border-color:var(--brand-mid);box-shadow:0 2px 10px rgba(26,79,160,.1)}
+.sess-card.full{opacity:.65;cursor:default}
+.sess-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.sess-exp{font-size:12px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.04em}
+.sess-title{font-size:16px;font-weight:600;color:var(--text);margin-top:2px}
+.sess-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.sess-meta-item{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted)}
+.sess-meta-item svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round}
+.sess-footer{margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.spots-bar{height:6px;background:#e5e7eb;border-radius:3px;overflow:hidden;flex:1;margin:0 12px}
+.spots-fill{height:100%;border-radius:3px;background:var(--brand)}
+.spots-text{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--white);border-radius:20px 20px 0 0;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;padding:24px 20px 40px;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.sheet-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.sheet-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--text);margin-bottom:4px}
+.sheet-exp{font-size:13px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
+.sheet-info-row{display:flex;align-items:center;gap:10px;font-size:14.5px;color:#374151;margin-bottom:12px}
+.sheet-info-row svg{width:18px;height:18px;stroke:var(--brand);fill:none;stroke-width:1.6;stroke-linecap:round;flex-shrink:0}
+.sheet-instructions{background:var(--bg);border-radius:var(--radius);padding:14px;font-size:14px;color:#374151;line-height:1.7;margin:14px 0}
+</style></head><body>
+<div class="page-header"><div class="page-header-inner"><div class="page-header-title">Available sessions</div></div></div>
+<div class="page"><div class="page-content" style="padding-top:8px">
+<div class="cal-nav-row">
+  <button class="cal-nav-btn" onclick="calMonth(-1)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 2L4 6l4 4"/></svg></button>
+  <div class="cal-month-label" id="cal-month-lbl"></div>
+  <button class="cal-nav-btn" onclick="calMonth(1)"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg></button>
+</div>
+<div class="weekdays"><div class="weekday">M</div><div class="weekday">T</div><div class="weekday">W</div><div class="weekday">T</div><div class="weekday">F</div><div class="weekday">S</div><div class="weekday">S</div></div>
+<div class="cal-grid" id="cal-grid"></div>
+<div class="session-list-title"><span id="sess-list-title">Available sessions this month</span><span id="sess-count" style="font-size:12px;font-weight:500;color:var(--muted)"></span></div>
+<div id="sess-list"></div>
+<div class="modal-overlay" id="sess-modal" onclick="if(event.target===this)closeSessModal()">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-exp" id="sh-exp"></div>
+    <div class="sheet-title" id="sh-title"></div>
+    <div class="sheet-info-row"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg><span id="sh-date"></span></div>
+    <div class="sheet-info-row"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg><span id="sh-time"></span></div>
+    <div class="sheet-info-row"><svg viewBox="0 0 16 16"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" stroke-linejoin="round"/><circle cx="8" cy="6" r="1.5"/></svg><span id="sh-loc"></span></div>
+    <div class="sheet-info-row"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 7h6M5 10h4"/></svg><span id="sh-pay"></span></div>
+    <div class="sheet-instructions" id="sh-instr"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <div class="spots-bar"><div class="spots-fill" id="sh-bar"></div></div>
+      <span class="spots-text" id="sh-spots"></span>
+    </div>
+    <button class="btn btn-green btn-full" id="sh-register-btn" onclick="sheetRegister()">Register for this session</button>
+    <button class="btn btn-ghost btn-full" style="margin-top:10px" onclick="closeSessModal()">Close</button>
+  </div>
+</div></div></div>
+<nav class="bottom-nav">
+  <a class="bn-item" href="subj-home.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg></div>Home</a>
+  <a class="bn-item" href="subj-invitations.html"><div class="bn-badge">2</div><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg></div>Invitations</a>
+  <a class="bn-item active" href="subj-calendar.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg></div>Sessions</a>
+  <a class="bn-item" href="subj-history.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg></div>History</a>
+  <a class="bn-item" href="subj-profile.html"><div class="bn-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="6" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>Profile</a>
+</nav><div class="toast" id="toast"></div>
+<script>let _tt;function showToast(msg,type){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+(type||'');t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show')},2800)}
+var SESSIONS=[
+  {id:'s1',date:'2025-06-19',time:'09:00',duration:'90 min',loc:'Room B204, GATE',exp:'Economics experiment',title:'Decision-making study',pay:'Show-up + bonus (avg 18 €)',instr:'Bring your student card. Approximately 90 min.',slots:24,enrolled:18,invited:true},
+  {id:'s2',date:'2025-06-24',time:'13:00',duration:'30 min',loc:'Online',exp:'Social norms survey',title:'Online survey',pay:'5–10 €',instr:'Complete from a computer in one sitting.',slots:120,enrolled:40,invited:true},
+  {id:'s3',date:'2025-07-03',time:'09:00',duration:'90 min',loc:'Room B102, GATE',exp:'Economics experiment',title:'Trust game session',pay:'Show-up + bonus (avg 20 €)',instr:'No preparation needed.',slots:20,enrolled:5,invited:false},
+  {id:'s4',date:'2025-07-10',time:'14:00',duration:'120 min',loc:'Room A101, GATE',exp:'Coordination study',title:'Multi-player strategy',pay:'Show-up + bonus (avg 25 €)',instr:'Arrive 5 min early.',slots:30,enrolled:30,invited:false},
+];
+var curSel=null;
+var curDate=new Date(2025,5,1);
+var today=new Date();
+
+function calMonth(d){curDate.setMonth(curDate.getMonth()+d);renderCal();}
+
+function renderCal(){
+  var y=curDate.getFullYear(),m=curDate.getMonth();
+  document.getElementById('cal-month-lbl').textContent=new Date(y,m,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  var dow=new Date(y,m,1).getDay();if(dow===0)dow=7;
+  var start=new Date(y,m,1);start.setDate(start.getDate()-(dow-1));
+  var grid=document.getElementById('cal-grid');grid.innerHTML='';
+  var sessionDates=SESSIONS.reduce(function(a,s){a[s.date]=(a[s.date]||[]).concat(s);return a},{});
+  for(var w=0;w<6;w++){for(var d=0;d<7;d++){
+    var date=new Date(start);date.setDate(start.getDate()+w*7+d);
+    var ds=toISO(date);
+    var hasSess=!!sessionDates[ds];
+    var isToday=date.toDateString()===today.toDateString();
+    var isOther=date.getMonth()!==m;
+    var cell=document.createElement('div');
+    cell.className='cal-day'+(hasSess?' has-session':'')+(isToday?' today':'')+(isOther?' other-month':'');
+    var dn=document.createElement('div');dn.className='day-n';dn.textContent=date.getDate();cell.appendChild(dn);
+    if(hasSess){var dot=document.createElement('div');dot.className='day-dot';dot.style.background='var(--brand)';cell.appendChild(dot);}
+    (function(ds2){cell.onclick=function(){scrollToDate(ds2);};})(ds);
+    grid.appendChild(cell);
+  }}
+  renderSessList(y,m);
+}
+
+function scrollToDate(ds){
+  var el=document.getElementById('sess-'+ds);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderSessList(y,m){
+  var list=SESSIONS.filter(function(s){var d=new Date(s.date+'T00:00');return d.getFullYear()===y&&d.getMonth()===m;});
+  document.getElementById('sess-count').textContent=list.length+' session'+(list.length!==1?'s':'');
+  var container=document.getElementById('sess-list');container.innerHTML='';
+  if(!list.length){container.innerHTML='<div style="text-align:center;padding:32px;color:var(--muted);font-size:14px">No sessions this month</div>';return;}
+  list.forEach(function(s){
+    var d=new Date(s.date+'T00:00');
+    var pct=Math.round(s.enrolled/s.slots*100);
+    var full=s.enrolled>=s.slots;
+    var card=document.createElement('div');
+    card.id='sess-'+s.date;
+    card.className='sess-card'+(full?' full':'');
+    card.innerHTML='<div class="sess-card-header"><div><div class="sess-exp">'+s.exp+'</div><div class="sess-title">'+s.title+'</div></div>'+
+      (s.invited?'<span class="chip chip-blue">Invited</span>':'')+
+      '</div><div class="sess-meta">'+
+      '<div class="sess-meta-item"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13"/></svg>'+d.toLocaleDateString('en-GB',{weekday:'short',day:'2-digit',month:'short'})+'</div>'+
+      '<div class="sess-meta-item"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 5v3.5l2.5 1.5"/></svg>'+s.time+' · '+s.duration+'</div>'+
+      '<div class="sess-meta-item"><svg viewBox="0 0 16 16"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.5-2-4.5-4.5-4.5z" stroke-linejoin="round"/></svg>'+s.loc+'</div>'+
+      '</div><div class="sess-footer">'+
+      '<span class="spots-text" style="margin-right:0">'+(full?'Full':'')+'</span>'+
+      '<div class="spots-bar"><div class="spots-fill" style="width:'+pct+'%;background:'+(pct>=100?'var(--red)':'var(--brand)')+'"></div></div>'+
+      '<span class="spots-text">'+s.enrolled+'/'+s.slots+'</span>'+
+      '</div>';
+    if(!full)card.onclick=function(){openSess(s.id);};
+    container.appendChild(card);
+  });
+}
+
+function openSess(id){
+  var s=SESSIONS.find(function(x){return x.id===id;});if(!s)return;
+  curSel=s;
+  var d=new Date(s.date+'T00:00');
+  document.getElementById('sh-exp').textContent=s.exp;
+  document.getElementById('sh-title').textContent=s.title;
+  document.getElementById('sh-date').textContent=d.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('sh-time').textContent=s.time+' · '+s.duration;
+  document.getElementById('sh-loc').textContent=s.loc;
+  document.getElementById('sh-pay').textContent=s.pay;
+  document.getElementById('sh-instr').textContent=s.instr;
+  var pct=Math.round(s.enrolled/s.slots*100);
+  document.getElementById('sh-bar').style.width=pct+'%';
+  document.getElementById('sh-bar').style.background=pct>=80?'var(--red)':'var(--brand)';
+  document.getElementById('sh-spots').textContent=(s.slots-s.enrolled)+' spots left';
+  var btn=document.getElementById('sh-register-btn');
+  btn.disabled=false;btn.textContent='Register for this session';btn.className='btn btn-green btn-full';
+  document.getElementById('sess-modal').classList.add('open');
+}
+
+function sheetRegister(){
+  var btn=document.getElementById('sh-register-btn');
+  btn.disabled=true;btn.textContent='Registered ✓';btn.className='btn btn-ghost btn-full';
+  if(curSel)curSel.enrolled=Math.min(curSel.slots,curSel.enrolled+1);
+  showToast('Registration confirmed!','success');
+  setTimeout(closeSessModal,1500);
+}
+
+function closeSessModal(){document.getElementById('sess-modal').classList.remove('open');}
+function toISO(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+renderCal();</script></body></html>

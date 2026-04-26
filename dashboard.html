@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#1a4fa0;--blue-light:#e8eff9;--blue-mid:#3b6fd4;--navy:#0d2b5e;--slate:#4a5568;--muted:#718096;--border:#dde3ed;--bg:#f6f8fc;--white:#fff;--text:#1a2035;--radius:10px;--radius-lg:16px;--success:#1a7a4a;--success-bg:#e6f4ed;--warning:#8a6200;--warning-bg:#fff8e6;--warning-border:#f5d87a;--danger:#c0392b;--danger-bg:#fff0f0;--sidebar-w:220px}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.6;display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);display:block}
+.logo-sub{font-size:10px;color:var(--muted);display:block;line-height:1.3}
+.sidebar-nav{padding:0.75rem;flex:1}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.9rem 0.5rem 0.35rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);font-size:13.5px;color:var(--slate);text-decoration:none;transition:background 0.12s,color 0.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg);color:var(--navy)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:500}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-soon{font-size:10px;font-weight:600;color:var(--muted);background:#f0f0f0;border-radius:4px;padding:1px 6px;margin-left:auto}
+.sidebar-footer{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius);cursor:default}
+.sidebar-user:hover{background:var(--bg)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:11px;color:var(--muted)}
+.notif-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.15s;margin-left:auto;flex-shrink:0}
+.notif-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{padding:2rem 2rem 4rem}
+.breadcrumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--blue-mid);text-decoration:none}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;flex-wrap:wrap}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy)}
+.page-header p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--navy)}
+.btn-ghost{background:var(--white);color:var(--slate);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
+.filter-select{padding:7px 26px 7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.toast{position:fixed;top:20px;left:calc(var(--sidebar-w) + 50%);transform:translateX(-50%) translateY(-80px);background:var(--success);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:13.5px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:2rem}
+.kpi{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;cursor:pointer;transition:box-shadow .15s,border-color .15s}
+.kpi:hover{border-color:var(--blue-mid);box-shadow:0 2px 12px rgba(26,79,160,.09)}
+.kpi.active{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.12)}
+.kpi-label{font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.kpi-value{font-size:26px;font-weight:600;color:var(--navy);line-height:1}
+.kpi-delta{font-size:12px;margin-top:4px}
+.delta-up{color:var(--success)}.delta-dn{color:var(--danger)}.delta-n{color:var(--muted)}
+.kpi.active .kpi-value{color:var(--blue)}
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
+.chart-title{font-size:15px;font-weight:600;color:var(--navy)}
+.chart-area{height:200px;display:flex;align-items:flex-end;gap:6px;padding-bottom:24px;position:relative;border-bottom:1px solid var(--border)}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;position:relative}
+.bar{width:100%;border-radius:4px 4px 0 0;transition:opacity .15s;cursor:pointer;min-height:2px}
+.bar:hover{opacity:.8}
+.bar-lbl{position:absolute;bottom:-20px;font-size:11px;color:var(--muted);white-space:nowrap}
+.bar-val{position:absolute;top:-18px;font-size:11px;font-weight:600;color:var(--slate);opacity:0;transition:opacity .15s}
+.bar-group:hover .bar-val{opacity:1}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:.75rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}}
+.donut-wrap{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.dl-list{display:flex;flex-direction:column;gap:7px}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:13px}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.mini-table{width:100%;border-collapse:collapse;font-size:13px}
+.mini-table th{padding:7px 10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);text-align:left}
+.mini-table td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--slate)}
+.mini-table tr:last-child td{border-bottom:none}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <a class="sidebar-logo" href="welcome.html">
+    <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+    <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
+  </a>
+  <nav class="sidebar-nav">
+        <a class="nav-item" href="welcome.html" ><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
+    </a>
+    <span class="nav-label">Research</span>
+        <a class="nav-item" href="experiment-list.html" ><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
+    </a>
+        <a class="nav-item" href="calendar.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
+    </a>
+        <a class="nav-item" href="multilab.html" ><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab
+    </a>
+    <span class="nav-label">Administration</span>
+        <a class="nav-item" href="subject-pool.html" ><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
+    </a>
+        <a class="nav-item" href="accounting.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting
+    </a>
+        <a class="nav-item active" href="dashboard.html" ><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Dashboard
+    </a>
+        <a class="nav-item" href="users.html" ><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users
+    </a>
+        <a class="nav-item" href="mailing.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing
+    </a>
+        <a class="nav-item" href="new-feature.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span>
+    </a>
+    <span class="nav-label">Help</span>
+        <a class="nav-item" href="recruit.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit
+    </a>
+        <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
+    </a>
+        <a class="nav-item" href="contact.html" ><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar">GB</div>
+      <div><div class="user-name">Gabriel Bayle</div><div class="user-role">Lab Manager · GATE</div></div>
+      <button class="notif-btn"><svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg></button>
+    </div>
+  </div>
+</aside>
+<div class="main">
+<div class="content">
+
+<div class="page-header">
+  <div><h1>Dashboard</h1><p>Platform activity for GATE · CNRS · Lyon — click any KPI to explore its chart.</p></div>
+  <select class="filter-select" id="period" onchange="update()">
+    <option value="12">Last 12 months</option>
+    <option value="6">Last 6 months</option>
+    <option value="3">Last 3 months</option>
+  </select>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi active" id="kpi-subs" onclick="setActive('subs')">
+    <div class="kpi-label">Total subjects</div>
+    <div class="kpi-value" id="kv-subs">312</div>
+    <div class="kpi-delta delta-up" id="kd-subs">↑ +18 this month</div>
+  </div>
+  <div class="kpi" id="kpi-new" onclick="setActive('new')">
+    <div class="kpi-label">New registrations</div>
+    <div class="kpi-value" id="kv-new">—</div>
+    <div class="kpi-delta" id="kd-new"></div>
+  </div>
+  <div class="kpi" id="kpi-sessions" onclick="setActive('sessions')">
+    <div class="kpi-label">Sessions run</div>
+    <div class="kpi-value" id="kv-sessions">—</div>
+    <div class="kpi-delta" id="kd-sessions"></div>
+  </div>
+  <div class="kpi" id="kpi-parts" onclick="setActive('parts')">
+    <div class="kpi-label">Participations</div>
+    <div class="kpi-value" id="kv-parts">—</div>
+    <div class="kpi-delta" id="kd-parts"></div>
+  </div>
+  <div class="kpi" id="kpi-ns" onclick="setActive('ns')">
+    <div class="kpi-label">No-show rate</div>
+    <div class="kpi-value" id="kv-ns">—</div>
+    <div class="kpi-delta" id="kd-ns"></div>
+  </div>
+  <div class="kpi" id="kpi-paid" onclick="setActive('paid')">
+    <div class="kpi-label">Total paid out</div>
+    <div class="kpi-value" id="kv-paid">—</div>
+    <div class="kpi-delta" id="kd-paid"></div>
+  </div>
+  <div class="kpi" id="kpi-dels" onclick="setActive('dels')">
+    <div class="kpi-label">Account deletions</div>
+    <div class="kpi-value" id="kv-dels">—</div>
+    <div class="kpi-delta" id="kd-dels"></div>
+  </div>
+</div>
+
+<div class="chart-card">
+  <div class="chart-header">
+    <div class="chart-title" id="chart-title">Total subjects over time</div>
+  </div>
+  <div class="chart-area" id="chart-area"></div>
+  <div class="chart-legend" id="chart-legend"></div>
+</div>
+
+<div class="two-col">
+  <div class="chart-card" style="margin:0">
+    <div class="chart-header"><div class="chart-title">Subject pool composition</div></div>
+    <div class="donut-wrap">
+      <svg width="110" height="110" viewBox="0 0 110 110">
+        <circle cx="55" cy="55" r="36" fill="none" stroke="#edf2ff" stroke-width="20"/>
+        <circle cx="55" cy="55" r="36" fill="none" stroke="#3b6fd4" stroke-width="20" stroke-dasharray="122 104" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
+        <circle cx="55" cy="55" r="36" fill="none" stroke="#1a7a4a" stroke-width="20" stroke-dasharray="97 129" stroke-dashoffset="-122" transform="rotate(-90 55 55)"/>
+        <circle cx="55" cy="55" r="36" fill="none" stroke="#bbb" stroke-width="20" stroke-dasharray="7 219" stroke-dashoffset="-219" transform="rotate(-90 55 55)"/>
+        <text x="55" y="59" text-anchor="middle" font-family="DM Sans" font-size="13" font-weight="600" fill="#0d2b5e">312</text>
+      </svg>
+      <div class="dl-list">
+        <div class="dl-item"><div class="dl-dot" style="background:#3b6fd4"></div>Female — 54% (169)</div>
+        <div class="dl-item"><div class="dl-dot" style="background:#1a7a4a"></div>Male — 43% (134)</div>
+        <div class="dl-item"><div class="dl-dot" style="background:#bbb"></div>Other — 3% (9)</div>
+        <div style="height:1px;background:var(--border);margin:6px 0"></div>
+        <div class="dl-item" style="color:var(--muted)">Bachelor's 42% · Master's 39% · PhD 14%</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card" style="margin:0">
+    <div class="chart-header"><div class="chart-title">Experiments summary</div></div>
+    <table class="mini-table">
+      <thead><tr><th>Experiment</th><th>Status</th><th style="text-align:right">Participants</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:500">trust-game-2025-q1</td><td><span style="font-size:11px;padding:2px 8px;background:var(--success-bg);color:var(--success);border-radius:20px;font-weight:600">Active</span></td><td style="text-align:right">97</td></tr>
+        <tr><td style="font-weight:500">risk-elicitation-online</td><td><span style="font-size:11px;padding:2px 8px;background:var(--success-bg);color:var(--success);border-radius:20px;font-weight:600">Active</span></td><td style="text-align:right">258</td></tr>
+        <tr><td style="font-weight:500">coordination-multilab</td><td><span style="font-size:11px;padding:2px 8px;background:var(--blue-light);color:var(--blue);border-radius:20px;font-weight:600">Draft</span></td><td style="text-align:right">24</td></tr>
+        <tr><td style="font-weight:500">social-norms-survey</td><td><span style="font-size:11px;padding:2px 8px;background:#f5f5f5;color:#999;border-radius:20px;font-weight:600">Archived</span></td><td style="text-align:right">470</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {
+  12:{months:['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
+      subs:  [268,272,276,282,288,292,295,298,303,307,310,312],
+      new:   [3,4,4,6,6,4,3,3,5,4,3,5],
+      sessions:[2,1,3,2,3,4,1,2,3,4,2,5],
+      parts: [40,20,60,45,65,80,24,40,65,90,42,100],
+      ns:    [8,5,4,6,5,4,3,5,4,6,3,5],
+      paid:  [720,360,1080,810,1170,1440,432,720,1170,1620,756,1800],
+      dels:  [0,1,0,0,1,0,0,0,1,0,0,0]},
+  6:{months:['Jan','Feb','Mar','Apr','May','Jun'],
+     subs: [295,298,303,307,310,312],new:[3,3,5,4,3,5],sessions:[1,2,3,4,2,5],parts:[24,40,65,90,42,100],ns:[3,5,4,6,3,5],paid:[432,720,1170,1620,756,1800],dels:[0,0,1,0,0,0]},
+  3:{months:['Apr','May','Jun'],
+     subs:[307,310,312],new:[4,3,5],sessions:[4,2,5],parts:[90,42,100],ns:[6,3,5],paid:[1620,756,1800],dels:[0,0,0]},
+};
+
+const METRICS = {
+  subs:    {label:'Total subjects over time',  color:'#3b6fd4', unit:'',   delta:(d)=>`↑ +${d.new[d.new.length-1]} this month`, dc:'delta-up'},
+  new:     {label:'New registrations per month',color:'#1a7a4a',unit:'',   delta:(d)=>`${d.new.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
+  sessions:{label:'Sessions per month',        color:'#8a3fc0', unit:'',   delta:(d)=>`${d.sessions.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
+  parts:   {label:'Participations per month',  color:'#b06000', unit:'',   delta:(d)=>`${d.parts.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
+  ns:      {label:'No-shows per month',        color:'#c0392b', unit:'',   delta:(d)=>{ const r=Math.round(d.ns.reduce((a,v)=>a+v)/d.parts.reduce((a,v)=>a+v)*1000)/10; return r+'% avg rate'; },dc:'delta-dn'},
+  paid:    {label:'Total paid out per month (€)',color:'#1a4fa0',unit:'€', delta:(d)=>`${d.paid.reduce((a,v)=>a+v).toLocaleString()} € total`,dc:'delta-up'},
+  dels:    {label:'Account deletions per month',color:'#718096',unit:'',   delta:(d)=>`${d.dels.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
+};
+
+let activeKey='subs';
+
+function setActive(key){ activeKey=key; document.querySelectorAll('.kpi').forEach(k=>k.classList.remove('active')); document.getElementById('kpi-'+key).classList.add('active'); update(); }
+
+function update(){
+  const p=parseInt(document.getElementById('period').value)||12;
+  const d=DATA[p]||DATA[12];
+
+  // Update KPI values
+  document.getElementById('kv-subs').textContent = d.subs[d.subs.length-1];
+  document.getElementById('kd-subs').textContent = `↑ +${d.new[d.new.length-1]} this month`;
+  const kpis={new:d.new,sessions:d.sessions,parts:d.parts,ns:null,paid:null,dels:d.dels};
+  document.getElementById('kv-new').textContent = d.new.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-new').textContent = 'registrations this period';
+  document.getElementById('kv-sessions').textContent = d.sessions.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-sessions').textContent = 'sessions run';
+  document.getElementById('kv-parts').textContent = d.parts.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-parts').textContent = 'total participations';
+  const nsRate = Math.round(d.ns.reduce((a,v)=>a+v)/d.parts.reduce((a,v)=>a+v)*1000)/10;
+  document.getElementById('kv-ns').textContent = nsRate+'%';
+  document.getElementById('kd-ns').textContent = 'avg no-show rate';
+  document.getElementById('kv-paid').textContent = (d.paid.reduce((a,v)=>a+v)/1000).toFixed(1)+'k €';
+  document.getElementById('kd-paid').textContent = 'paid out this period';
+  document.getElementById('kv-dels').textContent = d.dels.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-dels').textContent = 'account closures';
+
+  // Render chart for active metric
+  renderChart(d);
+}
+
+function renderChart(d){
+  const m = METRICS[activeKey];
+  const vals = d[activeKey];
+  const max = Math.max(...vals);
+  document.getElementById('chart-title').textContent = m.label;
+  document.getElementById('chart-area').innerHTML = d.months.map((mo,i)=>`
+    <div class="bar-group">
+      <div class="bar-val">${vals[i]}${m.unit}</div>
+      <div class="bar" style="height:${max?Math.max(4,Math.round(vals[i]/max*160)):4}px;background:${m.color}" title="${mo}: ${vals[i]}${m.unit}"></div>
+      <div class="bar-lbl">${mo}</div>
+    </div>`).join('');
+  document.getElementById('chart-legend').innerHTML = `<div class="legend-item"><div class="legend-dot" style="background:${m.color}"></div>${m.label}</div>`;
+}
+
+update();
+</script>
+
+</div>
+</div>
+</body>
+</html>

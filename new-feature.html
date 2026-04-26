@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — New features</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--blue:#1a4fa0;--blue-light:#e8eff9;--blue-mid:#3b6fd4;--navy:#0d2b5e;--slate:#4a5568;--muted:#718096;--border:#dde3ed;--bg:#f6f8fc;--white:#fff;--text:#1a2035;--radius:10px;--radius-lg:16px;--success:#1a7a4a;--success-bg:#e6f4ed;--warning:#8a6200;--warning-bg:#fff8e6;--warning-border:#f5d87a;--danger:#c0392b;--danger-bg:#fff0f0;--sidebar-w:220px}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.6;display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);display:block}
+.logo-sub{font-size:10px;color:var(--muted);display:block;line-height:1.3}
+.sidebar-nav{padding:0.75rem;flex:1}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.9rem 0.5rem 0.35rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);font-size:13.5px;color:var(--slate);text-decoration:none;transition:background 0.12s,color 0.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg);color:var(--navy)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:500}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-soon{font-size:10px;font-weight:600;color:var(--muted);background:#f0f0f0;border-radius:4px;padding:1px 6px;margin-left:auto}
+.sidebar-footer{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius);cursor:default}
+.sidebar-user:hover{background:var(--bg)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:11px;color:var(--muted)}
+.notif-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.15s;margin-left:auto;flex-shrink:0}
+.notif-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{padding:2rem 2rem 4rem}
+.breadcrumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--blue-mid);text-decoration:none}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;flex-wrap:wrap}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy)}
+.page-header p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--navy)}
+.btn-ghost{background:var(--white);color:var(--slate);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
+.filter-select{padding:7px 26px 7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.toast{position:fixed;top:20px;left:calc(var(--sidebar-w) + 50%);transform:translateX(-50%) translateY(-80px);background:var(--success);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:13.5px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
+.nf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.nf-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;position:relative;overflow:hidden}
+.nf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.nf-card.soon::before{background:linear-gradient(90deg,var(--warning),#f5d87a)}
+.nf-card.planned::before{background:linear-gradient(90deg,var(--blue-mid),#7eb3ff)}
+.nf-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;margin-bottom:.875rem}
+.tag-soon{background:var(--warning-bg);color:var(--warning);border:1px solid var(--warning-border)}
+.tag-planned{background:var(--blue-light);color:var(--blue)}
+.nf-icon{font-size:28px;margin-bottom:.625rem}
+.nf-title{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:.375rem}
+.nf-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.nf-vote{display:flex;align-items:center;gap:8px;margin-top:1rem;padding-top:.875rem;border-top:1px solid var(--border)}
+.vote-btn{padding:4px 12px;border:1px solid var(--border);border-radius:20px;font-family:inherit;font-size:12px;cursor:pointer;background:var(--white);color:var(--muted);transition:all .15s}
+.vote-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.vote-btn.voted{background:var(--blue);color:#fff;border-color:var(--blue)}
+.vote-count{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <a class="sidebar-logo" href="welcome.html">
+    <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+    <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
+  </a>
+  <nav class="sidebar-nav">
+        <a class="nav-item" href="welcome.html" ><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
+    </a>
+    <span class="nav-label">Research</span>
+        <a class="nav-item" href="experiment-list.html" ><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
+    </a>
+        <a class="nav-item" href="calendar.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
+    </a>
+        <a class="nav-item" href="multilab.html" ><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab
+    </a>
+    <span class="nav-label">Administration</span>
+        <a class="nav-item" href="subject-pool.html" ><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
+    </a>
+        <a class="nav-item" href="accounting.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting
+    </a>
+        <a class="nav-item" href="dashboard.html" ><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Dashboard
+    </a>
+        <a class="nav-item" href="users.html" ><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users
+    </a>
+        <a class="nav-item" href="mailing.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing
+    </a>
+        <a class="nav-item active" href="new-feature.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span>
+    </a>
+    <span class="nav-label">Help</span>
+        <a class="nav-item" href="recruit.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit
+    </a>
+        <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
+    </a>
+        <a class="nav-item" href="contact.html" ><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar">GB</div>
+      <div><div class="user-name">Gabriel Bayle</div><div class="user-role">Lab Manager · GATE</div></div>
+      <button class="notif-btn"><svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg></button>
+    </div>
+  </div>
+</aside>
+<div class="main">
+<div class="content">
+
+<div class="page-header">
+  <div><h1>New features</h1><p>Upcoming improvements and planned features. Vote to help us prioritise.</p></div>
+</div>
+
+<div class="nf-grid">
+  <div class="nf-card soon">
+    <span class="nf-tag tag-soon">⚡ Coming soon</span>
+    <div class="nf-icon">🗓</div>
+    <div class="nf-title">Advanced calendar with room booking</div>
+    <div class="nf-desc">Block time slots in your laboratory calendar, book specific rooms, and prevent double-booking across experiments.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">24 votes</span></div>
+  </div>
+  <div class="nf-card soon">
+    <span class="nf-tag tag-soon">⚡ Coming soon</span>
+    <div class="nf-icon">🤖</div>
+    <div class="nf-title">Automatic invitation scheduling</div>
+    <div class="nf-desc">Set a target number of participants and let EXPLAIN send invitations automatically in batches as slots fill up.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">31 votes</span></div>
+  </div>
+  <div class="nf-card soon">
+    <span class="nf-tag tag-soon">⚡ Coming soon</span>
+    <div class="nf-icon">💳</div>
+    <div class="nf-title">Integrated payment via Lydia / SEPA</div>
+    <div class="nf-desc">Pay participants directly from EXPLAIN — record, track and export payments without a separate accounting spreadsheet.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">41 votes</span></div>
+  </div>
+  <div class="nf-card planned">
+    <span class="nf-tag tag-planned">📋 Planned</span>
+    <div class="nf-icon">📡</div>
+    <div class="nf-title">oTree / zTree integration</div>
+    <div class="nf-desc">Connect your experiment software directly to EXPLAIN for automatic session management and participant tracking.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">18 votes</span></div>
+  </div>
+  <div class="nf-card planned">
+    <span class="nf-tag tag-planned">📋 Planned</span>
+    <div class="nf-icon">🇫🇷</div>
+    <div class="nf-title">FranceConnect / Renater SSO</div>
+    <div class="nf-desc">Let participants and researchers log in using their institutional or national identity provider — no new password needed.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">29 votes</span></div>
+  </div>
+  <div class="nf-card planned">
+    <span class="nf-tag tag-planned">📋 Planned</span>
+    <div class="nf-icon">📈</div>
+    <div class="nf-title">Cross-lab analytics</div>
+    <div class="nf-desc">Aggregate statistics across all EXPLAIN labs — participation rates, pool compositions, payment trends at the network level.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">22 votes</span></div>
+  </div>
+  <div class="nf-card planned">
+    <span class="nf-tag tag-planned">📋 Planned</span>
+    <div class="nf-icon">📱</div>
+    <div class="nf-title">Mobile app for participants</div>
+    <div class="nf-desc">A participant-facing mobile app to browse sessions, register, receive reminders, and view payment history.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">36 votes</span></div>
+  </div>
+  <div class="nf-card planned">
+    <span class="nf-tag tag-planned">📋 Planned</span>
+    <div class="nf-icon">🔒</div>
+    <div class="nf-title">Advanced GDPR audit log</div>
+    <div class="nf-desc">Full audit trail for all personal data access, exports and deletions — with automated retention policy enforcement.</div>
+    <div class="nf-vote"><button class="vote-btn" onclick="vote(this)">👍 Upvote</button><span class="vote-count">15 votes</span></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+let tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200)}
+function vote(btn){
+  const isVoted=btn.classList.toggle('voted');
+  const countEl=btn.nextElementSibling;
+  const n=parseInt(countEl.textContent)+(isVoted?1:-1);
+  countEl.textContent=n+' votes';
+  btn.textContent=isVoted?'✓ Voted':'👍 Upvote';
+  if(isVoted)toast('Vote recorded — thanks!');
+}
+</script>
+
+</div>
+</div>
+</body>
+</html>

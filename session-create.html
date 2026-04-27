@@ -294,7 +294,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
       <div class="card">
         <div class="card-title">Participant slots</div>
 
-        <div class="grid-3">
+        <div class="grid-2">
           <div class="field" id="field-slots">
             <label>Maximum participants <span class="req">*</span></label>
             <input type="number" id="s-slots" placeholder="24" min="1" oninput="updatePoolBreakdown()"/>
@@ -305,13 +305,13 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
             <input type="number" id="s-reserves" placeholder="4" min="0" oninput="updatePoolBreakdown()"/>
             <div class="hint">Extra invitations to cover for no-shows.</div>
           </div>
+        </div>
+        <div class="grid-2" style="margin-top:0.75rem">
           <div class="field">
             <label>Minimum needed</label>
             <input type="number" id="s-minimum" placeholder="12" min="0"/>
             <div class="hint">Minimum number of participants needed to run a session.</div>
           </div>
-        </div>
-        <div class="grid-2" style="margin-top:0.75rem">
           <div class="field">
             <label>Group size</label>
             <input type="number" id="s-groupsize" placeholder="2" min="1"/>

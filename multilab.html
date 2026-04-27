@@ -73,6 +73,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 .r-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
 .r-row:last-of-type{border-bottom:none}
 .r-av{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.exp-mini-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.exp-mini-table th{padding:5px 8px;text-align:left;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border)}
+.exp-mini-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--slate)}
+.exp-mini-table tr:last-child td{border-bottom:none}
+.exp-mini-table tr:hover td{background:var(--bg)}
+.lab-subsection{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.5rem}
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .badge-pi{background:#fef3c7;color:#92400e}
 .badge-member{background:var(--blue-light);color:var(--blue)}
@@ -188,11 +194,14 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 const PROJECTS = [
   {id:'p1',name:'TRUST-FR 2025',color:'#3b6fd4',description:'Multi-site replication of trust game experiments across 4 French economics labs. Standardised protocol, coordinated sessions, pooled data.',status:'active',lead:'Gabriel Bayle',
    labs:[
-    {id:'l1',name:'GATE · CNRS · Lyon',country:'France',contact:'gabriel.bayle@cnrs.fr',experiments:['trust-game-2025-q1'],color:'#3b6fd4',
+    {id:'l1',name:'GATE · CNRS · Lyon',country:'France',contact:'gabriel.bayle@cnrs.fr',color:'#3b6fd4',
+     experiments:[{name:'trust-game-2025-q1',status:'active',sessions:5,participants:97}],
      researchers:[{name:'Gabriel Bayle',initials:'GB',color:'#1a4fa0',email:'gabriel.bayle@cnrs.fr',role:'PI'},{name:'Iane Vallanzasca',initials:'IV',color:'#3b6fd4',email:'iane.vallanzasca@cnrs.fr',role:'Member'}]},
-    {id:'l2',name:'CREST · Paris',country:'France',contact:'pierre.martin@ensae.fr',experiments:['trust-crest-2025'],color:'#1a7a4a',
+    {id:'l2',name:'CREST · Paris',country:'France',contact:'pierre.martin@ensae.fr',color:'#1a7a4a',
+     experiments:[{name:'trust-crest-2025',status:'active',sessions:3,participants:58}],
      researchers:[{name:'Pierre Martin',initials:'PM',color:'#1a7a4a',email:'pierre.martin@ensae.fr',role:'PI'},{name:'Julie Dupont',initials:'JD',color:'#6b46c1',email:'julie.dupont@ensae.fr',role:'Member'}]},
-    {id:'l3',name:'LEEM · Montpellier',country:'France',contact:'marc.willinger@univ-montp1.fr',experiments:['trust-leem-2025'],color:'#b06000',
+    {id:'l3',name:'LEEM · Montpellier',country:'France',contact:'marc.willinger@univ-montp1.fr',color:'#b06000',
+     experiments:[{name:'trust-leem-2025',status:'active',sessions:2,participants:38}],
      researchers:[{name:'Marc Willinger',initials:'MW',color:'#b06000',email:'marc.willinger@univ-montp1.fr',role:'PI'}]},
   ]},
   {id:'p2',name:'META-COORD',color:'#8a3fc0',description:'Cross-national coordination failure experiments with labs in France and Belgium.',status:'draft',lead:'Gabriel Bayle',
@@ -201,7 +210,9 @@ const PROJECTS = [
     {id:'l5',name:'CORE · Louvain',country:'Belgium',contact:'f.maniquet@uclouvain.be',experiments:[],color:'#8a3fc0',researchers:[{name:'François Maniquet',initials:'FM',color:'#8a3fc0',email:'f.maniquet@uclouvain.be',role:'PI'}]},
   ]},
   {id:'p3',name:'RISK-POOL-2024',color:'#1a7a4a',description:'Completed risk elicitation study across 3 labs.',status:'archived',lead:'Gabriel Bayle',
-   labs:[{id:'l6',name:'GATE · CNRS · Lyon',country:'France',contact:'gabriel.bayle@cnrs.fr',experiments:['risk-elicitation-online'],color:'#3b6fd4',researchers:[{name:'Gabriel Bayle',initials:'GB',color:'#1a4fa0',email:'gabriel.bayle@cnrs.fr',role:'PI'}]}]},
+   labs:[{id:'l6',name:'GATE · CNRS · Lyon',country:'France',contact:'gabriel.bayle@cnrs.fr',color:'#3b6fd4',
+     experiments:[{name:'risk-elicitation-online',status:'archived',sessions:4,participants:312}],
+     researchers:[{name:'Gabriel Bayle',initials:'GB',color:'#1a4fa0',email:'gabriel.bayle@cnrs.fr',role:'PI'}]}]},
 ];
 
 let sel = null;
@@ -228,6 +239,7 @@ function renderDetail(){
   const p=sel;
   const totalR=p.labs.reduce((a,l)=>a+l.researchers.length,0);
   const totalE=p.labs.reduce((a,l)=>a+l.experiments.length,0);
+  const totalParts=p.labs.reduce((a,l)=>a+l.experiments.reduce((b,e)=>b+(e.participants||0),0),0);
   document.getElementById('right-panel').innerHTML=`
     <div class="card" style="margin-bottom:1.25rem">
       <div class="card-header">
@@ -242,6 +254,7 @@ function renderDetail(){
         <div class="strip-item"><strong>${p.labs.length}</strong> labs</div>
         <div class="strip-item"><strong>${totalR}</strong> researchers</div>
         <div class="strip-item"><strong>${totalE}</strong> experiments</div>
+        <div class="strip-item"><strong>${totalParts}</strong> participants</div>
         <div class="strip-item">Lead: <strong>${p.lead}</strong></div>
       </div>
       <div class="card-body"><div style="font-size:13.5px;color:var(--slate);line-height:1.7">${p.description||'<span style="color:var(--muted)">No description.</span>'}</div></div>
@@ -273,7 +286,18 @@ function labCard(lab,pid){
       </button>
     </div>
     <div class="lab-body">
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:.5rem">Researchers</div>
+      ${lab.experiments.length ? `
+      <div class="lab-subsection" style="margin-bottom:.5rem">Experiments</div>
+      <table class="exp-mini-table" style="margin-bottom:1rem">
+        <thead><tr><th>Name</th><th>Status</th><th style="text-align:right">Sessions</th><th style="text-align:right">Participants</th></tr></thead>
+        <tbody>${lab.experiments.map(e=>`<tr>
+          <td style="font-weight:500;color:var(--navy)">${e.name}</td>
+          <td><span style="font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;background:${e.status==='active'?'var(--success-bg)':e.status==='archived'?'#f0f0f0':'var(--blue-light)'};color:${e.status==='active'?'var(--success)':e.status==='archived'?'#666':'var(--blue)'}">${e.status.charAt(0).toUpperCase()+e.status.slice(1)}</span></td>
+          <td style="text-align:right;color:var(--muted)">${e.sessions}</td>
+          <td style="text-align:right;color:var(--muted)">${e.participants}</td>
+        </tr>`).join('')}</tbody>
+      </table>` : ''}
+      <div class="lab-subsection">Researchers</div>
       ${rRows||'<div style="font-size:13px;color:var(--muted);padding:4px 0">No researchers yet.</div>'}
       <div class="add-row">
         <input id="ar-${lab.id}" placeholder="Name or email…" type="text"/>

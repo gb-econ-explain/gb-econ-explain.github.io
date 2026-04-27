@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
   --blue:#1a4fa0; --blue-light:#e8eff9; --blue-mid:#3b6fd4;
@@ -105,6 +106,32 @@ tbody tr { transition:background 0.1s; }
 .toast { position:fixed; top:20px; left:calc(var(--sidebar-w) + 50%); transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:10px 22px; border-radius:var(--radius); font-size:13.5px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); }
 
+
+/* ── Roles section ── */
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:0.875rem; }
+.section-title-lg { font-size:15px; font-weight:600; color:var(--navy); }
+.section-sub { font-size:13px; color:var(--muted); margin-top:1px; }
+.roles-table-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:2rem; }
+.roles-table { width:100%; border-collapse:collapse; font-size:13px; }
+.roles-table thead tr { background:var(--bg); }
+.roles-table th { padding:9px 14px; text-align:left; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; }
+.roles-table th.perm-col { text-align:center; width:80px; }
+.roles-table td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.roles-table tr:last-child td { border-bottom:none; }
+.roles-table tbody tr:hover { background:#fafbfd; }
+.role-name-cell { display:flex; align-items:center; gap:9px; }
+.role-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.role-name-text { font-weight:600; color:var(--navy); font-size:13.5px; }
+.role-desc-text { font-size:12px; color:var(--muted); margin-top:1px; }
+.role-system-tag { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; }
+.perm-cell { text-align:center; }
+.perm-check { color:var(--success); font-size:14px; }
+.perm-dash { color:#d1d5db; font-size:14px; }
+/* override badge */
+.badge-role { border-radius:20px; padding:3px 10px; font-size:11.5px; font-weight:600; cursor:pointer; }
+.badge-role:hover { filter:brightness(.95); }
+.perm-override-note { font-size:11.5px; color:var(--warning); display:flex; align-items:center; gap:5px; padding:7px 10px; background:var(--warning-bg); border-radius:7px; margin-top:.5rem; }
+.count-label { font-size:13px; color:var(--muted); margin-left:auto; }
 </style>
 </head>
 <body>
@@ -152,89 +179,143 @@ tbody tr { transition:background 0.1s; }
     </div>
   </div>
 </aside>
+
 <div class="main">
 <div class="content">
 
+<div class="breadcrumb"><span>Users</span></div>
 <div class="page-header">
   <div><h1>Users</h1><p>Researcher accounts and permissions for GATE · CNRS · Lyon.</p></div>
   <button class="btn btn-primary" onclick="openNewUser()">+ Invite researcher</button>
 </div>
 
+<!-- ── Roles ── -->
+<div class="section-header">
+  <div>
+    <div class="section-title-lg">Roles</div>
+    <div class="section-sub">Roles define a reusable set of permissions. Assign a role to a user, then override individual rights if needed.</div>
+  </div>
+  <button class="btn btn-ghost btn-sm" onclick="openCreateRole()">+ Create role</button>
+</div>
+<div class="roles-table-wrap">
+  <table class="roles-table" id="roles-table">
+    <thead><tr id="roles-thead"></tr></thead>
+    <tbody id="roles-tbody"></tbody>
+  </table>
+</div>
+
+<!-- ── Users table ── -->
 <div class="toolbar">
   <div class="search-wrap">
     <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
     <input class="search-input" id="search" type="text" placeholder="Search by name or email…" oninput="render()"/>
   </div>
   <select class="filter-select" id="f-role" onchange="render()">
-    <option value="">All roles</option><option value="Lab Admin">Lab Admin</option><option value="Researcher">Researcher</option>
+    <option value="">All roles</option>
   </select>
   <select class="filter-select" id="f-status" onchange="render()">
     <option value="">All statuses</option><option value="active">Active</option><option value="pending">Pending</option><option value="inactive">Inactive</option>
   </select>
-  <span style="font-size:13px;color:var(--muted);margin-left:auto" id="count-label"></span>
+  <span class="count-label" id="count-label"></span>
 </div>
 
 <div class="card">
   <table>
     <thead>
       <tr>
-        <th>Researcher</th>
-        <th>Role</th>
-        <th>Status</th>
-        <th>Experiments access</th>
-        <th>Last active</th>
-        <th>Account expires</th>
-        <th></th>
+        <th>Researcher</th><th>Role</th><th>Status</th><th>Overrides</th><th>Last active</th><th>Expires</th><th></th>
       </tr>
     </thead>
     <tbody id="users-tbody"></tbody>
   </table>
 </div>
 
-<!-- User modal -->
+</div>
+</div>
+
+<!-- ── User edit modal ── -->
 <div class="modal-overlay" id="user-modal">
-  <div class="modal">
+  <div class="modal" style="max-width:600px">
     <div class="modal-header">
-      <div class="modal-title" id="um-title">Researcher profile</div>
-      <button class="modal-close" onclick="closeModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="p-av" id="um-av" style="width:36px;height:36px;font-size:12px;background:var(--blue)">—</div>
+        <div>
+          <div class="modal-title" id="um-name">—</div>
+          <div style="font-size:12px;color:var(--muted)" id="um-email">—</div>
+        </div>
+        <span id="um-badge" style="margin-left:8px"></span>
+      </div>
+      <button class="modal-close" onclick="closeModal('user-modal')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
     </div>
     <div class="modal-body">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.25rem">
-        <div class="p-av" id="um-av" style="width:44px;height:44px;font-size:14px;background:var(--blue)">—</div>
-        <div>
-          <div style="font-weight:600;font-size:15px" id="um-name">—</div>
-          <div style="font-size:13px;color:var(--muted)" id="um-email">—</div>
-        </div>
-        <span id="um-badge" style="margin-left:auto"></span>
-      </div>
-      <div class="section-title">Platform access</div>
-      <div class="perms-grid" id="um-perms"></div>
       <div class="section-title">Account settings</div>
-      <div class="field"><label>Role</label><select id="um-role"><option>Researcher</option><option>Lab Admin</option></select></div>
-      <div class="field"><label>Account expires</label><input type="date" id="um-expires"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.875rem;margin-bottom:1.25rem">
+        <div class="field" style="margin:0">
+          <label>Role</label>
+          <select id="um-role" onchange="onRoleChange()">
+          </select>
+        </div>
+        <div class="field" style="margin:0"><label>Account expires</label><input type="date" id="um-expires"/></div>
+      </div>
+
+      <div class="section-title">Page access</div>
+      <div style="font-size:12.5px;color:var(--muted);margin-bottom:.75rem">Inherited from role. Toggle individual pages to override.</div>
+      <div class="perms-grid" id="um-perms"></div>
+      <div id="um-override-note" style="display:none" class="perm-override-note">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1.5L14.5 13H1.5L8 1.5z"/><path d="M8 6v4M8 11.5v.5"/></svg>
+        This user has custom overrides that differ from their role defaults.
+        <button onclick="resetToRole()" style="margin-left:auto;font-size:11.5px;color:var(--warning);font-weight:600;background:none;border:none;cursor:pointer;text-decoration:underline">Reset to role</button>
+      </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger btn-sm" onclick="showToast('Account deactivated');closeModal()">Deactivate</button>
-      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="showToast('Changes saved');closeModal()">Save changes</button>
+      <button class="btn btn-danger btn-sm" onclick="showToast('Account deactivated');closeModal('user-modal')">Deactivate</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('user-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveUser()">Save changes</button>
     </div>
   </div>
 </div>
 
-<!-- New user modal -->
+<!-- ── New user modal ── -->
 <div class="modal-overlay" id="new-user-modal">
   <div class="modal">
     <div class="modal-header"><div class="modal-title">Invite researcher</div>
-      <button class="modal-close" onclick="document.getElementById('new-user-modal').classList.remove('open')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+      <button class="modal-close" onclick="closeModal('new-user-modal')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
     </div>
     <div class="modal-body">
-      <div class="field"><label>Email address</label><input type="email" placeholder="researcher@cnrs.fr"/></div>
-      <div class="field"><label>Role</label><select><option>Researcher</option><option>Lab Admin</option></select></div>
-      <div class="field"><label>Account expires</label><input type="date" value="2026-09-01"/></div>
+      <div class="field"><label>Email address</label><input type="email" id="nu-email" placeholder="researcher@cnrs.fr"/></div>
+      <div class="field"><label>Role</label><select id="nu-role"></select></div>
+      <div class="field"><label>Account expires</label><input type="date" id="nu-expires" value="2026-09-01"/></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('new-user-modal').classList.remove('open')">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="showToast('Invitation sent');document.getElementById('new-user-modal').classList.remove('open')">Send invitation</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('new-user-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="sendInvite()">Send invitation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Create / edit role modal ── -->
+<div class="modal-overlay" id="role-modal">
+  <div class="modal" style="max-width:580px">
+    <div class="modal-header">
+      <div class="modal-title" id="rm-title">Create role</div>
+      <button class="modal-close" onclick="closeModal('role-modal')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:.875rem;align-items:end;margin-bottom:1rem">
+        <div class="field" style="margin:0"><label>Role name</label><input type="text" id="rm-name" placeholder="e.g. Senior researcher"/></div>
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--slate);margin-bottom:5px">Colour</div>
+          <div style="display:flex;gap:7px" id="rm-colors"></div>
+        </div>
+      </div>
+      <div class="field"><label>Description</label><input type="text" id="rm-desc" placeholder="What can this role do?"/></div>
+      <div class="section-title">Page access</div>
+      <div class="perms-grid" id="rm-perms"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger btn-sm" id="rm-delete-btn" onclick="deleteRole()" style="display:none">Delete role</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('role-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveRole()">Save role</button>
     </div>
   </div>
 </div>
@@ -243,87 +324,331 @@ tbody tr { transition:background 0.1s; }
 
 <script>
 const PERMS_LIST = [
-  {key:'experiments',label:'Experiments'},
-  {key:'calendar',label:'Calendar'},
-  {key:'subjects',label:'Subject Pool'},
-  {key:'accounting',label:'Accounting'},
-  {key:'statistics',label:'Statistics'},
-  {key:'users',label:'Users'},
-  {key:'mailing',label:'Mailing'},
-  {key:'invitations',label:'Send invitations'},
+  {key:'experiments',  label:'Experiments'},
+  {key:'calendar',     label:'Calendar'},
+  {key:'subjects',     label:'Subject Pool'},
+  {key:'accounting',   label:'Accounting'},
+  {key:'dashboard',    label:'Dashboard'},
+  {key:'users',        label:'Users'},
+  {key:'mailing',      label:'Mailing'},
+  {key:'invitations',  label:'Send invitations'},
 ];
 
+const ROLE_COLORS = ['#1a4fa0','#1a7a4a','#8a3fc0','#b06000','#c0392b','#2d6a8a','#4a5568'];
+
+// ── Roles ─────────────────────────────────────────────────────────────────
+const ROLES = [
+  { id:'r1', name:'Lab Manager', color:'#92400e', desc:'Full access — manages the lab, users and all experiments.',
+    perms:{experiments:true,calendar:true,subjects:true,accounting:true,dashboard:true,users:true,mailing:true,invitations:true}, system:true },
+  { id:'r2', name:'Researcher', color:'#1a4fa0', desc:'Access to experiments and calendar. Can send invitations.',
+    perms:{experiments:true,calendar:true,subjects:false,accounting:false,dashboard:false,users:false,mailing:false,invitations:true}, system:false },
+  { id:'r3', name:'Accountant', color:'#b06000', desc:'Access to accounting and dashboard only. No experiment access.',
+    perms:{experiments:false,calendar:false,subjects:false,accounting:true,dashboard:true,users:false,mailing:false,invitations:false}, system:false },
+  { id:'r4', name:'Lab Assistant', color:'#1a7a4a', desc:'Can view experiments and calendar but cannot send invitations.',
+    perms:{experiments:true,calendar:true,subjects:false,accounting:false,dashboard:false,users:false,mailing:false,invitations:false}, system:false },
+];
+
+// ── Users ─────────────────────────────────────────────────────────────────
 const USERS = [
-  {id:'u1',name:'Gabriel Bayle',initials:'GB',color:'#1a4fa0',email:'gabriel.bayle@cnrs.fr',role:'Lab Admin',status:'active',lastActive:'2025-06-12',expires:'2027-09-01',perms:{experiments:true,calendar:true,subjects:true,accounting:true,statistics:true,users:true,mailing:true,invitations:true}},
-  {id:'u2',name:'Iane Vallanzasca',initials:'IV',color:'#3b6fd4',email:'iane.vallanzasca@cnrs.fr',role:'Researcher',status:'active',lastActive:'2025-06-10',expires:'2026-09-01',perms:{experiments:true,calendar:true,subjects:false,accounting:false,statistics:false,users:false,mailing:false,invitations:true}},
-  {id:'u3',name:'Marie Claire Villeval',initials:'MCV',color:'#1a7a4a',email:'marie-claire.villeval@cnrs.fr',role:'Researcher',status:'active',lastActive:'2025-05-28',expires:'2026-09-01',perms:{experiments:true,calendar:true,subjects:false,accounting:false,statistics:true,users:false,mailing:false,invitations:true}},
-  {id:'u4',name:'Paul Durand',initials:'PD',color:'#8a3fc0',email:'paul.durand@univ-lyon2.fr',role:'Researcher',status:'pending',lastActive:'Never',expires:'2026-09-01',perms:{experiments:true,calendar:false,subjects:false,accounting:false,statistics:false,users:false,mailing:false,invitations:false}},
-  {id:'u5',name:'Sophie Lefèvre',initials:'SL',color:'#b06000',email:'sophie.lefevre@ens-lyon.fr',role:'Researcher',status:'inactive',lastActive:'2024-12-01',expires:'2025-03-01',perms:{experiments:false,calendar:false,subjects:false,accounting:false,statistics:false,users:false,mailing:false,invitations:false}},
+  {id:'u1',name:'Gabriel Bayle',    initials:'GB', color:'#1a4fa0',email:'gabriel.bayle@cnrs.fr',          roleId:'r1',status:'active', lastActive:'2025-06-12',expires:'2027-09-01',overrides:{}},
+  {id:'u2',name:'Iane Vallanzasca', initials:'IV', color:'#3b6fd4',email:'iane.vallanzasca@cnrs.fr',        roleId:'r2',status:'active', lastActive:'2025-06-10',expires:'2026-09-01',overrides:{}},
+  {id:'u3',name:'Marie Claire Villeval',initials:'MCV',color:'#1a7a4a',email:'marie-claire.villeval@cnrs.fr',roleId:'r2',status:'active', lastActive:'2025-05-28',expires:'2026-09-01',overrides:{subjects:true}},
+  {id:'u4',name:'Paul Durand',      initials:'PD', color:'#8a3fc0',email:'paul.durand@univ-lyon2.fr',       roleId:'r4',status:'pending',lastActive:'Never',      expires:'2026-09-01',overrides:{}},
+  {id:'u5',name:'Sophie Lefèvre',   initials:'SL', color:'#b06000',email:'sophie.lefevre@ens-lyon.fr',      roleId:'r2',status:'inactive',lastActive:'2024-12-01',expires:'2025-03-01',overrides:{}},
 ];
 
-function render(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const fr=document.getElementById('f-role').value;
-  const fs=document.getElementById('f-status').value;
-  let list=USERS.filter(u=>{
-    if(q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
-    if(fr && u.role!==fr) return false;
-    if(fs && u.status!==fs) return false;
+function getRole(rid) { return ROLES.find(r=>r.id===rid) || ROLES[1]; }
+function userPerms(u) {
+  const base = {...(getRole(u.roleId)?.perms || {})};
+  return {...base, ...(u.overrides||{})};
+}
+function hasOverrides(u) { return Object.keys(u.overrides||{}).length > 0; }
+
+// ── Render roles grid ─────────────────────────────────────────────────────
+function renderRoles() {
+  // Populate role selects
+  ['um-role','nu-role','f-role'].forEach(selId => {
+    const el = document.getElementById(selId);
+    if (!el) return;
+    const prev = el.value;
+    el.innerHTML = (selId === 'f-role' ? '<option value="">All roles</option>' : '') +
+      ROLES.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+    el.value = prev;
+  });
+
+  const usersPerRole = {};
+  USERS.forEach(u => { usersPerRole[u.roleId] = (usersPerRole[u.roleId]||0)+1; });
+
+  // Table header: Role name | Description | perm cols... | Users | Actions
+  document.getElementById('roles-thead').innerHTML =
+    '<th>Role</th><th>Description</th>' +
+    PERMS_LIST.map(p => `<th class="perm-col">${p.label}</th>`).join('') +
+    '<th class="perm-col">Users</th><th></th>';
+
+  // Table rows
+  document.getElementById('roles-tbody').innerHTML = ROLES.map(r => {
+    const count = usersPerRole[r.id] || 0;
+    const permCells = PERMS_LIST.map(p =>
+      `<td class="perm-cell">${r.perms[p.key]
+        ? '<span class="perm-check">✓</span>'
+        : '<span class="perm-dash">—</span>'}</td>`
+    ).join('');
+    return `<tr>
+      <td>
+        <div class="role-name-cell">
+          <div class="role-dot" style="background:${r.color}"></div>
+          <div>
+            <div class="role-name-text">${r.name}</div>
+            ${r.system ? '<span class="role-system-tag">system</span>' : ''}
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--muted);font-size:13px;max-width:220px">${r.desc}</td>
+      ${permCells}
+      <td class="perm-cell" style="font-size:13px;color:var(--muted)">${count}</td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="icon-btn" title="Edit role" onclick="openEditRole('${r.id}')">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z"/></svg>
+          </button>
+          ${!r.system ? `<button class="icon-btn danger" title="Delete role" onclick="deleteRoleById('${r.id}')">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg>
+          </button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Render users table ────────────────────────────────────────────────────
+function render() {
+  const q  = document.getElementById('search').value.toLowerCase();
+  const fr = document.getElementById('f-role').value;
+  const fs = document.getElementById('f-status').value;
+  let list = USERS.filter(u => {
+    if (q && !u.name.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
+    if (fr && u.roleId !== fr) return false;
+    if (fs && u.status !== fs) return false;
     return true;
   });
-  document.getElementById('count-label').textContent=list.length+' users';
-  document.getElementById('users-tbody').innerHTML=list.map(u=>`<tr>
-    <td><div class="person-cell"><div class="p-av" style="background:${u.color}">${u.initials}</div><div><div class="p-name">${u.name}</div><div class="p-email">${u.email}</div></div></div></td>
-    <td><span class="badge badge-${u.role==='Lab Admin'?'admin':'researcher'}">${u.role}</span></td>
-    <td><span class="badge badge-${u.status}">${u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></td>
-    <td style="font-size:13px;color:var(--muted)">${Object.values(u.perms).filter(Boolean).length} / ${PERMS_LIST.length} pages</td>
-    <td style="font-size:13px;color:var(--muted)">${u.lastActive}</td>
-    <td style="font-size:13px;${new Date(u.expires)<new Date()?'color:var(--danger);font-weight:600':'color:var(--muted)'}">${u.expires}</td>
-    <td>
-      <div style="display:flex;gap:5px">
-        <button class="icon-btn" title="Edit permissions" onclick="openUser('${u.id}')">
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z"/></svg>
-        </button>
-        ${u.status==='pending'?`<button class="icon-btn" style="color:var(--success);border-color:var(--success)" title="Validate account" onclick="showToast('Account validated')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg></button>`:''}
-      </div>
-    </td>
-  </tr>`).join('');
+  document.getElementById('count-label').textContent = list.length + ' users';
+  document.getElementById('users-tbody').innerHTML = list.map(u => {
+    const role = getRole(u.roleId);
+    const overCount = Object.keys(u.overrides||{}).length;
+    const expired = new Date(u.expires) < new Date();
+    return `<tr>
+      <td><div class="person-cell"><div class="p-av" style="background:${u.color}">${u.initials}</div><div><div class="p-name">${u.name}</div><div class="p-email">${u.email}</div></div></div></td>
+      <td>
+        <span class="badge badge-role" style="background:${role.color}18;color:${role.color};border:1px solid ${role.color}40" onclick="openUser('${u.id}')" title="Click to edit">${role.name}</span>
+      </td>
+      <td><span class="badge badge-${u.status}">${u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span></td>
+      <td style="font-size:13px;color:${overCount?'var(--warning)':'var(--muted)'}">${overCount ? `⚑ ${overCount} override${overCount!==1?'s':''}` : '—'}</td>
+      <td style="font-size:13px;color:var(--muted)">${u.lastActive}</td>
+      <td style="font-size:13px;${expired?'color:var(--danger);font-weight:600':'color:var(--muted)'}">${u.expires}</td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button class="icon-btn" title="Edit" onclick="openUser('${u.id}')">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M9.5 2.5l2 2L4 12H2v-2L9.5 2.5z"/></svg>
+          </button>
+          ${u.status==='pending'?`<button class="icon-btn" style="color:var(--success);border-color:var(--success)" title="Validate" onclick="showToast('Account validated');render()"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg></button>`:''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
-function openUser(id){
-  const u=USERS.find(x=>x.id===id);if(!u)return;
-  document.getElementById('um-title').textContent=u.name+' — Permissions';
-  document.getElementById('um-av').textContent=u.initials;
-  document.getElementById('um-av').style.background=u.color;
-  document.getElementById('um-name').textContent=u.name;
-  document.getElementById('um-email').textContent=u.email;
-  document.getElementById('um-badge').innerHTML=`<span class="badge badge-${u.role==='Lab Admin'?'admin':'researcher'}">${u.role}</span>`;
-  document.getElementById('um-role').value=u.role;
-  document.getElementById('um-expires').value=u.expires;
-  document.getElementById('um-perms').innerHTML=PERMS_LIST.map(p=>`
-    <div class="perm-row">${p.label}
-      <div class="perm-toggle">
-        <button class="pt-btn ${u.perms[p.key]?'on':''}" onclick="togglePerm(this,'${u.id}','${p.key}',true)">&nbsp;On&nbsp;</button>
-        <button class="pt-btn ${!u.perms[p.key]?'off':''}" onclick="togglePerm(this,'${u.id}','${p.key}',false)">&nbsp;Off&nbsp;</button>
-      </div>
-    </div>`).join('');
+// ── User edit modal ───────────────────────────────────────────────────────
+let editingUserId = null;
+
+function openUser(id) {
+  const u = USERS.find(x=>x.id===id); if (!u) return;
+  editingUserId = id;
+  const role = getRole(u.roleId);
+  document.getElementById('um-av').textContent = u.initials;
+  document.getElementById('um-av').style.background = u.color;
+  document.getElementById('um-name').textContent = u.name;
+  document.getElementById('um-email').textContent = u.email;
+  document.getElementById('um-badge').innerHTML = `<span class="badge badge-${u.status}">${u.status.charAt(0).toUpperCase()+u.status.slice(1)}</span>`;
+  document.getElementById('um-role').value = u.roleId;
+  document.getElementById('um-expires').value = u.expires;
+  renderUserPerms(u);
   document.getElementById('user-modal').classList.add('open');
 }
-function togglePerm(btn, uid, pkey, val){
-  const u=USERS.find(x=>x.id===uid);if(!u)return;
-  u.perms[pkey]=val;
-  const row=btn.closest('.perm-row');
-  row.querySelectorAll('.pt-btn').forEach(b=>{ b.classList.remove('on','off'); });
-  row.querySelectorAll('.pt-btn')[0].classList.toggle('on', val);
-  row.querySelectorAll('.pt-btn')[1].classList.toggle('off', !val);
+
+function renderUserPerms(u) {
+  const role = getRole(u.roleId);
+  const effective = userPerms(u);
+  document.getElementById('um-perms').innerHTML = PERMS_LIST.map(p => {
+    const fromRole = role.perms[p.key] || false;
+    const isOverridden = (u.overrides||{})[p.key] !== undefined;
+    const val = effective[p.key];
+    return `<div class="perm-row" id="pr-${p.key}" style="${isOverridden?'outline:2px solid var(--warning-border)':''}">
+      <span>${p.label}${isOverridden?` <span style="font-size:10px;color:var(--warning)">(override)</span>`:''}</span>
+      <div class="perm-toggle">
+        <button class="pt-btn ${val?'on':''}" onclick="setUserPerm('${p.key}',true)">&nbsp;On&nbsp;</button>
+        <button class="pt-btn ${!val?'off':''}" onclick="setUserPerm('${p.key}',false)">&nbsp;Off&nbsp;</button>
+      </div>
+    </div>`;
+  }).join('');
+  checkOverrideNote(u);
 }
-function openNewUser(){document.getElementById('new-user-modal').classList.add('open');}
-function closeModal(){document.getElementById('user-modal').classList.remove('open');}
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+
+function setUserPerm(pkey, val) {
+  const u = USERS.find(x=>x.id===editingUserId); if (!u) return;
+  const role = getRole(u.roleId);
+  const roleDefault = role.perms[pkey] || false;
+  if (val === roleDefault) { delete u.overrides[pkey]; }
+  else { u.overrides[pkey] = val; }
+  renderUserPerms(u);
+}
+
+function onRoleChange() {
+  const u = USERS.find(x=>x.id===editingUserId); if (!u) return;
+  u.roleId = document.getElementById('um-role').value;
+  u.overrides = {};
+  renderUserPerms(u);
+}
+
+function resetToRole() {
+  const u = USERS.find(x=>x.id===editingUserId); if (!u) return;
+  u.overrides = {};
+  renderUserPerms(u);
+}
+
+function checkOverrideNote(u) {
+  const note = document.getElementById('um-override-note');
+  note.style.display = Object.keys(u.overrides||{}).length ? '' : 'none';
+}
+
+function saveUser() {
+  const u = USERS.find(x=>x.id===editingUserId); if (!u) return;
+  u.roleId  = document.getElementById('um-role').value;
+  u.expires = document.getElementById('um-expires').value;
+  closeModal('user-modal');
+  renderRoles();
+  render();
+  showToast('Changes saved');
+}
+
+// ── Create / edit role modal ──────────────────────────────────────────────
+let editingRoleId = null;
+let selectedRoleColor = ROLE_COLORS[0];
+
+function openCreateRole() {
+  editingRoleId = null;
+  selectedRoleColor = ROLE_COLORS[0];
+  document.getElementById('rm-title').textContent = 'Create role';
+  document.getElementById('rm-name').value = '';
+  document.getElementById('rm-desc').value = '';
+  document.getElementById('rm-delete-btn').style.display = 'none';
+  renderRoleColorPicker();
+  renderRolePerms({});
+  document.getElementById('role-modal').classList.add('open');
+}
+
+function openEditRole(rid) {
+  const r = ROLES.find(x=>x.id===rid); if (!r) return;
+  editingRoleId = rid;
+  selectedRoleColor = r.color;
+  document.getElementById('rm-title').textContent = 'Edit role — ' + r.name;
+  document.getElementById('rm-name').value = r.name;
+  document.getElementById('rm-desc').value = r.desc;
+  document.getElementById('rm-delete-btn').style.display = r.system ? 'none' : '';
+  renderRoleColorPicker();
+  renderRolePerms(r.perms);
+  document.getElementById('role-modal').classList.add('open');
+}
+
+function renderRoleColorPicker() {
+  document.getElementById('rm-colors').innerHTML = ROLE_COLORS.map(c =>
+    `<div onclick="pickRoleColor('${c}',this)" style="width:20px;height:20px;border-radius:50%;background:${c};cursor:pointer;border:2.5px solid ${c===selectedRoleColor?'#333':'transparent'};transition:border-color .15s" data-rc="${c}"></div>`
+  ).join('');
+}
+
+function pickRoleColor(c, el) {
+  selectedRoleColor = c;
+  document.querySelectorAll('[data-rc]').forEach(d => d.style.borderColor = 'transparent');
+  el.style.borderColor = '#333';
+}
+
+function renderRolePerms(perms) {
+  document.getElementById('rm-perms').innerHTML = PERMS_LIST.map(p => `
+    <div class="perm-row">
+      <span>${p.label}</span>
+      <div class="perm-toggle">
+        <button class="pt-btn ${perms[p.key]?'on':''}" id="rmp-on-${p.key}" onclick="toggleRolePerm('${p.key}',true)">&nbsp;On&nbsp;</button>
+        <button class="pt-btn ${!perms[p.key]?'off':''}" id="rmp-off-${p.key}" onclick="toggleRolePerm('${p.key}',false)">&nbsp;Off&nbsp;</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleRolePerm(pkey, val) {
+  document.getElementById('rmp-on-'+pkey).classList.toggle('on', val);
+  document.getElementById('rmp-on-'+pkey).classList.toggle('', !val);
+  document.getElementById('rmp-off-'+pkey).classList.toggle('off', !val);
+  document.getElementById('rmp-off-'+pkey).classList.toggle('', val);
+}
+
+function saveRole() {
+  const name = document.getElementById('rm-name').value.trim();
+  if (!name) { showToast('Enter a role name', true); return; }
+  const perms = {};
+  PERMS_LIST.forEach(p => { perms[p.key] = document.getElementById('rmp-on-'+p.key).classList.contains('on'); });
+  if (editingRoleId) {
+    const r = ROLES.find(x=>x.id===editingRoleId);
+    if (r) { r.name=name; r.desc=document.getElementById('rm-desc').value.trim(); r.perms=perms; r.color=selectedRoleColor; }
+  } else {
+    ROLES.push({ id:'r'+Date.now(), name, color:selectedRoleColor, desc:document.getElementById('rm-desc').value.trim(), perms, system:false });
+  }
+  closeModal('role-modal');
+  renderRoles();
+  render();
+  showToast(editingRoleId ? 'Role updated' : 'Role created');
+}
+
+function deleteRole() {
+  if (!editingRoleId) return;
+  const r = ROLES.find(x=>x.id===editingRoleId);
+  if (!r || r.system) { showToast('Cannot delete system role', true); return; }
+  const inUse = USERS.filter(u=>u.roleId===editingRoleId).length;
+  if (inUse) { showToast(`Role in use by ${inUse} user${inUse!==1?'s':''}. Reassign first.`, true); return; }
+  ROLES.splice(ROLES.indexOf(r), 1);
+  closeModal('role-modal');
+  renderRoles();
+  render();
+  showToast('Role deleted');
+}
+
+function deleteRoleById(rid) {
+  editingRoleId = rid;
+  deleteRole();
+}
+
+// ── Invite ────────────────────────────────────────────────────────────────
+function openNewUser() { document.getElementById('new-user-modal').classList.add('open'); }
+function sendInvite() {
+  const email = document.getElementById('nu-email').value.trim();
+  if (!email) { showToast('Enter an email', true); return; }
+  closeModal('new-user-modal');
+  showToast('Invitation sent to ' + email);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); }));
 
 let tt;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2500);}
+function showToast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = err ? '#c0392b' : 'var(--success)';
+  t.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(() => t.classList.remove('show'), 2500);
+}
 
+// ── Init ──────────────────────────────────────────────────────────────────
+renderRoles();
 render();
 </script>
 

@@ -61,16 +61,15 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
 .chart-title{font-size:15px;font-weight:600;color:var(--navy)}
 .chart-var-select{padding:5px 22px 5px 9px;border:1px solid var(--border);border-radius:7px;font-family:inherit;font-size:12px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;outline:none}
-.chart-area{height:200px;display:flex;align-items:flex-end;gap:6px;padding-bottom:24px;position:relative;border-bottom:1px solid var(--border)}
-.bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;position:relative}
-.bar{width:100%;border-radius:4px 4px 0 0;transition:opacity .15s;cursor:pointer;min-height:2px}
-.bar:hover{opacity:.8}
-.bar-lbl{position:absolute;bottom:-20px;font-size:11px;color:var(--muted);white-space:nowrap}
-.bar-val{position:absolute;top:-18px;font-size:11px;font-weight:600;color:var(--slate);opacity:0;transition:opacity .15s}
-.bar-group:hover .bar-val{opacity:1}
-.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:.75rem}
-.legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+/* SVG line chart */
+.chart-svg-wrap{width:100%;overflow:hidden;margin-bottom:.75rem}
+.chart-svg-wrap svg{width:100%;display:block}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:.5rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);cursor:pointer;padding:3px 6px;border-radius:6px;transition:background .12s}
+.legend-item:hover{background:var(--bg)}
 .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+/* tooltip */
+.chart-tooltip{position:fixed;background:#1a2035;color:#fff;font-size:12px;font-family:'DM Sans',sans-serif;padding:7px 11px;border-radius:8px;pointer-events:none;z-index:9999;display:none;line-height:1.6;white-space:nowrap}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
 @media(max-width:700px){.two-col{grid-template-columns:1fr}}
 .donut-wrap{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
@@ -134,9 +133,10 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 <div class="page-header">
   <div><h1>Dashboard</h1><p>Platform activity for GATE · CNRS · Lyon — click any KPI to explore its chart.</p></div>
   <select class="filter-select" id="period" onchange="update()">
-    <option value="12">Last 12 months</option>
-    <option value="6">Last 6 months</option>
+    <option value="30">Last 30 days</option>
     <option value="3">Last 3 months</option>
+    <option value="6">Last 6 months</option>
+    <option value="12" selected>Last 12 months</option>
   </select>
 </div>
 
@@ -180,11 +180,12 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 
 <div class="chart-card">
   <div class="chart-header">
-    <div class="chart-title" id="chart-title">Total subjects over time</div>
+    <div class="chart-title" id="chart-title">Trends over time</div>
   </div>
-  <div class="chart-area" id="chart-area"></div>
+  <div class="chart-svg-wrap" id="chart-svg-wrap"></div>
   <div class="chart-legend" id="chart-legend"></div>
 </div>
+<div class="chart-tooltip" id="chart-tooltip"></div>
 
 <div class="two-col">
   <div class="chart-card" style="margin:0">
@@ -221,73 +222,191 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 
 <script>
 const DATA = {
-  12:{months:['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
-      subs:  [268,272,276,282,288,292,295,298,303,307,310,312],
-      new:   [3,4,4,6,6,4,3,3,5,4,3,5],
+  12:{labels:['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'],
+      subs:   [268,272,276,282,288,292,295,298,303,307,310,312],
+      new:    [3,4,4,6,6,4,3,3,5,4,3,5],
       sessions:[2,1,3,2,3,4,1,2,3,4,2,5],
-      parts: [40,20,60,45,65,80,24,40,65,90,42,100],
-      ns:    [8,5,4,6,5,4,3,5,4,6,3,5],
-      paid:  [720,360,1080,810,1170,1440,432,720,1170,1620,756,1800],
-      dels:  [0,1,0,0,1,0,0,0,1,0,0,0]},
-  6:{months:['Jan','Feb','Mar','Apr','May','Jun'],
-     subs: [295,298,303,307,310,312],new:[3,3,5,4,3,5],sessions:[1,2,3,4,2,5],parts:[24,40,65,90,42,100],ns:[3,5,4,6,3,5],paid:[432,720,1170,1620,756,1800],dels:[0,0,1,0,0,0]},
-  3:{months:['Apr','May','Jun'],
+      parts:  [40,20,60,45,65,80,24,40,65,90,42,100],
+      ns:     [8,5,4,6,5,4,3,5,4,6,3,5],
+      paid:   [720,360,1080,810,1170,1440,432,720,1170,1620,756,1800],
+      dels:   [0,1,0,0,1,0,0,0,1,0,0,0]},
+  6:{labels:['Jan','Feb','Mar','Apr','May','Jun'],
+     subs:[295,298,303,307,310,312],new:[3,3,5,4,3,5],sessions:[1,2,3,4,2,5],
+     parts:[24,40,65,90,42,100],ns:[3,5,4,6,3,5],paid:[432,720,1170,1620,756,1800],dels:[0,0,1,0,0,0]},
+  3:{labels:['Apr','May','Jun'],
      subs:[307,310,312],new:[4,3,5],sessions:[4,2,5],parts:[90,42,100],ns:[6,3,5],paid:[1620,756,1800],dels:[0,0,0]},
+  30:{
+    labels: Array.from({length:30},(_,i)=>{const d=new Date(2025,5,1+i);return `${d.getDate()}/${d.getMonth()+1}`;}),
+    subs:   [308,308,309,309,309,310,310,310,310,311,311,311,311,311,312,312,312,312,312,312,312,312,312,312,312,312,312,312,312,312],
+    new:    [0,0,1,0,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    sessions:[0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,1],
+    parts:  [0,0,0,0,22,0,0,0,0,0,0,18,0,0,0,0,0,0,24,0,0,0,0,30,0,0,0,0,0,6],
+    ns:     [0,0,0,0,2,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,0,0,1],
+    paid:   [0,0,0,0,396,0,0,0,0,0,0,324,0,0,0,0,0,0,432,0,0,0,0,540,0,0,0,0,0,108],
+    dels:   [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  },
 };
 
 const METRICS = {
-  subs:    {label:'Total subjects over time',  color:'#3b6fd4', unit:'',   delta:(d)=>`↑ +${d.new[d.new.length-1]} this month`, dc:'delta-up'},
-  new:     {label:'New registrations per month',color:'#1a7a4a',unit:'',   delta:(d)=>`${d.new.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
-  sessions:{label:'Sessions per month',        color:'#8a3fc0', unit:'',   delta:(d)=>`${d.sessions.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
-  parts:   {label:'Participations per month',  color:'#b06000', unit:'',   delta:(d)=>`${d.parts.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
-  ns:      {label:'No-shows per month',        color:'#c0392b', unit:'',   delta:(d)=>{ const r=Math.round(d.ns.reduce((a,v)=>a+v)/d.parts.reduce((a,v)=>a+v)*1000)/10; return r+'% avg rate'; },dc:'delta-dn'},
-  paid:    {label:'Total paid out per month (€)',color:'#1a4fa0',unit:'€', delta:(d)=>`${d.paid.reduce((a,v)=>a+v).toLocaleString()} € total`,dc:'delta-up'},
-  dels:    {label:'Account deletions per month',color:'#718096',unit:'',   delta:(d)=>`${d.dels.reduce((a,v)=>a+v,0)} total`,dc:'delta-n'},
+  subs:    {label:'Total subjects',            color:'#3b6fd4', unit:'',   delta:(d)=>`↑ +${d.new[d.new.length-1]} this period`, dc:'delta-up'},
+  new:     {label:'New registrations',         color:'#1a7a4a', unit:'',   delta:(d)=>`${d.new.reduce((a,v)=>a+v,0)} total`,      dc:'delta-n'},
+  sessions:{label:'Sessions',                  color:'#8a3fc0', unit:'',   delta:(d)=>`${d.sessions.reduce((a,v)=>a+v,0)} total`, dc:'delta-n'},
+  parts:   {label:'Participations',            color:'#b06000', unit:'',   delta:(d)=>`${d.parts.reduce((a,v)=>a+v,0)} total`,    dc:'delta-n'},
+  ns:      {label:'No-shows',                  color:'#c0392b', unit:'',   delta:(d)=>{const r=Math.round(d.ns.reduce((a,v)=>a+v)/Math.max(1,d.parts.reduce((a,v)=>a+v))*1000)/10;return r+'% avg rate';}, dc:'delta-dn'},
+  paid:    {label:'Paid out (€)',              color:'#1a4fa0', unit:'€',  delta:(d)=>`${d.paid.reduce((a,v)=>a+v).toLocaleString()} € total`, dc:'delta-up'},
+  dels:    {label:'Account deletions',         color:'#718096', unit:'',   delta:(d)=>`${d.dels.reduce((a,v)=>a+v,0)} total`,    dc:'delta-n'},
 };
 
-let activeKey='subs';
+// Multiple active keys
+let activeKeys = new Set(['subs']);
 
-function setActive(key){ activeKey=key; document.querySelectorAll('.kpi').forEach(k=>k.classList.remove('active')); document.getElementById('kpi-'+key).classList.add('active'); update(); }
-
-function update(){
-  const p=parseInt(document.getElementById('period').value)||12;
-  const d=DATA[p]||DATA[12];
-
-  // Update KPI values
-  document.getElementById('kv-subs').textContent = d.subs[d.subs.length-1];
-  document.getElementById('kd-subs').textContent = `↑ +${d.new[d.new.length-1]} this month`;
-  const kpis={new:d.new,sessions:d.sessions,parts:d.parts,ns:null,paid:null,dels:d.dels};
-  document.getElementById('kv-new').textContent = d.new.reduce((a,v)=>a+v,0);
-  document.getElementById('kd-new').textContent = 'registrations this period';
-  document.getElementById('kv-sessions').textContent = d.sessions.reduce((a,v)=>a+v,0);
-  document.getElementById('kd-sessions').textContent = 'sessions run';
-  document.getElementById('kv-parts').textContent = d.parts.reduce((a,v)=>a+v,0);
-  document.getElementById('kd-parts').textContent = 'total participations';
-  const nsRate = Math.round(d.ns.reduce((a,v)=>a+v)/d.parts.reduce((a,v)=>a+v)*1000)/10;
-  document.getElementById('kv-ns').textContent = nsRate+'%';
-  document.getElementById('kd-ns').textContent = 'avg no-show rate';
-  document.getElementById('kv-paid').textContent = (d.paid.reduce((a,v)=>a+v)/1000).toFixed(1)+'k €';
-  document.getElementById('kd-paid').textContent = 'paid out this period';
-  document.getElementById('kv-dels').textContent = d.dels.reduce((a,v)=>a+v,0);
-  document.getElementById('kd-dels').textContent = 'account closures';
-
-  // Render chart for active metric
-  renderChart(d);
+function setActive(key) {
+  if (activeKeys.has(key)) {
+    if (activeKeys.size > 1) activeKeys.delete(key);
+  } else {
+    activeKeys.add(key);
+  }
+  document.querySelectorAll('.kpi').forEach(k => {
+    const kid = k.id.replace('kpi-','');
+    k.classList.toggle('active', activeKeys.has(kid));
+  });
+  update();
 }
 
-function renderChart(d){
-  const m = METRICS[activeKey];
-  const vals = d[activeKey];
-  const max = Math.max(...vals);
-  document.getElementById('chart-title').textContent = m.label;
-  document.getElementById('chart-area').innerHTML = d.months.map((mo,i)=>`
-    <div class="bar-group">
-      <div class="bar-val">${vals[i]}${m.unit}</div>
-      <div class="bar" style="height:${max?Math.max(4,Math.round(vals[i]/max*160)):4}px;background:${m.color}" title="${mo}: ${vals[i]}${m.unit}"></div>
-      <div class="bar-lbl">${mo}</div>
-    </div>`).join('');
-  document.getElementById('chart-legend').innerHTML = `<div class="legend-item"><div class="legend-dot" style="background:${m.color}"></div>${m.label}</div>`;
+function update() {
+  const p = parseInt(document.getElementById('period').value) || 12;
+  const d = DATA[p] || DATA[12];
+
+  // KPI values
+  document.getElementById('kv-subs').textContent    = d.subs[d.subs.length-1];
+  document.getElementById('kd-subs').textContent    = `↑ +${d.new[d.new.length-1]} this period`;
+  document.getElementById('kd-subs').className      = 'kpi-delta delta-up';
+  document.getElementById('kv-new').textContent     = d.new.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-new').textContent     = 'registrations this period';
+  document.getElementById('kd-new').className       = 'kpi-delta delta-n';
+  document.getElementById('kv-sessions').textContent= d.sessions.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-sessions').textContent= 'sessions run';
+  document.getElementById('kv-parts').textContent   = d.parts.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-parts').textContent   = 'total participations';
+  const nsRate = Math.round(d.ns.reduce((a,v)=>a+v)/Math.max(1,d.parts.reduce((a,v)=>a+v))*1000)/10;
+  document.getElementById('kv-ns').textContent      = nsRate+'%';
+  document.getElementById('kd-ns').textContent      = 'avg no-show rate';
+  document.getElementById('kv-paid').textContent    = (d.paid.reduce((a,v)=>a+v)/1000).toFixed(1)+'k €';
+  document.getElementById('kd-paid').textContent    = 'paid out this period';
+  document.getElementById('kv-dels').textContent    = d.dels.reduce((a,v)=>a+v,0);
+  document.getElementById('kd-dels').textContent    = 'account closures';
+
+  renderLineChart(d);
 }
+
+// ── SVG Line chart (multi-series) ─────────────────────────────────────────
+const W = 700, H = 200, PAD = {top:18, right:16, bottom:28, left:38};
+const CW = W - PAD.left - PAD.right;
+const CH = H - PAD.top  - PAD.bottom;
+
+function renderLineChart(d) {
+  const keys = [...activeKeys];
+  const n = d.labels.length;
+
+  // Collect all values across active series for unified Y scale
+  let allVals = [];
+  keys.forEach(k => { allVals = allVals.concat(d[k] || []); });
+  const minV = 0;
+  const maxV = Math.max(...allVals, 1);
+
+  const xPos = i => PAD.left + (n > 1 ? i / (n-1) * CW : CW/2);
+  const yPos = v => PAD.top + CH - ((v - minV) / (maxV - minV)) * CH;
+
+  // Y gridlines
+  const ticks = 4;
+  let gridLines = '';
+  let gridLabels = '';
+  for (let t = 0; t <= ticks; t++) {
+    const val = minV + (maxV - minV) * t / ticks;
+    const y   = yPos(val);
+    gridLines  += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}" stroke="#e5e9f0" stroke-width="1"/>`;
+    gridLabels += `<text x="${PAD.left - 6}" y="${y + 4}" text-anchor="end" font-size="10" fill="#9ca3af">${Math.round(val)}</text>`;
+  }
+
+  // X axis labels — thin out if too many points
+  const step = n > 20 ? Math.ceil(n / 10) : 1;
+  let xLabels = '';
+  d.labels.forEach((lbl, i) => {
+    if (i % step !== 0 && i !== n-1) return;
+    xLabels += `<text x="${xPos(i)}" y="${H - 4}" text-anchor="middle" font-size="10" fill="#9ca3af">${lbl}</text>`;
+  });
+
+  // Series lines, areas, dots
+  let seriesSVG = '';
+  keys.forEach(k => {
+    const m   = METRICS[k];
+    const vals = d[k] || [];
+    const pts  = vals.map((v, i) => `${xPos(i)},${yPos(v)}`).join(' ');
+
+    // Filled area under line
+    const areaPath = `M${xPos(0)},${yPos(vals[0])} ` +
+      vals.map((v, i) => `L${xPos(i)},${yPos(v)}`).join(' ') +
+      ` L${xPos(n-1)},${PAD.top+CH} L${xPos(0)},${PAD.top+CH} Z`;
+    seriesSVG += `<path d="${areaPath}" fill="${m.color}" fill-opacity="0.07"/>`;
+
+    // Line
+    seriesSVG += `<polyline points="${pts}" fill="none" stroke="${m.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+    // Dots (only if not too many points)
+    if (n <= 15) {
+      vals.forEach((v, i) => {
+        seriesSVG += `<circle class="chart-dot" cx="${xPos(i)}" cy="${yPos(v)}" r="3.5" fill="#fff" stroke="${m.color}" stroke-width="2"
+          data-label="${d.labels[i]}" data-val="${v}${m.unit}" data-metric="${m.label}" data-color="${m.color}"
+          onmouseenter="showTip(event,this)" onmouseleave="hideTip()"/>`;
+      });
+    } else {
+      // Invisible wider hit areas
+      vals.forEach((v, i) => {
+        seriesSVG += `<circle cx="${xPos(i)}" cy="${yPos(v)}" r="6" fill="transparent"
+          data-label="${d.labels[i]}" data-val="${v}${m.unit}" data-metric="${m.label}" data-color="${m.color}"
+          onmouseenter="showTip(event,this)" onmouseleave="hideTip()" style="cursor:crosshair"/>`;
+      });
+    }
+  });
+
+  // Vertical hover line (invisible, drawn last)
+  const hoverLine = `<line id="hover-line" x1="0" y1="${PAD.top}" x2="0" y2="${PAD.top+CH}" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3 3" opacity="0" pointer-events="none"/>`;
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="overflow:visible">
+    ${gridLines}${gridLabels}${xLabels}
+    <line x1="${PAD.left}" y1="${PAD.top+CH}" x2="${W-PAD.right}" y2="${PAD.top+CH}" stroke="#e5e9f0" stroke-width="1"/>
+    ${seriesSVG}
+    ${hoverLine}
+  </svg>`;
+
+  document.getElementById('chart-svg-wrap').innerHTML = svg;
+
+  // Legend
+  const titleKeys = [...activeKeys];
+  document.getElementById('chart-title').textContent =
+    titleKeys.map(k => METRICS[k].label).join(' · ');
+
+  document.getElementById('chart-legend').innerHTML = Object.entries(METRICS).map(([k, m]) =>
+    `<div class="legend-item ${activeKeys.has(k)?'':'inactive'}" onclick="setActive('${k}')"
+      style="${activeKeys.has(k)?'':'opacity:.45'}">
+      <div class="legend-dot" style="background:${m.color}"></div>${m.label}
+    </div>`
+  ).join('');
+}
+
+function showTip(e, dot) {
+  const tt = document.getElementById('chart-tooltip');
+  tt.innerHTML = `<strong style="color:${dot.dataset.color}">${dot.dataset.metric}</strong><br>${dot.dataset.label}: <strong>${dot.dataset.val}</strong>`;
+  tt.style.display = 'block';
+  moveTip(e);
+}
+function moveTip(e) {
+  const tt = document.getElementById('chart-tooltip');
+  tt.style.left = (e.clientX + 14) + 'px';
+  tt.style.top  = (e.clientY - 36) + 'px';
+}
+function hideTip() { document.getElementById('chart-tooltip').style.display = 'none'; }
+document.addEventListener('mousemove', e => { if (document.getElementById('chart-tooltip').style.display !== 'none') moveTip(e); });
 
 update();
 

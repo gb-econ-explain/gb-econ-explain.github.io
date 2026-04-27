@@ -12,32 +12,9 @@ A new top-level navigation section (alongside Research, Administration, Help) wi
 
 For lab managers / platform admins. Manages the review board of EXPLAIN.
 
-- List of registered reviewers (name, institution, expertise, status)
-- Select one or more reviewers to send a review request to
-- Select the experiment / documents to submit for review
-- Send everything by email (compose a message, attach relevant docs)
-- Track sent review requests (pending / completed / rejected)
-
-### Review (`review.html`)
-
-For reviewers. Their personal workspace to submit validations.
-
-- List of review requests assigned to them
-- For each: view the experiment description and attached documents
-- Submit a validation decision (Approved / Rejected / Revision requested)
-- Leave comments visible to the lab manager
-- Timeline of past reviews
-
-### Documents (`documents.html`)
-
-For lab managers. Central document review dashboard per project/experiment.
-
-- Table of all documents sent for review, grouped by experiment
-- Status per document (Pending / Reviewed / Rejected)
-- Download or preview each document
-- **Notification badge** on the sidebar nav item when one or more documents are awaiting review
-  - Badge should update in real time (or on page load)
-  - Should disappear once all pending documents are reviewed
+- Add a button to send to review on the right menu.
+- Add a button to produce the certificate for validated reviews.
+- Add a status for reviews for which the certificate has been produced, like "Archived".
 
 ---
 

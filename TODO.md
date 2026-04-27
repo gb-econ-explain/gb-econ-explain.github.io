@@ -78,3 +78,35 @@ Replace `welcome.html` with the dashboard as the landing page for all user types
 - The nav active state should point to "Dashboard" (currently pointing to "Welcome")
 - Update all internal links that currently point to `welcome.html` to point to `dashboard.html`
 - The hub.html dev switcher button on `welcome.html` should move to `dashboard.html`
+
+---
+
+## Acknowledgment page
+
+A static page accessible from the Help section (or footer).
+
+- **"How to cite EXPLAIN"** section: standard citation format (APA, BibTeX, etc.) for researchers who used the platform in their studies
+- **Project history**: narrative of how the platform was built, key milestones, funding sources
+- **Project team**: list of contributors with name, role, institution
+
+---
+
+## Accounting — per-experiment accountant authorisation
+
+Allow lab managers to specify which accountant service can access and extract payment data for a given experiment.
+
+- In the **experiment settings page**, add a field "Payment managed by" with a selector of authorised accountant services (e.g. University_Acc, S2C2H — CNRS payment service, or custom)
+- In the **accounting page**, accountants only see the experiments they are authorised for
+- The authorisation is set per experiment, not globally
+- Example use case: payments for experiment A go through the university accountant, payments for experiment B go through CNRS S2C2H
+
+---
+
+## Session editing — before invitations are sent
+
+If a session has been created but invitations have not yet been sent, it should be fully editable: quotas, filters, date/time, slots, group size, minimum needed, etc.
+
+Once invitations are sent, the session becomes locked (current behaviour: date/time cannot be modified if session is public).
+
+Add a clear visual indicator on the session detail page showing whether the session is still editable or locked, and why.
+

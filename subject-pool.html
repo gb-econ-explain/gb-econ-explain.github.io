@@ -7,112 +7,188 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --blue:#1a4fa0; --blue-light:#e8eff9; --blue-mid:#3b6fd4;
-  --navy:#0d2b5e; --slate:#4a5568; --muted:#718096;
-  --border:#dde3ed; --bg:#f6f8fc; --white:#ffffff; --text:#1a2035;
-  --radius:10px; --radius-lg:16px;
-  --success:#1a7a4a; --success-bg:#e6f4ed;
-  --warning:#8a6200; --warning-bg:#fff8e6; --warning-border:#f5d87a;
-  --danger:#c0392b; --danger-bg:#fff0f0; --danger-border:#f5c5c5;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a4fa0;--blue-light:#e8eff9;--blue-mid:#3b6fd4;
+  --navy:#0d2b5e;--slate:#4a5568;--muted:#718096;
+  --border:#dde3ed;--bg:#f6f8fc;--white:#fff;--text:#1a2035;
+  --radius:10px;--radius-lg:16px;
+  --success:#1a7a4a;--success-bg:#e6f4ed;
+  --warning:#8a6200;--warning-bg:#fff8e6;--warning-border:#f5d87a;
+  --danger:#c0392b;--danger-bg:#fff0f0;--danger-border:#f5c5c5;
   --sidebar-w:220px;
 }
-html,body { height:100%; }
-body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg); font-size:15px; line-height:1.6; display:flex; min-height:100vh; }
-.sidebar { width:var(--sidebar-w); min-height:100vh; background:var(--white); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; overflow-y:auto; }
-.sidebar-logo { display:flex; align-items:center; gap:10px; padding:1.25rem 1.1rem 1rem; border-bottom:1px solid var(--border); text-decoration:none; }
-.logo-mark { width:32px; height:32px; background:var(--navy); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.logo-mark svg { width:16px; height:16px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; }
-.logo-name { font-family:'DM Serif Display',serif; font-size:16px; color:var(--navy); display:block; }
-.logo-sub { font-size:10px; color:var(--muted); display:block; line-height:1.3; }
-.sidebar-nav { padding:0.75rem; flex:1; }
-.nav-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); padding:0.9rem 0.5rem 0.35rem; display:block; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:7px 10px; border-radius:var(--radius); font-size:13.5px; color:var(--slate); text-decoration:none; transition:background 0.12s,color 0.12s; margin-bottom:1px; }
-.nav-item:hover { background:var(--bg); color:var(--navy); }
-.nav-item.active { background:var(--blue-light); color:var(--blue); font-weight:500; }
-.nav-item svg { width:15px; height:15px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
-.nav-soon { font-size:10px; font-weight:600; color:var(--muted); background:#f0f0f0; border-radius:4px; padding:1px 6px; margin-left:auto; }
-.sidebar-footer { padding:0.875rem 1rem 1rem; border-top:1px solid var(--border); flex-shrink:0; }
-.sidebar-user { display:flex; align-items:center; gap:9px; padding:6px 8px; border-radius:var(--radius); transition:background 0.12s; cursor:default; }
-.sidebar-user:hover { background:var(--bg); }
-.avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.user-name { font-size:13px; font-weight:500; color:var(--text); line-height:1.2; }
-.user-role { font-size:11px; color:var(--muted); }
-.notif-btn { width:28px; height:28px; border-radius:7px; border:1px solid var(--border); background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all 0.15s; margin-left:auto; flex-shrink:0; }
-.notif-btn:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
-.main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; min-height:100vh; }
-.content { padding:2rem 2rem 4rem; }
-.page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.75rem; gap:1rem; flex-wrap:wrap; }
-.page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); }
-.page-header p { font-size:13.5px; color:var(--muted); margin-top:2px; }
-.breadcrumb { font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px; margin-bottom:1.5rem; }
-.breadcrumb a { color:var(--blue-mid); text-decoration:none; }
-@media(max-width:768px){ .sidebar{ transform:translateX(-100%); } .main{ margin-left:0; } }
-
-.stat-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:1.5rem; }
-.stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:0.875rem 1.125rem; }
-.stat-label { font-size:11.5px; color:var(--muted); margin-bottom:3px; }
-.stat-value { font-size:22px; font-weight:600; color:var(--navy); line-height:1; }
-.stat-value.green { color:var(--success); }
-.stat-value.orange { color:#b06000; }
-.toolbar { display:flex; align-items:center; gap:10px; margin-bottom:1rem; flex-wrap:wrap; }
-.search-wrap { position:relative; flex:1; min-width:200px; max-width:300px; }
-.search-wrap svg { position:absolute; left:9px; top:50%; transform:translateY(-50%); pointer-events:none; }
-.search-input { width:100%; padding:7px 11px 7px 30px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13.5px; color:var(--text); background:var(--white); outline:none; }
-.search-input:focus { border-color:var(--blue-mid); box-shadow:0 0 0 3px rgba(59,111,212,0.1); }
-.filter-select { padding:7px 26px 7px 10px; border:1px solid var(--border); border-radius:var(--radius); font-family:inherit; font-size:13px; color:var(--slate); background:var(--white); appearance:none; cursor:pointer; outline:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 8px center; }
-.filter-select:focus { border-color:var(--blue-mid); }
-.count-label { font-size:13px; color:var(--muted); margin-left:auto; }
-.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:var(--radius); font-family:inherit; font-size:13.5px; font-weight:500; cursor:pointer; border:none; transition:all 0.15s; text-decoration:none; white-space:nowrap; }
-.btn-primary { background:var(--blue); color:#fff; }
-.btn-primary:hover { background:var(--navy); }
-.btn-ghost { background:var(--white); color:var(--slate); border:1px solid var(--border); }
-.btn-ghost:hover { background:var(--bg); }
-.btn-sm { padding:5px 12px; font-size:12.5px; }
-.btn-danger { background:var(--danger-bg); color:var(--danger); border:1px solid var(--danger-border); }
-.card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
-table { width:100%; border-collapse:collapse; font-size:13.5px; }
-thead tr { background:var(--bg); }
-th { padding:10px 14px; text-align:left; font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; cursor:pointer; user-select:none; }
-th:hover { color:var(--slate); }
-th.sorted { color:var(--blue); }
-th .si { margin-left:3px; opacity:.5; font-size:10px; }
-td { padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
-tr:last-child td { border-bottom:none; }
-tbody tr { cursor:pointer; transition:background 0.1s; }
-tbody tr:hover { background:var(--blue-light); }
-.subject-cell { display:flex; align-items:center; gap:10px; }
-.s-avatar { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:#fff; flex-shrink:0; }
-.s-name { font-weight:500; font-size:13.5px; }
-.s-id { font-size:11.5px; color:var(--muted); }
-.badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
-.badge-active { background:var(--success-bg); color:var(--success); }
-.badge-inactive { background:#f0f0f0; color:#666; }
-.mini-bar-row { display:flex; gap:2px; align-items:flex-end; height:16px; }
-.mini-bar { width:5px; border-radius:2px; background:var(--blue-mid); }
-/* Profile modal */
-.modal-overlay { position:fixed; inset:0; background:rgba(13,43,94,0.35); z-index:1000; display:none; align-items:center; justify-content:center; padding:1rem; }
-.modal-overlay.open { display:flex; }
-.modal { background:var(--white); border-radius:var(--radius-lg); padding:0; max-width:640px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.15); max-height:90vh; overflow-y:auto; }
-.modal-header { padding:1.5rem 2rem 1rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:1rem; position:sticky; top:0; background:var(--white); z-index:1; }
-.modal-title { font-family:'DM Serif Display',serif; font-size:20px; color:var(--navy); }
-.modal-close { width:28px; height:28px; border:1px solid var(--border); border-radius:7px; background:transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); }
-.modal-close:hover { background:var(--bg); }
-.modal-body { padding:1.5rem 2rem 2rem; }
-.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
-.profile-field { }
-.pf-label { font-size:11.5px; color:var(--muted); margin-bottom:2px; }
-.pf-value { font-size:14px; color:var(--text); font-weight:500; }
-.section-title { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.09em; color:var(--muted); margin:1.5rem 0 0.75rem; padding-bottom:0.5rem; border-bottom:1px solid var(--border); }
-.stat-chips { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:1.25rem; }
-.stat-chip { background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:0.5rem 0.875rem; }
-.sc-val { font-size:20px; font-weight:600; color:var(--navy); line-height:1; }
-.sc-lbl { font-size:11px; color:var(--muted); }
-.modal-footer { padding:1rem 2rem; border-top:1px solid var(--border); display:flex; gap:8px; justify-content:flex-end; }
-.toast { position:fixed; top:20px; left:calc(var(--sidebar-w) + 50%); transform:translateX(-50%) translateY(-80px); background:var(--success); color:#fff; padding:10px 22px; border-radius:var(--radius); font-size:13.5px; font-weight:500; z-index:9999; box-shadow:0 4px 16px rgba(0,0,0,0.15); transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; }
-.toast.show { transform:translateX(-50%) translateY(0); }
-
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.6;display:flex;min-height:100vh}
+/* ── Sidebar ── */
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);display:block}
+.logo-sub{font-size:10px;color:var(--muted);display:block;line-height:1.3}
+.sidebar-nav{padding:0.75rem;flex:1}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.9rem 0.5rem 0.35rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);font-size:13.5px;color:var(--slate);text-decoration:none;transition:background 0.12s,color 0.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg);color:var(--navy)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:500}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-soon{font-size:10px;font-weight:600;color:var(--muted);background:#f0f0f0;border-radius:4px;padding:1px 6px;margin-left:auto}
+.sidebar-footer{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius);cursor:default}
+.sidebar-user:hover{background:var(--bg)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:11px;color:var(--muted)}
+.notif-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.15s;margin-left:auto;flex-shrink:0}
+.notif-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+/* ── Layout ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{padding:2rem 2rem 4rem}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.5rem;gap:1rem;flex-wrap:wrap}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy)}
+.page-header p{font-size:13.5px;color:var(--muted);margin-top:2px}
+.breadcrumb{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:1.5rem}
+.breadcrumb a{color:var(--blue-mid);text-decoration:none}
+/* ── Stats row ── */
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0.875rem 1.125rem}
+.stat-label{font-size:11.5px;color:var(--muted);margin-bottom:3px}
+.stat-value{font-size:22px;font-weight:600;color:var(--navy);line-height:1}
+.stat-value.green{color:var(--success)}
+.stat-value.orange{color:#b06000}
+/* ── Two-column layout ── */
+.two-col{display:grid;grid-template-columns:1fr 340px;gap:1.25rem;align-items:start}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr}}
+/* ── Chart card ── */
+.chart-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem}
+.chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.chart-title{font-size:13.5px;font-weight:600;color:var(--navy)}
+.chart-var-select{padding:5px 22px 5px 9px;border:1px solid var(--border);border-radius:7px;font-family:inherit;font-size:12px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center}
+.donut-wrap{display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.donut-legend{display:flex;flex-direction:column;gap:7px;flex:1}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:12.5px;cursor:pointer;padding:3px 6px;border-radius:6px;transition:background .12s}
+.dl-item:hover{background:var(--bg)}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-label{flex:1;color:var(--slate)}
+.dl-count{font-size:12px;color:var(--muted);font-weight:500}
+/* ── Search bar ── */
+.search-bar{display:flex;align-items:center;gap:8px;margin-bottom:0.75rem;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:320px}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-input{width:100%;padding:7px 11px 7px 30px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.search-input:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+.count-label{font-size:13px;color:var(--muted);margin-left:auto}
+/* ── Table ── */
+.table-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead tr{background:var(--bg)}
+/* ── Column header with inline filter dropdown ── */
+th{padding:0;border-bottom:1px solid var(--border);white-space:nowrap;vertical-align:middle}
+.th-inner{display:flex;align-items:center;gap:0;padding:0}
+.th-sort{display:flex;align-items:center;gap:4px;padding:9px 8px 9px 14px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);cursor:pointer;user-select:none;white-space:nowrap;flex:1}
+.th-sort:hover{color:var(--slate)}
+.th-sort.sorted{color:var(--blue)}
+.th-sort .si{opacity:.5;font-size:10px}
+.th-filter-btn{width:22px;height:22px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);border-radius:5px;margin-right:6px;flex-shrink:0;transition:all .12s;position:relative}
+.th-filter-btn:hover{background:var(--blue-light);color:var(--blue)}
+.th-filter-btn.active{color:var(--blue);background:var(--blue-light)}
+.th-filter-btn.active::after{content:'';width:6px;height:6px;background:var(--blue);border-radius:50%;position:absolute;top:1px;right:1px}
+/* Filter dropdown popup */
+.col-filter-popup{position:absolute;top:calc(100% + 4px);left:0;min-width:180px;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);z-index:200;box-shadow:0 6px 24px rgba(0,0,0,.12);padding:8px 0;display:none}
+.col-filter-popup.open{display:block}
+.cfp-header{padding:5px 12px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);border-bottom:1px solid var(--border);margin-bottom:4px}
+.cfp-option{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--slate)}
+.cfp-option:hover{background:var(--bg)}
+.cfp-option input[type=checkbox]{accent-color:var(--blue-mid);cursor:pointer}
+.cfp-clear{padding:6px 12px;font-size:12px;color:var(--blue);cursor:pointer;border-top:1px solid var(--border);margin-top:4px;display:block;text-align:center}
+.cfp-clear:hover{background:var(--blue-light)}
+/* filter input for text search in popup */
+.cfp-search{margin:4px 8px 6px;padding:5px 9px;border:1px solid var(--border);border-radius:7px;font-family:inherit;font-size:12.5px;width:calc(100% - 16px);outline:none}
+.cfp-search:focus{border-color:var(--blue-mid)}
+.th-wrap{position:relative}
+td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .1s}
+tbody tr:hover{background:var(--blue-light)}
+.subject-cell{display:flex;align-items:center;gap:10px}
+.s-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.s-name{font-weight:500;font-size:13.5px}
+.s-id{font-size:11.5px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-active{background:var(--success-bg);color:var(--success)}
+.badge-inactive{background:#f0f0f0;color:#666}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--navy)}
+.btn-ghost{background:var(--white);color:var(--slate);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border:1px solid var(--danger-border)}
+/* ── Profile modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,43,94,.35);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--radius-lg);padding:0;max-width:720px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;display:flex;flex-direction:column}
+.modal-header{padding:1.5rem 2rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0}
+.modal-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--navy)}
+.modal-close{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.modal-close:hover{background:var(--bg)}
+/* modal tabs */
+.modal-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 2rem;flex-shrink:0;background:var(--white)}
+.modal-tab{padding:10px 16px;font-size:13.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:color .12s;white-space:nowrap}
+.modal-tab:hover{color:var(--navy)}
+.modal-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.modal-body{padding:1.5rem 2rem;overflow-y:auto;flex:1}
+.modal-tab-panel{display:none}
+.modal-tab-panel.active{display:block}
+/* profile fields */
+.profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.pf-label{font-size:11.5px;color:var(--muted);margin-bottom:2px}
+.pf-value{font-size:14px;color:var(--text);font-weight:500}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:1.25rem 0 .75rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.section-title:first-child{margin-top:0}
+.stat-chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem}
+.stat-chip{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:.5rem .875rem}
+.sc-val{font-size:20px;font-weight:600;color:var(--navy);line-height:1}
+.sc-lbl{font-size:11px;color:var(--muted)}
+/* ── Session history in modal ── */
+.sess-hist-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.sess-hist-row:last-child{border-bottom:none}
+.sh-date{font-size:12px;color:var(--muted);min-width:80px}
+.sh-name{font-size:13.5px;color:var(--text);flex:1}
+.sh-meta{font-size:12px;color:var(--muted)}
+.sh-amount{font-size:13.5px;font-weight:500;color:var(--navy);text-align:right;min-width:60px}
+/* ── Comments / flags in modal ── */
+.comment-row{background:var(--bg);border-radius:var(--radius);padding:10px 14px;margin-bottom:8px;position:relative}
+.comment-author{font-size:12px;font-weight:600;color:var(--navy)}
+.comment-date{font-size:11.5px;color:var(--muted);margin-left:8px}
+.comment-text{font-size:13.5px;color:var(--text);margin-top:4px;line-height:1.5}
+.comment-type{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:10px;margin-left:auto}
+.type-warning{background:var(--warning-bg);color:var(--warning)}
+.type-info{background:var(--blue-light);color:var(--blue)}
+.add-comment-row{display:flex;gap:8px;margin-top:12px}
+.add-comment-input{flex:1;padding:7px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;outline:none}
+.add-comment-input:focus{border-color:var(--blue-mid)}
+/* ── Account info section ── */
+.account-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.ai-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg);border-radius:var(--radius)}
+.ai-label{font-size:12.5px;color:var(--muted)}
+.ai-value{font-size:13.5px;font-weight:500;color:var(--text)}
+.ai-value.ok{color:var(--success)}
+.ai-value.warn{color:var(--warning)}
+/* ── Other labs section ── */
+.other-lab-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-radius:var(--radius);margin-bottom:6px}
+.lab-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+/* ── Modal footer ── */
+.modal-footer{padding:1rem 2rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
+/* ── mini bar ── */
+.mini-bar-row{display:flex;gap:2px;align-items:flex-end;height:16px}
+.mini-bar{width:5px;border-radius:2px;background:var(--blue-mid)}
+/* ── Toast ── */
+.toast{position:fixed;top:20px;left:calc(var(--sidebar-w) + 50%);transform:translateX(-50%) translateY(-80px);background:var(--success);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:13.5px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
 </style>
 </head>
 <body>
@@ -122,35 +198,22 @@ tbody tr:hover { background:var(--blue-light); }
     <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
   </a>
   <nav class="sidebar-nav">
-        <a class="nav-item" href="welcome.html" ><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome
-    </a>
+    <a class="nav-item" href="welcome.html"><svg viewBox="0 0 16 16"><path d="M2 6.5L8 2l6 4.5V14H10v-3H6v3H2z"/></svg>Welcome</a>
     <span class="nav-label">Research</span>
-        <a class="nav-item" href="experiment-list.html" ><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments
-    </a>
-        <a class="nav-item" href="calendar.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar
-    </a>
-        <a class="nav-item" href="multilab.html" ><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab
-    </a>
+    <a class="nav-item" href="experiment-list.html"><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments</a>
+    <a class="nav-item" href="calendar.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar</a>
+    <a class="nav-item" href="multilab.html"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab</a>
     <span class="nav-label">Administration</span>
-        <a class="nav-item active" href="subject-pool.html" ><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool
-    </a>
-        <a class="nav-item" href="accounting.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting
-    </a>
-        <a class="nav-item" href="dashboard.html" ><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Dashboard
-    </a>
-        <a class="nav-item" href="users.html" ><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users
-    </a>
-        <a class="nav-item" href="mailing.html" ><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing
-    </a>
-        <a class="nav-item" href="new-feature.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span>
-    </a>
+    <a class="nav-item active" href="subject-pool.html"><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool</a>
+    <a class="nav-item" href="accounting.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting</a>
+    <a class="nav-item" href="dashboard.html"><svg viewBox="0 0 16 16"><path d="M2 13V8M6 13V5M10 13V9M14 13V3"/></svg>Dashboard</a>
+    <a class="nav-item" href="users.html"><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users</a>
+    <a class="nav-item" href="mailing.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing</a>
+    <a class="nav-item" href="new-feature.html"><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span></a>
     <span class="nav-label">Help</span>
-        <a class="nav-item" href="recruit.html" ><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit
-    </a>
-        <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation
-    </a>
-        <a class="nav-item" href="contact.html" ><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact
-    </a>
+    <a class="nav-item" href="recruit.html"><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit</a>
+    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation</a>
+    <a class="nav-item" href="contact.html"><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact</a>
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
@@ -160,9 +223,11 @@ tbody tr:hover { background:var(--blue-light); }
     </div>
   </div>
 </aside>
+
 <div class="main">
 <div class="content">
 
+<div class="breadcrumb"><span>Subject Pool</span></div>
 <div class="page-header">
   <div><h1>Subject Pool</h1><p>All participants registered to GATE · CNRS · Lyon.</p></div>
   <button class="btn btn-primary" onclick="showToast('Opening new subject form…')">+ New subject</button>
@@ -175,194 +240,480 @@ tbody tr:hover { background:var(--blue-light); }
   <div class="stat-card"><div class="stat-label">No-show rate</div><div class="stat-value orange" id="stat-ns">—</div></div>
 </div>
 
-<div class="toolbar">
-  <div class="search-wrap">
-    <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
-    <input class="search-input" id="search" type="text" placeholder="Search name, email, ID…" oninput="render()"/>
+<div class="two-col">
+  <!-- LEFT: table -->
+  <div>
+    <div class="search-bar">
+      <div class="search-wrap">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input class="search-input" id="search" type="text" placeholder="Search name, email, ID…" oninput="render()"/>
+      </div>
+      <span class="count-label" id="count-label"></span>
+    </div>
+
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th><div class="th-inner"><div class="th-sort sorted" id="ths-name" onclick="sortBy('name')">Subject <span class="si" id="si-name">↕</span></div><div class="th-wrap"><button class="th-filter-btn" id="tfb-name" onclick="toggleColFilter('name',this)" title="Filter"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h10M3 6h6M5 9h2"/></svg></button><div class="col-filter-popup" id="cfp-name"><div class="cfp-header">Filter by name</div><input class="cfp-search" placeholder="Search…" oninput="cfpSearch('name',this.value)"/><div id="cfp-name-opts"></div><span class="cfp-clear" onclick="clearColFilter('name')">Clear filter</span></div></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-gender" onclick="sortBy('gender')">Gender <span class="si" id="si-gender">↕</span></div><div class="th-wrap"><button class="th-filter-btn" id="tfb-gender" onclick="toggleColFilter('gender',this)" title="Filter"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h10M3 6h6M5 9h2"/></svg></button><div class="col-filter-popup" id="cfp-gender"><div class="cfp-header">Filter Gender</div><div id="cfp-gender-opts"></div><span class="cfp-clear" onclick="clearColFilter('gender')">Clear filter</span></div></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-age" onclick="sortBy('age')">Age <span class="si" id="si-age">↕</span></div><div class="th-wrap"><button class="th-filter-btn" id="tfb-age" onclick="toggleColFilter('age',this)" title="Filter"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h10M3 6h6M5 9h2"/></svg></button><div class="col-filter-popup" id="cfp-age"><div class="cfp-header">Filter Age</div><div id="cfp-age-opts"></div><span class="cfp-clear" onclick="clearColFilter('age')">Clear filter</span></div></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-edu" onclick="sortBy('edu')">Education <span class="si" id="si-edu">↕</span></div><div class="th-wrap"><button class="th-filter-btn" id="tfb-edu" onclick="toggleColFilter('edu',this)" title="Filter"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h10M3 6h6M5 9h2"/></svg></button><div class="col-filter-popup" id="cfp-edu"><div class="cfp-header">Filter Education</div><div id="cfp-edu-opts"></div><span class="cfp-clear" onclick="clearColFilter('edu')">Clear filter</span></div></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-participations" onclick="sortBy('participations')">Sessions <span class="si" id="si-participations">↕</span></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-noshows" onclick="sortBy('noshows')">No-shows <span class="si" id="si-noshows">↕</span></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-earned" onclick="sortBy('earned')">Earned <span class="si" id="si-earned">↕</span></div></div></th>
+            <th><div class="th-inner"><div class="th-sort" id="ths-status" onclick="sortBy('status')">Status <span class="si" id="si-status">↕</span></div><div class="th-wrap"><button class="th-filter-btn" id="tfb-status" onclick="toggleColFilter('status',this)" title="Filter"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 3h10M3 6h6M5 9h2"/></svg></button><div class="col-filter-popup" id="cfp-status"><div class="cfp-header">Filter Status</div><div id="cfp-status-opts"></div><span class="cfp-clear" onclick="clearColFilter('status')">Clear filter</span></div></div></div></th>
+          </tr>
+        </thead>
+        <tbody id="pool-tbody"></tbody>
+      </table>
+    </div>
   </div>
-  <select class="filter-select" id="f-gender" onchange="render()">
-    <option value="">All genders</option><option value="F">Female</option><option value="M">Male</option>
-  </select>
-  <select class="filter-select" id="f-edu" onchange="render()">
-    <option value="">All education levels</option>
-    <option value="Bachelor">Bachelor's</option><option value="Master">Master's</option><option value="PhD">PhD</option><option value="Other">Other</option>
-  </select>
-  <select class="filter-select" id="f-mode" onchange="render()">
-    <option value="">All modes</option><option value="in-person">In-person</option><option value="online">Online</option><option value="both">Both</option>
-  </select>
-  <select class="filter-select" id="f-status" onchange="render()">
-    <option value="">All statuses</option><option value="active">Active</option><option value="inactive">Inactive</option>
-  </select>
-  <span class="count-label" id="count-label"></span>
+
+  <!-- RIGHT: donut chart -->
+  <div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Pool composition</div>
+        <select class="chart-var-select" id="chart-var" onchange="renderDonut()">
+          <option value="gender">Gender</option>
+          <option value="edu">Education level</option>
+          <option value="age">Age group</option>
+          <option value="mode">Participation mode</option>
+          <option value="status">Status</option>
+        </select>
+      </div>
+      <div class="donut-wrap">
+        <svg id="donut-svg" width="120" height="120" viewBox="0 0 120 120"></svg>
+        <div class="donut-legend" id="donut-legend"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-  <table>
-    <thead>
-      <tr>
-        <th onclick="sortBy('name')">Subject <span class="si" id="si-name">↕</span></th>
-        <th onclick="sortBy('gender')">Gender <span class="si" id="si-gender">↕</span></th>
-        <th onclick="sortBy('age')">Age <span class="si" id="si-age">↕</span></th>
-        <th onclick="sortBy('edu')">Education <span class="si" id="si-edu">↕</span></th>
-        <th onclick="sortBy('participations')">Sessions <span class="si" id="si-participations">↕</span></th>
-        <th onclick="sortBy('noshows')">No-shows <span class="si" id="si-noshows">↕</span></th>
-        <th onclick="sortBy('earned')">Earned (€) <span class="si" id="si-earned">↕</span></th>
-        <th>Mode</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="pool-tbody"></tbody>
-  </table>
+</div>
 </div>
 
-<!-- Profile modal -->
-<div class="modal-overlay" id="profile-modal">
+<!-- ── Profile modal ── -->
+<div class="modal-overlay" id="profile-modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="modal-header">
-      <div>
-        <div class="modal-title" id="pm-name">—</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:2px" id="pm-id">—</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="s-avatar" id="pm-avatar" style="width:40px;height:40px;font-size:13px">—</div>
+        <div>
+          <div class="modal-title" id="pm-name">—</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px" id="pm-id">—</div>
+        </div>
+        <span id="pm-badge" style="margin-left:8px"></span>
       </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span id="pm-badge"></span>
-        <button class="modal-close" onclick="closeModal()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
-        </button>
-      </div>
+      <button class="modal-close" onclick="closeModal()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="modalTab('profile',this)">Profile</button>
+      <button class="modal-tab" onclick="modalTab('sessions',this)">Session history</button>
+      <button class="modal-tab" onclick="modalTab('comments',this)">Comments &amp; flags</button>
+      <button class="modal-tab" onclick="modalTab('account',this)">Account</button>
     </div>
     <div class="modal-body">
-      <div class="stat-chips" id="pm-stats"></div>
-      <div class="section-title">Personal information</div>
-      <div class="profile-grid" id="pm-personal"></div>
-      <div class="section-title">Academic & professional</div>
-      <div class="profile-grid" id="pm-academic"></div>
-      <div class="section-title">Participation preferences</div>
-      <div class="profile-grid" id="pm-prefs"></div>
+
+      <!-- TAB: Profile -->
+      <div class="modal-tab-panel active" id="mtp-profile">
+        <div class="stat-chips" id="pm-stats"></div>
+        <div class="section-title">Personal information</div>
+        <div class="profile-grid" id="pm-personal"></div>
+        <div class="section-title">Academic &amp; professional</div>
+        <div class="profile-grid" id="pm-academic"></div>
+        <div class="section-title">Participation preferences</div>
+        <div class="profile-grid" id="pm-prefs"></div>
+        <div class="section-title">Other affiliated labs (in-person)</div>
+        <div id="pm-otherlabs"></div>
+      </div>
+
+      <!-- TAB: Session history -->
+      <div class="modal-tab-panel" id="mtp-sessions">
+        <div id="pm-session-hist"></div>
+      </div>
+
+      <!-- TAB: Comments & flags -->
+      <div class="modal-tab-panel" id="mtp-comments">
+        <div id="pm-comments-list"></div>
+        <div class="add-comment-row">
+          <input class="add-comment-input" id="new-comment-input" placeholder="Add a comment or flag for this subject…"/>
+          <select style="padding:6px 22px 6px 9px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:12.5px;appearance:none;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 6px center;cursor:pointer" id="new-comment-type">
+            <option value="info">Info</option>
+            <option value="warning">Warning</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="addComment()">Add</button>
+        </div>
+      </div>
+
+      <!-- TAB: Account -->
+      <div class="modal-tab-panel" id="mtp-account">
+        <div id="pm-account-info"></div>
+      </div>
+
     </div>
     <div class="modal-footer">
-      <button class="btn btn-danger btn-sm" onclick="showToast('Account deactivated'); closeModal()">Deactivate account</button>
+      <button class="btn btn-danger btn-sm" onclick="showToast('Account deactivated');closeModal()">Deactivate account</button>
       <button class="btn btn-ghost btn-sm" onclick="closeModal()">Close</button>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+// ── Data ──────────────────────────────────────────────────────────────────
 const SUBJECTS = [
-  {id:'SUB-1042',name:'Léa Fontaine',initials:'LF',color:'#3b6fd4',gender:'F',dob:'1999-03-12',email:'lea.fontaine@univ-lyon2.fr',phone:'+33 6 12 34 56 78',edu:"Master's",field:'Economics',school:'Université Lyon 2',year:2021,job:'Student',mode:'in-person',fr:'C2',en:'B2',participations:7,noshows:0,earned:126,status:'active'},
-  {id:'SUB-0871',name:'Thomas Marchand',initials:'TM',color:'#1a7a4a',gender:'M',dob:'1998-07-24',email:'thomas.marchand@ens-lyon.fr',phone:'+33 6 23 45 67 89',edu:"Master's",field:'Economics',school:'ENS Lyon',year:2020,job:'Student',mode:'both',fr:'C2',en:'C1',participations:12,noshows:1,earned:216,status:'active'},
-  {id:'SUB-2210',name:'Amina Diallo',initials:'AD',color:'#8a3fc0',gender:'F',dob:'2001-11-05',email:'amina.diallo@univ-lyon1.fr',phone:'+33 6 34 56 78 90',edu:"Bachelor's",field:'Psychology',school:'Université Lyon 1',year:2022,job:'Student',mode:'both',fr:'C2',en:'B1',participations:4,noshows:0,earned:72,status:'active'},
-  {id:'SUB-0334',name:'Hugo Perrin',initials:'HP',color:'#b06000',gender:'M',dob:'1995-02-18',email:'hugo.perrin@cnrs.fr',phone:'+33 6 45 67 89 01',edu:"PhD",field:'Behavioral Economics',school:'Université Lyon 2',year:2018,job:'PhD candidate',mode:'in-person',fr:'C2',en:'C2',participations:18,noshows:3,earned:324,status:'active'},
-  {id:'SUB-1589',name:'Clara Rousseau',initials:'CR',color:'#c0392b',gender:'F',dob:'2002-08-30',email:'clara.rousseau@insa-lyon.fr',phone:'+33 6 56 78 90 12',edu:"Bachelor's",field:'Engineering',school:'INSA Lyon',year:2022,job:'Student',mode:'online',fr:'C2',en:'B2',participations:2,noshows:0,earned:30,status:'active'},
-  {id:'SUB-0770',name:'Julien Morel',initials:'JM',color:'#1a4fa0',gender:'M',dob:'1997-05-14',email:'julien.morel@lyon.fr',phone:'+33 6 67 89 01 23',edu:"Master's",field:'Law',school:'Université Lyon 3',year:2019,job:'Legal assistant',mode:'in-person',fr:'C2',en:'B1',participations:9,noshows:1,earned:162,status:'active'},
-  {id:'SUB-1234',name:'Sophie Bernard',initials:'SB',color:'#6b46c1',gender:'F',dob:'2000-01-22',email:'sophie.bernard@emlyon.fr',phone:'+33 6 78 90 12 34',edu:"Master's",field:'Management',school:'EM Lyon',year:2021,job:'Student',mode:'both',fr:'C2',en:'C1',participations:6,noshows:1,earned:108,status:'active'},
-  {id:'SUB-0999',name:'Karim Benali',initials:'KB',color:'#2d6a8a',gender:'M',dob:'2001-09-08',email:'karim.benali@univ-lyon1.fr',phone:'+33 6 89 01 23 45',edu:"Bachelor's",field:'Maths',school:'Université Lyon 1',year:2022,job:'Student',mode:'both',fr:'C2',en:'B2',participations:1,noshows:0,earned:15,status:'active'},
-  {id:'SUB-1876',name:'Inès Leclerc',initials:'IL',color:'#4a5568',gender:'F',dob:'1994-12-03',email:'ines.leclerc@free.fr',phone:'+33 6 90 12 34 56',edu:"PhD",field:'Cognitive Science',school:'Université Lyon 2',year:2016,job:'Post-doc',mode:'in-person',fr:'C2',en:'C2',participations:22,noshows:2,earned:396,status:'active'},
-  {id:'SUB-3301',name:'Marc Lebrun',initials:'ML',color:'#718096',gender:'M',dob:'1992-06-17',email:'marc.lebrun@gmail.com',phone:'+33 6 01 23 45 67',edu:"Bachelor's",field:'History',school:'Université Lyon 2',year:2013,job:'Employed',mode:'in-person',fr:'C2',en:'A2',participations:3,noshows:2,earned:45,status:'inactive'},
-  {id:'SUB-4412',name:'Fatou Diop',initials:'FD',color:'#1a7a4a',gender:'F',dob:'2003-04-25',email:'fatou.diop@univ-lyon2.fr',phone:'+33 6 12 98 76 54',edu:"Bachelor's",field:'Sociology',school:'Université Lyon 2',year:2023,job:'Student',mode:'online',fr:'C2',en:'B1',participations:0,noshows:0,earned:0,status:'active'},
-  {id:'SUB-5523',name:'Antoine Garnier',initials:'AG',color:'#3b6fd4',gender:'M',dob:'1999-10-11',email:'antoine.garnier@em-lyon.fr',phone:'+33 6 23 87 65 43',edu:"Master's",field:'Finance',school:'EM Lyon',year:2021,job:'Student',mode:'both',fr:'C2',en:'C1',participations:5,noshows:0,earned:90,status:'active'},
+  {id:'SUB-1042',name:'Léa Fontaine',initials:'LF',color:'#3b6fd4',gender:'F',dob:'1999-03-12',email:'lea.fontaine@univ-lyon2.fr',phone:'+33 6 12 34 56 78',edu:"Master's",field:'Economics',school:'Université Lyon 2',year:2021,job:'Student',mode:'in-person',fr:'C2',en:'B2',participations:7,noshows:0,earned:126,status:'active',createdAt:'2023-03-15',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:['CREST · Paris'],
+   sessions:[{date:'2025-06-12',exp:'trust-game-2025-q1',outcome:'present',earned:22},{date:'2025-05-08',exp:'risk-elicitation',outcome:'present',earned:19},{date:'2025-04-15',exp:'trust-game-2025-q1',outcome:'present',earned:18},{date:'2025-03-20',exp:'social-norms',outcome:'noshow',earned:0},{date:'2025-02-14',exp:'risk-elicitation',outcome:'present',earned:21},{date:'2025-01-28',exp:'trust-game-2025-q1',outcome:'present',earned:20},{date:'2024-12-10',exp:'coordination',outcome:'present',earned:26}],
+   comments:[{author:'Gabriel Bayle',date:'2025-03-21',type:'warning',text:'Did not show up without cancelling on 20 Mar 2025. First occurrence — warned by email.'},{author:'Gabriel Bayle',date:'2024-09-05',type:'info',text:'Requested to be exempted from online sessions — confirmed by email.'}]},
+  {id:'SUB-0871',name:'Thomas Marchand',initials:'TM',color:'#1a7a4a',gender:'M',dob:'1998-07-24',email:'thomas.marchand@ens-lyon.fr',phone:'+33 6 23 45 67 89',edu:"Master's",field:'Economics',school:'ENS Lyon',year:2020,job:'Student',mode:'both',fr:'C2',en:'C1',participations:12,noshows:1,earned:216,status:'active',createdAt:'2022-10-03',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],
+   sessions:[{date:'2025-06-10',exp:'trust-game-2025-q1',outcome:'present',earned:24},{date:'2025-05-22',exp:'risk-elicitation',outcome:'present',earned:18},{date:'2025-04-28',exp:'trust-game-2025-q1',outcome:'noshow',earned:0},{date:'2025-03-15',exp:'social-norms',outcome:'present',earned:9},{date:'2025-02-05',exp:'coordination',outcome:'present',earned:30}],
+   comments:[]},
+  {id:'SUB-2210',name:'Amina Diallo',initials:'AD',color:'#8a3fc0',gender:'F',dob:'2001-11-05',email:'amina.diallo@univ-lyon1.fr',phone:'+33 6 34 56 78 90',edu:"Bachelor's",field:'Psychology',school:'Université Lyon 1',year:2022,job:'Student',mode:'both',fr:'C2',en:'B1',participations:4,noshows:0,earned:72,status:'active',createdAt:'2023-09-20',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:['LEEM · Montpellier'],
+   sessions:[{date:'2025-05-14',exp:'social-norms',outcome:'present',earned:8},{date:'2025-03-28',exp:'trust-game-2025-q1',outcome:'present',earned:22},{date:'2025-01-20',exp:'risk-elicitation',outcome:'present',earned:21},{date:'2024-11-08',exp:'trust-game-2025-q1',outcome:'present',earned:21}],
+   comments:[{author:'Marie Claire Villeval',date:'2024-11-09',type:'info',text:'Mentioned she is also registered at LEEM Montpellier. Flagged for cross-lab coordination.'}]},
+  {id:'SUB-0334',name:'Hugo Perrin',initials:'HP',color:'#b06000',gender:'M',dob:'1995-02-18',email:'hugo.perrin@cnrs.fr',phone:'+33 6 45 67 89 01',edu:'PhD',field:'Behavioral Economics',school:'Université Lyon 2',year:2018,job:'PhD candidate',mode:'in-person',fr:'C2',en:'C2',participations:18,noshows:3,earned:324,status:'active',createdAt:'2021-05-10',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],
+   sessions:[{date:'2025-06-05',exp:'trust-game-2025-q1',outcome:'present',earned:22},{date:'2025-05-06',exp:'risk-elicitation',outcome:'noshow',earned:0},{date:'2025-04-10',exp:'trust-game-2025-q1',outcome:'present',earned:19}],
+   comments:[{author:'Gabriel Bayle',date:'2025-05-07',type:'warning',text:'3rd no-show. Sent formal warning. Next no-show = account suspension.'},{author:'Gabriel Bayle',date:'2024-12-15',type:'warning',text:'2nd no-show without cancellation.'},{author:'Gabriel Bayle',date:'2024-09-22',type:'warning',text:'1st no-show. Warned by email.'}]},
+  {id:'SUB-1589',name:'Clara Rousseau',initials:'CR',color:'#c0392b',gender:'F',dob:'2002-08-30',email:'clara.rousseau@insa-lyon.fr',phone:'+33 6 56 78 90 12',edu:"Bachelor's",field:'Engineering',school:'INSA Lyon',year:2022,job:'Student',mode:'online',fr:'C2',en:'B2',participations:2,noshows:0,earned:30,status:'active',createdAt:'2024-02-14',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],sessions:[{date:'2025-04-22',exp:'social-norms',outcome:'present',earned:7},{date:'2025-02-08',exp:'risk-elicitation',outcome:'present',earned:23}],comments:[]},
+  {id:'SUB-0770',name:'Julien Morel',initials:'JM',color:'#1a4fa0',gender:'M',dob:'1997-05-14',email:'julien.morel@lyon.fr',phone:'+33 6 67 89 01 23',edu:"Master's",field:'Law',school:'Université Lyon 3',year:2019,job:'Legal assistant',mode:'in-person',fr:'C2',en:'B1',participations:9,noshows:1,earned:162,status:'active',createdAt:'2022-01-18',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],sessions:[{date:'2025-06-05',exp:'trust-game-2025-q1',outcome:'present',earned:22}],comments:[]},
+  {id:'SUB-1234',name:'Sophie Bernard',initials:'SB',color:'#6b46c1',gender:'F',dob:'2000-01-22',email:'sophie.bernard@emlyon.fr',phone:'+33 6 78 90 12 34',edu:"Master's",field:'Management',school:'EM Lyon',year:2021,job:'Student',mode:'both',fr:'C2',en:'C1',participations:6,noshows:1,earned:108,status:'active',createdAt:'2023-01-08',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:['CREST · Paris'],sessions:[],comments:[]},
+  {id:'SUB-0999',name:'Karim Benali',initials:'KB',color:'#2d6a8a',gender:'M',dob:'2001-09-08',email:'karim.benali@univ-lyon1.fr',phone:'+33 6 89 01 23 45',edu:"Bachelor's",field:'Maths',school:'Université Lyon 1',year:2022,job:'Student',mode:'both',fr:'C2',en:'B2',participations:1,noshows:0,earned:15,status:'active',createdAt:'2024-09-12',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],sessions:[{date:'2025-03-10',exp:'social-norms',outcome:'present',earned:15}],comments:[]},
+  {id:'SUB-1876',name:'Inès Leclerc',initials:'IL',color:'#4a5568',gender:'F',dob:'1994-12-03',email:'ines.leclerc@free.fr',phone:'+33 6 90 12 34 56',edu:'PhD',field:'Cognitive Science',school:'Université Lyon 2',year:2016,job:'Post-doc',mode:'in-person',fr:'C2',en:'C2',participations:22,noshows:2,earned:396,status:'active',createdAt:'2020-10-01',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:['GATE · CNRS · Lyon (primary)'],sessions:[],comments:[{author:'Gabriel Bayle',date:'2023-04-12',type:'info',text:'Researcher-participant — cleared by ethics board for participation in non-deceptive experiments only.'}]},
+  {id:'SUB-3301',name:'Marc Lebrun',initials:'ML',color:'#718096',gender:'M',dob:'1992-06-17',email:'marc.lebrun@gmail.com',phone:'+33 6 01 23 45 67',edu:"Bachelor's",field:'History',school:'Université Lyon 2',year:2013,job:'Employed',mode:'in-person',fr:'C2',en:'A2',participations:3,noshows:2,earned:45,status:'inactive',createdAt:'2021-07-22',cguDate:'2023-05-01',emailConfirmed:true,otherLabs:[],sessions:[],comments:[{author:'Gabriel Bayle',date:'2024-06-30',type:'warning',text:'Account deactivated — repeated no-shows (2 in 3 sessions). Reactivation requires manager approval.'}]},
+  {id:'SUB-4412',name:'Fatou Diop',initials:'FD',color:'#1a7a4a',gender:'F',dob:'2003-04-25',email:'fatou.diop@univ-lyon2.fr',phone:'+33 6 12 98 76 54',edu:"Bachelor's",field:'Sociology',school:'Université Lyon 2',year:2023,job:'Student',mode:'online',fr:'C2',en:'B1',participations:0,noshows:0,earned:0,status:'active',createdAt:'2024-11-05',cguDate:'2024-11-05',emailConfirmed:false,otherLabs:[],sessions:[],comments:[]},
+  {id:'SUB-5523',name:'Antoine Garnier',initials:'AG',color:'#3b6fd4',gender:'M',dob:'1999-10-11',email:'antoine.garnier@em-lyon.fr',phone:'+33 6 23 87 65 43',edu:"Master's",field:'Finance',school:'EM Lyon',year:2021,job:'Student',mode:'both',fr:'C2',en:'C1',participations:5,noshows:0,earned:90,status:'active',createdAt:'2023-03-30',cguDate:'2024-11-01',emailConfirmed:true,otherLabs:[],sessions:[{date:'2025-05-18',exp:'trust-game-2025-q1',outcome:'present',earned:24}],comments:[]},
 ];
 
+// ── Column filter state ───────────────────────────────────────────────────
+const colFilters = { gender:new Set(), age:new Set(), edu:new Set(), status:new Set(), name:'' };
+
+// ── Sort state ────────────────────────────────────────────────────────────
 let sortKey='name', sortDir=1;
 
-function init(){
-  document.getElementById('stat-total').textContent = SUBJECTS.length;
+// ── Init ──────────────────────────────────────────────────────────────────
+function init() {
+  const total = SUBJECTS.length;
+  document.getElementById('stat-total').textContent = total;
   document.getElementById('stat-active').textContent = SUBJECTS.filter(s=>s.status==='active').length;
-  const totalPart = SUBJECTS.reduce((a,s)=>a+s.participations,0);
-  document.getElementById('stat-avg').textContent = (totalPart/SUBJECTS.length).toFixed(1);
-  const totalNs = SUBJECTS.reduce((a,s)=>a+s.noshows,0);
-  document.getElementById('stat-ns').textContent = totalPart ? Math.round(totalNs/totalPart*100)+'%' : '0%';
+  const tp = SUBJECTS.reduce((a,s)=>a+s.participations,0);
+  document.getElementById('stat-avg').textContent = (tp/total).toFixed(1);
+  const tn = SUBJECTS.reduce((a,s)=>a+s.noshows,0);
+  document.getElementById('stat-ns').textContent = tp ? Math.round(tn/tp*100)+'%' : '0%';
+  initColFilters();
+  render();
+  renderDonut();
+}
+
+// ── Column filters ────────────────────────────────────────────────────────
+function getAge(dob) { return new Date().getFullYear() - new Date(dob).getFullYear(); }
+function getAgeGroup(dob) {
+  const a = getAge(dob);
+  if (a < 26) return '18–25'; if (a < 36) return '26–35'; if (a < 51) return '36–50'; if (a < 66) return '51–65'; return '65+';
+}
+
+function initColFilters() {
+  const COL_VALS = {
+    gender: [...new Set(SUBJECTS.map(s=>s.gender==='F'?'Female':'Male'))],
+    age:    [...new Set(SUBJECTS.map(s=>getAgeGroup(s.dob)))].sort(),
+    edu:    [...new Set(SUBJECTS.map(s=>s.edu))].sort(),
+    status: [...new Set(SUBJECTS.map(s=>s.status))],
+    name:   null,
+  };
+  ['gender','age','edu','status'].forEach(col => {
+    const el = document.getElementById('cfp-'+col+'-opts');
+    if (!el || !COL_VALS[col]) return;
+    el.innerHTML = COL_VALS[col].map(v =>
+      `<div class="cfp-option"><input type="checkbox" onchange="toggleColVal('${col}','${v}',this.checked)" id="cfp-${col}-${v.replace(/\s/g,'_')}"><label for="cfp-${col}-${v.replace(/\s/g,'_')}" style="cursor:pointer">${v}</label></div>`
+    ).join('');
+  });
+}
+
+function toggleColFilter(col, btn) {
+  const popup = document.getElementById('cfp-'+col);
+  const isOpen = popup.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.col-filter-popup').forEach(p => p.classList.remove('open'));
+  if (!isOpen) popup.classList.add('open');
+}
+
+function toggleColVal(col, val, checked) {
+  if (checked) colFilters[col].add(val); else colFilters[col].delete(val);
+  const btn = document.getElementById('tfb-'+col);
+  if (btn) btn.classList.toggle('active', colFilters[col].size > 0);
   render();
 }
 
-function getFiltered(){
+function cfpSearch(col, q) {
+  colFilters.name = q.toLowerCase();
+  render();
+}
+
+function clearColFilter(col) {
+  if (col === 'name') { colFilters.name = ''; document.querySelector('#cfp-name .cfp-search').value = ''; }
+  else {
+    colFilters[col].clear();
+    document.querySelectorAll(`#cfp-${col}-opts input`).forEach(cb => cb.checked = false);
+    const btn = document.getElementById('tfb-'+col);
+    if (btn) btn.classList.remove('active');
+  }
+  document.getElementById('cfp-'+col).classList.remove('open');
+  render();
+}
+
+// Close dropdowns on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.th-wrap')) {
+    document.querySelectorAll('.col-filter-popup').forEach(p => p.classList.remove('open'));
+  }
+});
+
+// ── Filter + sort ─────────────────────────────────────────────────────────
+function getFiltered() {
   const q = document.getElementById('search').value.toLowerCase();
-  const fg = document.getElementById('f-gender').value;
-  const fe = document.getElementById('f-edu').value;
-  const fm = document.getElementById('f-mode').value;
-  const fs = document.getElementById('f-status').value;
   return SUBJECTS.filter(s => {
-    if(q && !s.name.toLowerCase().includes(q) && !s.email.toLowerCase().includes(q) && !s.id.toLowerCase().includes(q)) return false;
-    if(fg && s.gender!==fg) return false;
-    if(fe && !s.edu.startsWith(fe)) return false;
-    if(fm && s.mode!==fm) return false;
-    if(fs && s.status!==fs) return false;
+    if (q && !s.name.toLowerCase().includes(q) && !s.email.toLowerCase().includes(q) && !s.id.toLowerCase().includes(q)) return false;
+    if (colFilters.name && !s.name.toLowerCase().includes(colFilters.name)) return false;
+    if (colFilters.gender.size && !colFilters.gender.has(s.gender==='F'?'Female':'Male')) return false;
+    const ag = getAgeGroup(s.dob);
+    if (colFilters.age.size && !colFilters.age.has(ag)) return false;
+    if (colFilters.edu.size && !colFilters.edu.has(s.edu)) return false;
+    if (colFilters.status.size && !colFilters.status.has(s.status)) return false;
     return true;
   });
 }
 
-function render(){
-  let list = [...getFiltered()].sort((a,b)=>{
-    let av=a[sortKey]||'',bv=b[sortKey]||'';
-    if(typeof av==='string'){av=av.toLowerCase();bv=bv.toLowerCase();}
-    return av<bv?-sortDir:av>bv?sortDir:0;
+// ── Render table ──────────────────────────────────────────────────────────
+function render() {
+  let list = [...getFiltered()].sort((a,b) => {
+    let av = a[sortKey]||'', bv = b[sortKey]||'';
+    if (sortKey==='age') { av=getAge(a.dob); bv=getAge(b.dob); }
+    if (typeof av==='string') { av=av.toLowerCase(); bv=bv.toLowerCase(); }
+    return av<bv ? -sortDir : av>bv ? sortDir : 0;
   });
-  ['name','gender','age','edu','participations','noshows','earned'].forEach(k=>{
-    const el=document.getElementById('si-'+k);if(!el)return;
-    el.textContent=k===sortKey?(sortDir===1?'↑':'↓'):'↕';
-    el.closest('th').classList.toggle('sorted',k===sortKey);
+  ['name','gender','age','edu','participations','noshows','earned','status'].forEach(k => {
+    const si = document.getElementById('si-'+k);
+    const th = document.getElementById('ths-'+k);
+    if (si) si.textContent = k===sortKey ? (sortDir===1?'↑':'↓') : '↕';
+    if (th) th.classList.toggle('sorted', k===sortKey);
   });
-  document.getElementById('count-label').textContent=list.length+' subjects';
-  const modeLabel={['in-person']:'🏛','online':'💻','both':'🔁'};
-  document.getElementById('pool-tbody').innerHTML=list.map(s=>{
-    const age=new Date().getFullYear()-new Date(s.dob).getFullYear();
-    const bars=Array.from({length:Math.min(s.participations,8)},(_,i)=>`<div class="mini-bar" style="height:${4+i*1.5}px"></div>`).join('');
+  document.getElementById('count-label').textContent = list.length + ' subjects';
+  const mL={'in-person':'🏛 In-person','online':'💻 Online','both':'🔁 Both'};
+  document.getElementById('pool-tbody').innerHTML = list.map(s => {
+    const age = getAge(s.dob);
+    const bars = Array.from({length:Math.min(s.participations,8)},(_,i)=>`<div class="mini-bar" style="height:${4+i*1.5}px"></div>`).join('');
     return `<tr onclick="openProfile('${s.id}')">
       <td><div class="subject-cell"><div class="s-avatar" style="background:${s.color}">${s.initials}</div><div><div class="s-name">${s.name}</div><div class="s-id">${s.id}</div></div></div></td>
       <td style="font-size:13px">${s.gender==='F'?'Female':'Male'}</td>
       <td style="font-size:13px">${age}</td>
       <td style="font-size:13px;color:var(--slate)">${s.edu}</td>
-      <td><div style="display:flex;align-items:center;gap:6px"><div class="mini-bar-row">${bars}</div><span style="font-size:12.5px;color:var(--muted)">${s.participations}</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:5px"><div class="mini-bar-row">${bars}</div><span style="font-size:12.5px;color:var(--muted)">${s.participations}</span></div></td>
       <td><span style="font-size:13px;${s.noshows>2?'color:var(--danger);font-weight:600':'color:var(--muted)'}">${s.noshows}</span></td>
       <td style="font-size:13px;font-weight:500">${s.earned.toFixed(2)} €</td>
-      <td><span style="font-size:13px">${modeLabel[s.mode]||'—'} ${s.mode==='in-person'?'In-person':s.mode==='online'?'Online':'Both'}</span></td>
       <td><span class="badge badge-${s.status}">${s.status==='active'?'Active':'Inactive'}</span></td>
     </tr>`;
   }).join('');
 }
 
-function sortBy(k){if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=1;}render();}
+function sortBy(k){ if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=1; } render(); }
 
-function openProfile(id){
-  const s=SUBJECTS.find(x=>x.id===id);if(!s)return;
-  document.getElementById('pm-name').textContent=s.name;
-  document.getElementById('pm-id').textContent=s.id+' · '+s.email;
-  document.getElementById('pm-badge').innerHTML=`<span class="badge badge-${s.status}">${s.status==='active'?'Active':'Inactive'}</span>`;
-  const age=new Date().getFullYear()-new Date(s.dob).getFullYear();
-  document.getElementById('pm-stats').innerHTML=[
-    {v:s.participations,l:'Sessions'},
-    {v:s.noshows,l:'No-shows'},
-    {v:s.earned.toFixed(2)+' €',l:'Earned'},
-    {v:age,l:'Age'},
+// ── Donut chart ───────────────────────────────────────────────────────────
+const DONUT_PALETTES = {
+  gender:  {Female:'#3b6fd4',Male:'#1a7a4a'},
+  edu:     {"Bachelor's":'#3b6fd4',"Master's":'#1a7a4a',PhD:'#8a3fc0',Other:'#b06000'},
+  age:     {'18–25':'#3b6fd4','26–35':'#1a7a4a','36–50':'#8a3fc0','51–65':'#b06000','65+':'#c0392b'},
+  mode:    {'in-person':'#3b6fd4','online':'#1a7a4a','both':'#8a3fc0'},
+  status:  {active:'#1a7a4a',inactive:'#b06000'},
+};
+
+function getDonutData(varKey) {
+  const groups = {};
+  SUBJECTS.forEach(s => {
+    let val;
+    if (varKey==='gender') val = s.gender==='F'?'Female':'Male';
+    else if (varKey==='edu') val = s.edu;
+    else if (varKey==='age') val = getAgeGroup(s.dob);
+    else if (varKey==='mode') val = s.mode;
+    else if (varKey==='status') val = s.status;
+    groups[val] = (groups[val]||0)+1;
+  });
+  return groups;
+}
+
+function renderDonut() {
+  const varKey = document.getElementById('chart-var').value;
+  const groups = getDonutData(varKey);
+  const pal = DONUT_PALETTES[varKey] || {};
+  const total = Object.values(groups).reduce((a,b)=>a+b,0);
+  const entries = Object.entries(groups).sort((a,b)=>b[1]-a[1]);
+  const colors = ['#3b6fd4','#1a7a4a','#8a3fc0','#b06000','#c0392b','#2d6a8a'];
+
+  // Build SVG donut
+  const R=40, cx=60, cy=60, stroke=20;
+  const circumference = 2*Math.PI*R;
+  let offset = 0;
+  let svgPaths = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#edf2ff" stroke-width="${stroke}"/>`;
+  entries.forEach(([ label, count], i) => {
+    const pct = count/total;
+    const dash = pct*circumference;
+    const color = pal[label] || colors[i%colors.length];
+    svgPaths += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${color}" stroke-width="${stroke}"
+      stroke-dasharray="${dash} ${circumference-dash}"
+      stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += dash;
+  });
+  svgPaths += `<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="DM Sans" font-size="14" font-weight="600" fill="#0d2b5e">${total}</text>`;
+  document.getElementById('donut-svg').innerHTML = svgPaths;
+
+  // Legend
+  document.getElementById('donut-legend').innerHTML = entries.map(([label, count], i) => {
+    const color = pal[label] || colors[i%colors.length];
+    const pct = Math.round(count/total*100);
+    return `<div class="dl-item" onclick="filterByDonutVal('${varKey}','${label}')">
+      <div class="dl-dot" style="background:${color}"></div>
+      <span class="dl-label">${label}</span>
+      <span class="dl-count">${pct}% (${count})</span>
+    </div>`;
+  }).join('');
+}
+
+function filterByDonutVal(varKey, label) {
+  // Map chart var to filter col
+  const map = {gender:'gender',edu:'edu',age:'age',status:'status'};
+  const col = map[varKey];
+  if (!col) return;
+  colFilters[col].clear();
+  colFilters[col].add(label);
+  const btn = document.getElementById('tfb-'+col);
+  if (btn) btn.classList.add('active');
+  // Check the checkbox
+  const cbId = `cfp-${col}-${label.replace(/\s/g,'_')}`;
+  const cb = document.getElementById(cbId);
+  if (cb) cb.checked = true;
+  render();
+  showToast('Filter: '+label);
+}
+
+// ── Profile modal ─────────────────────────────────────────────────────────
+let currentSubject = null;
+
+function openProfile(id) {
+  const s = SUBJECTS.find(x=>x.id===id); if(!s) return;
+  currentSubject = s;
+
+  document.getElementById('pm-avatar').textContent = s.initials;
+  document.getElementById('pm-avatar').style.background = s.color;
+  document.getElementById('pm-name').textContent = s.name;
+  document.getElementById('pm-id').textContent = s.id+' · '+s.email;
+  document.getElementById('pm-badge').innerHTML = `<span class="badge badge-${s.status}">${s.status==='active'?'Active':'Inactive'}</span>`;
+
+  // Stats chips
+  const age = getAge(s.dob);
+  document.getElementById('pm-stats').innerHTML = [
+    {v:s.participations, l:'Sessions'},{v:s.noshows, l:'No-shows'},
+    {v:s.earned.toFixed(2)+' €', l:'Earned'},{v:age, l:'Age'},
   ].map(x=>`<div class="stat-chip"><div class="sc-val">${x.v}</div><div class="sc-lbl">${x.l}</div></div>`).join('');
-  const pf=(l,v)=>`<div class="profile-field"><div class="pf-label">${l}</div><div class="pf-value">${v||'—'}</div></div>`;
-  document.getElementById('pm-personal').innerHTML=[
-    pf('First name',s.name.split(' ')[0]),pf('Last name',s.name.split(' ')[1]),
-    pf('Email',s.email),pf('Phone',s.phone),
-    pf('Date of birth',new Date(s.dob).toLocaleDateString('en-GB')),pf('Gender',s.gender==='F'?'Female':'Male'),
+
+  // Profile tab
+  const pf = (l,v) => `<div><div class="pf-label">${l}</div><div class="pf-value">${v||'—'}</div></div>`;
+  document.getElementById('pm-personal').innerHTML = [
+    pf('First name',s.name.split(' ')[0]), pf('Last name',s.name.split(' ').slice(1).join(' ')),
+    pf('Email',s.email), pf('Phone',s.phone),
+    pf('Date of birth',new Date(s.dob).toLocaleDateString('en-GB')), pf('Gender',s.gender==='F'?'Female':'Male'),
   ].join('');
-  document.getElementById('pm-academic').innerHTML=[
-    pf('Education',s.edu),pf('Field',s.field),
-    pf('Institution',s.school),pf('Start year',s.year),
-    pf('Occupation',s.job),pf('',''),
+  document.getElementById('pm-academic').innerHTML = [
+    pf('Education',s.edu), pf('Field',s.field),
+    pf('Institution',s.school), pf('Start year',s.year),
+    pf('Occupation',s.job),
   ].join('');
-  document.getElementById('pm-prefs').innerHTML=[
-    pf('Participation mode',s.mode==='in-person'?'In-person only':s.mode==='online'?'Online only':'Both'),
-    pf('French level',s.fr),
-    pf('English level',s.en),pf('Lab affiliation','GATE · CNRS · Lyon'),
+  document.getElementById('pm-prefs').innerHTML = [
+    pf('Mode',s.mode==='in-person'?'In-person only':s.mode==='online'?'Online only':'Both'),
+    pf('French level',s.fr), pf('English level',s.en),
+    pf('Primary lab','GATE · CNRS · Lyon'),
   ].join('');
+
+  // Other labs
+  const olEl = document.getElementById('pm-otherlabs');
+  if (s.otherLabs && s.otherLabs.length) {
+    const labColors = ['#1a7a4a','#8a3fc0','#b06000','#c0392b'];
+    olEl.innerHTML = s.otherLabs.map((l,i)=>`<div class="other-lab-row"><div class="lab-dot" style="background:${labColors[i%labColors.length]}"></div><div style="font-size:13.5px;font-weight:500">${l}</div><span style="font-size:12px;color:var(--muted);margin-left:auto">In-person accepted</span></div>`).join('');
+  } else {
+    olEl.innerHTML = '<div style="font-size:13px;color:var(--muted)">No other affiliated labs.</div>';
+  }
+
+  // Session history tab
+  const sessHist = s.sessions || [];
+  document.getElementById('pm-session-hist').innerHTML = sessHist.length ?
+    `<div style="font-size:13px;color:var(--muted);margin-bottom:12px">${sessHist.length} session${sessHist.length!==1?'s':''} · ${s.earned.toFixed(2)} € total earned</div>` +
+    sessHist.map(se => `<div class="sess-hist-row">
+      <div class="sh-date">${new Date(se.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+      <div class="sh-name">${se.exp}</div>
+      <div class="sh-meta"><span style="font-size:11.5px;padding:2px 8px;border-radius:10px;font-weight:600;background:${se.outcome==='present'?'var(--success-bg)':'var(--danger-bg)'};color:${se.outcome==='present'?'var(--success)':'var(--danger)'}">${se.outcome==='present'?'Attended':'No-show'}</span></div>
+      <div class="sh-amount">${se.earned>0?se.earned.toFixed(2)+' €':'—'}</div>
+    </div>`).join('')
+    : '<div style="font-size:13px;color:var(--muted);padding:12px 0">No session history yet.</div>';
+
+  // Comments tab
+  renderComments(s);
+
+  // Account tab
+  document.getElementById('pm-account-info').innerHTML = `
+    <div class="section-title">Account information</div>
+    <div class="account-info-grid">
+      <div class="ai-row"><span class="ai-label">Account created</span><span class="ai-value">${new Date(s.createdAt+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span></div>
+      <div class="ai-row"><span class="ai-label">Email confirmed</span><span class="ai-value ${s.emailConfirmed?'ok':'warn'}">${s.emailConfirmed?'✓ Confirmed':'✗ Not confirmed'}</span></div>
+      <div class="ai-row"><span class="ai-label">CGU last accepted</span><span class="ai-value">${new Date(s.cguDate+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span></div>
+      <div class="ai-row"><span class="ai-label">Primary lab</span><span class="ai-value">GATE · CNRS · Lyon</span></div>
+    </div>`;
+
+  // Reset to first tab
+  modalTab('profile', document.querySelector('.modal-tab'));
   document.getElementById('profile-modal').classList.add('open');
 }
-function closeModal(){document.getElementById('profile-modal').classList.remove('open');}
-document.getElementById('profile-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
+function renderComments(s) {
+  const comments = s.comments || [];
+  const typeLabels = {warning:'⚠ Warning', info:'ℹ Info'};
+  document.getElementById('pm-comments-list').innerHTML = comments.length ?
+    comments.map(c=>`<div class="comment-row">
+      <div style="display:flex;align-items:center">
+        <span class="comment-author">${c.author}</span>
+        <span class="comment-date">${new Date(c.date+'T00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</span>
+        <span class="comment-type type-${c.type}" style="margin-left:auto">${typeLabels[c.type]||c.type}</span>
+      </div>
+      <div class="comment-text">${c.text}</div>
+    </div>`).join('')
+    : '<div style="font-size:13px;color:var(--muted);padding:8px 0">No comments yet.</div>';
+}
+
+function addComment() {
+  const input = document.getElementById('new-comment-input');
+  const type = document.getElementById('new-comment-type').value;
+  const text = input.value.trim();
+  if (!text || !currentSubject) return;
+  currentSubject.comments = currentSubject.comments || [];
+  currentSubject.comments.unshift({author:'Gabriel Bayle', date:new Date().toISOString().slice(0,10), type, text});
+  renderComments(currentSubject);
+  input.value = '';
+  showToast('Comment added');
+}
+
+function modalTab(name, btn) {
+  document.querySelectorAll('.modal-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.modal-tab-panel').forEach(p=>p.classList.remove('active'));
+  if (btn) { btn.classList.add('active'); } else { document.querySelector('.modal-tab').classList.add('active'); }
+  document.getElementById('mtp-'+name).classList.add('active');
+}
+
+function closeModal(){ document.getElementById('profile-modal').classList.remove('open'); }
+
+// ── Toast ─────────────────────────────────────────────────────────────────
 let tt;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2500);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2500)}
 
 init();
 </script>
-
-</div>
-</div>
 </body>
 </html>

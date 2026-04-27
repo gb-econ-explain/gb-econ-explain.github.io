@@ -127,8 +127,9 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 /* ── Tags ── */
 .tags-row { display:flex; flex-wrap:wrap; gap:6px; }
 .tag { display:inline-flex; align-items:center; gap:5px; background:var(--blue-light); color:var(--blue); font-size:12px; font-weight:500; padding:3px 10px; border-radius:20px; }
-.tag-remove { cursor:pointer; opacity:0.6; font-size:14px; line-height:1; }
+.tag-remove { cursor:pointer; opacity:0.6; font-size:14px; line-height:1; display:none; }
 .tag-remove:hover { opacity:1; }
+.tags-editing .tag-remove { display:inline; }
 .tag-add { background:var(--bg); color:var(--muted); border:1px dashed var(--border); cursor:pointer; }
 .tag-add:hover { border-color:var(--blue-mid); color:var(--blue); background:var(--blue-light); }
 
@@ -404,6 +405,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
                 <span class="tag">Dictator game <span class="tag-remove" onclick="removeTag(this)">×</span></span>
                 <span class="tag">Individual decision <span class="tag-remove" onclick="removeTag(this)">×</span></span>
               </div>
+              <button id="btn-add-tag" class="tag tag-add" style="display:none;margin-top:6px" onclick="document.getElementById('tag-input-wrap').style.display='';document.getElementById('tag-input').focus();this.style.display='none'">+ Add tag</button>
               <div id="tag-input-wrap" style="display:none;position:relative;margin-top:8px">
                 <input id="tag-input" type="text" placeholder="Type to search tags…"
                   style="width:100%;padding:6px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;outline:none"
@@ -444,7 +446,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
               </div>
             </div>
 
-            <div id="edit-actions-general" style="display:none; margin-top:1rem; display:none">
+            <div id="edit-actions-general" style="display:none; margin-top:1rem">
               <div style="display:flex;gap:8px;justify-content:flex-end">
                 <button class="btn btn-ghost btn-sm" onclick="cancelEdit('general')">Cancel</button>
                 <button class="btn btn-primary btn-sm" onclick="saveEdit('general')">Save changes</button>
@@ -819,7 +821,7 @@ function init() {
   // Fallback: use first experiment or a demo object
   if (!exp) {
     const all = ExplainDB.getAll();
-    if (all.length) { exp = all[0]; history.replaceState(null,'','?id='+exp.id); }
+    if (all.length) { exp = all[0]; try { history.replaceState(null,'','?id='+exp.id); } catch(e) {} }
     else {
       exp = { id:'demo', name:'trust-game-2025-q1', lab:'GATE · CNRS · Lyon', mode:'in-person', status:'active', description:'Trust and reciprocity in dictator game variants.', expectedParticipants:'80', duration:'90 min', createdAt:'2025-01-14T10:23:00Z' };
     }
@@ -897,6 +899,7 @@ function toggleEdit(section) {
   document.getElementById('btn-add-tag').style.display = '';
   document.getElementById('edit-actions-general').style.display = '';
   document.getElementById('btn-edit-general').style.display = 'none';
+  document.getElementById('tags-row').classList.add('tags-editing');
 }
 function cancelEdit(section) {
   editActive[section] = false;
@@ -907,8 +910,10 @@ function cancelEdit(section) {
     if (i) i.style.display = 'none';
   });
   document.getElementById('tag-input-wrap').style.display = 'none';
+  document.getElementById('btn-add-tag').style.display = 'none';
   document.getElementById('edit-actions-general').style.display = 'none';
   document.getElementById('btn-edit-general').style.display = '';
+  document.getElementById('tags-row').classList.remove('tags-editing');
 }
 function saveEdit(section) {
   const name = document.getElementById('inp-name').value.trim();

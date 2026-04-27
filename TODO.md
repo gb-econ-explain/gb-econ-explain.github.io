@@ -18,16 +18,6 @@ For lab managers / platform admins. Manages the review board of EXPLAIN.
 
 ---
 
-## Notes
-
-- The Ethics & GDPR section should sit between Administration and Help in the sidebar
-- Nav item for Documents should show a red/orange badge with the count of pending review documents
-- Reviewers may be external (not necessarily registered as researchers on EXPLAIN)
-- Email sending is currently a stub — integrate with the Mailing template system when that is built
-
-
----
-
 ## Researcher registration page
 
 A registration / onboarding page for new researchers joining EXPLAIN.

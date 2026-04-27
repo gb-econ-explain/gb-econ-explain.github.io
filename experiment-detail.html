@@ -403,7 +403,12 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
               <div class="tags-row" id="tags-row">
                 <span class="tag">Dictator game <span class="tag-remove" onclick="removeTag(this)">×</span></span>
                 <span class="tag">Individual decision <span class="tag-remove" onclick="removeTag(this)">×</span></span>
-                <span class="tag tag-add" onclick="addTag()" id="btn-add-tag" style="display:none">+ Add tag</span>
+              </div>
+              <div id="tag-input-wrap" style="display:none;position:relative;margin-top:8px">
+                <input id="tag-input" type="text" placeholder="Type to search tags…"
+                  style="width:100%;padding:6px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;outline:none"
+                  oninput="filterTagSuggestions(this.value)" onkeydown="tagKeydown(event)" autocomplete="off"/>
+                <div id="tag-suggestions" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);z-index:50;box-shadow:0 4px 16px rgba(0,0,0,.1);max-height:180px;overflow-y:auto"></div>
               </div>
             </div>
 
@@ -450,40 +455,32 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 
         <!-- Budget & Documents -->
         <div>
-          <div class="card section-gap">
-            <div class="card-header">
-              <span class="card-title">Payment budget</span>
-              <button class="btn btn-ghost btn-sm">Edit</button>
-            </div>
-            <div class="grid-2">
-              <div class="field">
-                <label>Max payment / session (€)</label>
-                <div class="field-value">—</div>
-              </div>
-              <div class="field">
-                <label>Online cap (%)</label>
-                <div class="field-value">—</div>
-              </div>
-            </div>
-            <div class="field">
-              <label>Payment notes</label>
-              <div class="field-value" style="color:var(--muted);font-size:13px">No payment constraints defined.</div>
-            </div>
-          </div>
-
           <div class="card">
             <div class="card-header">
               <span class="card-title">Documents</span>
               <button class="btn btn-ghost btn-sm">Upload</button>
             </div>
             <div id="docs-list">
-              <div class="doc-row">
+              <div class="doc-row" id="doc-ethics">
                 <div class="doc-icon pdf">📄</div>
                 <div style="flex:1">
                   <div class="doc-name">ethics-approval-2025.pdf</div>
-                  <div class="doc-meta">Ethics · Uploaded 14 Jan 2025</div>
+                  <div class="doc-meta">Ethics · Uploaded 14 Jan 2025 · <span id="doc-ethics-status" style="color:var(--success);font-weight:500">✓ Reviewed</span></div>
                 </div>
-                <button class="icon-btn danger"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <span title="Reviewed — cannot be deleted" style="font-size:18px;cursor:default">🔒</span>
+                </div>
+              </div>
+              <div class="doc-row" id="doc-rgpd">
+                <div class="doc-icon pdf">📄</div>
+                <div style="flex:1">
+                  <div class="doc-name">rgpd-declaration.pdf</div>
+                  <div class="doc-meta">RGPD · Uploaded 20 Jan 2025 · <span id="doc-rgpd-status" style="color:var(--warning)">Pending review</span></div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center">
+                  <button class="btn btn-ghost btn-sm" onclick="sendForReview('doc-rgpd')" style="font-size:11.5px;padding:4px 10px">Send for review</button>
+                  <button class="icon-btn danger" onclick="deleteDoc('doc-rgpd')"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3.5h10M5.5 3.5V2.5h3v1M5.5 6v4M8.5 6v4M3 3.5l.5 8h7l.5-8"/></svg></button>
+                </div>
               </div>
             </div>
             <div class="doc-upload" onclick="showToast('File upload coming soon')">
@@ -516,7 +513,9 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
               <td><div class="person-cell"><div class="person-avatar">GB</div><div><div class="person-name">Gabriel Bayle</div><div class="person-email">gabriel.bayle@cnrs.fr</div></div></div></td>
               <td><span class="badge badge-info">Owner</span></td>
               <td><span style="font-size:13px;color:var(--success)">Full rights</span></td>
-              <td></td>
+              <td>
+                <button class="btn btn-ghost btn-sm" style="font-size:11.5px;white-space:nowrap" onclick="openTransferModal()">Transfer ownership</button>
+              </td>
             </tr>
             <tr>
               <td><div class="person-cell"><div class="person-avatar" style="background:#3b6fd4">IV</div><div><div class="person-name">Iane Vallanzasca</div><div class="person-email">iane.vallanzasca@cnrs.fr</div></div></div></td>
@@ -907,7 +906,7 @@ function cancelEdit(section) {
     if (v) v.style.display = '';
     if (i) i.style.display = 'none';
   });
-  document.getElementById('btn-add-tag').style.display = 'none';
+  document.getElementById('tag-input-wrap').style.display = 'none';
   document.getElementById('edit-actions-general').style.display = 'none';
   document.getElementById('btn-edit-general').style.display = '';
 }
@@ -926,19 +925,53 @@ function saveEdit(section) {
 }
 
 // ── Tags ───────────────────────────────────────────────────────────────────
+const ALL_TAGS = [
+  'Dictator game','Trust game','Ultimatum game','Public goods','Prisoner dilemma',
+  'Individual decision','Group decision','Risk elicitation','Ambiguity','Loss aversion',
+  'Social preferences','Cooperation','Competition','Coordination','Negotiation',
+  'Incentivised','Hypothetical','Survey','Field experiment','Lab experiment',
+  'Online experiment','Longitudinal','One-shot','Repeated','Deception-free',
+  'Framing effect','Endowment effect','Time preference','Inequality aversion'
+];
 function removeTag(btn) { btn.closest('.tag').remove(); }
-function addTag() {
-  const val = prompt('New tag:');
-  if (!val) return;
+function filterTagSuggestions(val) {
+  const box = document.getElementById('tag-suggestions');
+  const q = val.trim().toLowerCase();
+  if (!q) { box.style.display='none'; return; }
+  const existing = Array.from(document.querySelectorAll('#tags-row .tag')).map(t=>t.textContent.replace('×','').trim().toLowerCase());
+  const matches = ALL_TAGS.filter(t=>t.toLowerCase().includes(q) && !existing.includes(t.toLowerCase()));
+  if (!matches.length) { box.style.display='none'; return; }
+  box.innerHTML = matches.map(t=>`<div onclick="selectTag('${t}')" style="padding:8px 12px;cursor:pointer;font-size:13.5px;color:var(--text)" onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background=''">${t}</div>`).join('');
+  box.style.display='block';
+}
+function selectTag(val) {
   const row = document.getElementById('tags-row');
-  const addBtn = document.getElementById('btn-add-tag');
   const tag = document.createElement('span');
   tag.className = 'tag';
   tag.innerHTML = `${val} <span class="tag-remove" onclick="removeTag(this)">×</span>`;
-  row.insertBefore(tag, addBtn);
+  row.appendChild(tag);
+  document.getElementById('tag-input').value = '';
+  document.getElementById('tag-suggestions').style.display='none';
 }
+function tagKeydown(e) {
+  if (e.key==='Enter') { const v=e.target.value.trim(); if(v) selectTag(v); e.preventDefault(); }
+  if (e.key==='Escape') { document.getElementById('tag-suggestions').style.display='none'; }
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#tag-input-wrap')) document.getElementById('tag-suggestions').style.display='none';
+});
 
 // ── Status change ──────────────────────────────────────────────────────────
+function openTransferModal() {
+  document.getElementById('transfer-modal').classList.add('open');
+}
+function confirmTransfer() {
+  const sel = document.getElementById('transfer-select');
+  if (!sel.value) { showToast('Please select a researcher','error'); return; }
+  showToast('Ownership transferred to ' + sel.options[sel.selectedIndex].text);
+  closeAllModals();
+}
+
 function openStatusModal() {
   document.getElementById('new-status-select').value = exp.status;
   document.getElementById('status-modal').classList.add('open');
@@ -1106,6 +1139,22 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 });
 
 // ── Toast ──────────────────────────────────────────────────────────────────
+function sendForReview(docId) {
+  const row = document.getElementById(docId);
+  if (!row) return;
+  const statusEl = row.querySelector('[id$="-status"]');
+  if (statusEl) { statusEl.textContent = '⏳ Sent for review'; statusEl.style.color = 'var(--blue-mid)'; }
+  // Replace "Send for review" + delete buttons with a pending indicator
+  const btnArea = row.querySelector('div:last-child');
+  btnArea.innerHTML = '<span style="font-size:12px;color:var(--blue-mid)">Awaiting review…</span>';
+  showToast('Document sent for review');
+}
+function deleteDoc(docId) {
+  const row = document.getElementById(docId);
+  if (!row) return;
+  if (confirm('Delete this document?')) { row.remove(); showToast('Document deleted'); }
+}
+
 let toastTimer;
 function showToast(msg, isError) {
   const t = document.getElementById('toast');
@@ -1120,5 +1169,33 @@ function filterExperimenters(val) { /* wire to API later */ }
 
 init();
 </script>
+
+<!-- Transfer ownership modal -->
+<div class="modal-overlay" id="transfer-modal">
+  <div class="modal" style="max-width:440px">
+    <div class="modal-header">
+      <span class="modal-title">Transfer ownership</span>
+      <button class="icon-btn" onclick="closeAllModals()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div style="padding:1.25rem 1.5rem">
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:1rem">Transfer ownership to another experimenter on this project. You will become a regular experimenter.</p>
+      <div class="field">
+        <label>New owner</label>
+        <select id="transfer-select" style="width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px">
+          <option value="">— Select a researcher —</option>
+          <option value="IV">Iane Vallanzasca</option>
+          <option value="MCV">Marie Claire Villeval</option>
+        </select>
+      </div>
+      <div style="background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--warning)">
+        ⚠ This action cannot be undone without the new owner's consent.
+      </div>
+    </div>
+    <div style="padding:.875rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="closeAllModals()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmTransfer()">Confirm transfer</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

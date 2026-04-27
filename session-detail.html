@@ -349,6 +349,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
         <div class="card" style="margin-bottom:1.25rem">
           <div class="card-header">
             <span class="card-title-lg">Attendance &amp; payoffs</span>
+              <button class="btn btn-ghost btn-sm" onclick="openManualAddModal()">+ Add manually</button>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
               <button class="btn btn-ghost btn-sm" onclick="saveAttendance()">
                 <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 8l3.5 3.5L12 3"/></svg>
@@ -373,8 +374,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
                   <th style="min-width:200px">Participant</th>
                   <th style="min-width:90px">Past sessions</th>
                   <th style="min-width:130px">Outcome <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(required)</span></th>
-                  <th style="min-width:110px">Payoff (€) <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">incl. show-up</span></th>
-                  <th style="min-width:80px">Show-up fee</th>
+                  <th style="min-width:110px">Payoff (€)</th>
                   <th style="min-width:170px">Notes</th>
                 </tr>
               </thead>
@@ -410,7 +410,13 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
           <button class="filter-chip" id="chip-reserve" onclick="setRegFilter('reserve',this)">Reserve</button>
           <button class="filter-chip" id="chip-waitlist" onclick="setRegFilter('waitlist',this)">Waitlist</button>
           <span class="count-label" id="reg-count"></span>
-          <button class="btn btn-ghost btn-sm" style="margin-left:auto" onclick="openManualAddModal()">+ Add manually</button>
+          <div style="display:flex;gap:8px;margin-left:auto">
+            <button class="btn btn-ghost btn-sm" onclick="openSendMessageModal()" title="Send an email to all registered and reserve participants">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>
+              Send a message
+            </button>
+            <button class="btn btn-ghost btn-sm" onclick="openManualAddModal()">+ Add manually</button>
+          </div>
         </div>
 
         <div class="card" style="padding:0;overflow:hidden">
@@ -707,9 +713,8 @@ function saveAttendance() {
     const pid = r.dataset.pid;
     const outcome = r.dataset.outcome || '';
     const payoff = parseFloat(r.querySelector('.earnings-input')?.value) || 0;
-    const showup = r.querySelector('.showup-input')?.checked ? 1 : 0;
     const notes  = r.querySelector('.notes-cell-input')?.value || '';
-    data[pid] = { outcome, payoff, showup, notes };
+    data[pid] = { outcome, payoff, notes };
   });
   localStorage.setItem(attendanceKey(), JSON.stringify(data));
   showToast('Attendance saved');
@@ -763,7 +768,6 @@ function renderAttendance() {
     const outcome = s.outcome || (p.status === 'attended' ? 'present' : p.status === 'noshow' ? 'noshow' : '');
     const payoff  = s.payoff != null ? s.payoff : (p.earnings ?? '');
     const notes   = s.notes || '';
-    const showup  = s.showup != null ? s.showup : 1;
 
     const pBtn = `<button class="out-btn ${outcome==='present'?'sel-present':''}" onclick="setOutcome('${p.id}','present',this)">✓ Present</button>`;
     const nBtn = `<button class="out-btn ${outcome==='noshow'?'sel-noshow':''}" onclick="setOutcome('${p.id}','noshow',this)">✗ No-show</button>`;
@@ -793,9 +797,6 @@ function renderAttendance() {
         </div>
       </td>
       <td><input class="earnings-input" type="number" step="0.01" min="0" value="${payoff}" placeholder="0.00" oninput="updateSummary()"/></td>
-      <td style="text-align:center">
-        <input type="checkbox" ${showup ? 'checked' : ''} class="showup-input" style="width:15px;height:15px;accent-color:var(--blue-mid);cursor:pointer" title="Show-up fee included"/>
-      </td>
       <td><input class="notes-cell-input" type="text" value="${notes}" placeholder="e.g. left early"/></td>
     </tr>`;
   }).join('');
@@ -805,15 +806,14 @@ function renderAttendance() {
 
 function exportCSV() {
   const rows = document.querySelectorAll('#attendance-tbody tr[data-pid]');
-  const lines = ['Subject ID,Name,Gender,Education,Outcome,Payoff (€),Show-up fee,Notes'];
+  const lines = ['Subject ID,Name,Gender,Education,Outcome,Payoff (€),Notes'];
   rows.forEach(r => {
     const pid = r.dataset.pid;
     const p   = [...DEMO_PARTICIPANTS_PAST, ...DEMO_PARTICIPANTS_ACTIVE].find(x => x.id===pid) || {};
     const outcome = r.dataset.outcome || '';
     const payoff  = r.querySelector('.earnings-input')?.value || '0';
-    const showup  = r.querySelector('.showup-input')?.checked ? 'Yes' : 'No';
     const notes   = (r.querySelector('.notes-cell-input')?.value || '').replace(/,/g,' ');
-    lines.push([pid, p.name||'', p.gender==='F'?'Female':'Male', p.edu||'', outcome, payoff, showup, notes].join(','));
+    lines.push([pid, p.name||'', p.gender==='F'?'Female':'Male', p.edu||'', outcome, payoff, notes].join(','));
   });
   const blob = new Blob([lines.join('\n')], {type:'text/csv'});
   const a = document.createElement('a');
@@ -915,6 +915,19 @@ function showTab(name) {
 
 // ── Modals ─────────────────────────────────────────────────────────────────
 function openEditModal() { document.getElementById('edit-modal').classList.add('open'); }
+function openSendMessageModal() {
+  document.getElementById('send-message-modal').classList.add('open');
+}
+function sendMessage() {
+  const subj = document.getElementById('msg-subject')?.value.trim();
+  const body = document.getElementById('msg-body')?.value.trim();
+  if (!subj || !body) { showToast('Please fill subject and message'); return; }
+  document.getElementById('send-message-modal').classList.remove('open');
+  document.getElementById('msg-subject').value = '';
+  document.getElementById('msg-body').value = '';
+  showToast('Message sent to all registered and reserve participants');
+}
+
 function openManualAddModal() { document.getElementById('manual-add-modal').classList.add('open'); }
 function openOutcomeModal(pid, type) {
   pendingOutcomeId = { pid, type };
@@ -980,5 +993,36 @@ init();
 </script>
 </div><!-- /main -->
 
+
+<!-- Send message modal -->
+<div class="modal-overlay" id="send-message-modal">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-header">
+      <span class="modal-title">Send a message to participants</span>
+      <button class="icon-btn" onclick="document.getElementById('send-message-modal').classList.remove('open')">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg>
+      </button>
+    </div>
+    <div style="padding:1.25rem 1.5rem">
+      <div style="background:var(--blue-light);border:1px solid #b8cef2;border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--navy);margin-bottom:1rem">
+        📧 This message will be sent to all <strong>registered</strong> and <strong>reserve</strong> participants of this session.
+      </div>
+      <div class="field" style="margin-bottom:1rem">
+        <label style="font-size:13px;font-weight:500;color:var(--slate);display:block;margin-bottom:5px">Subject</label>
+        <input type="text" id="msg-subject" placeholder="e.g. Room change for tomorrow's session"
+          style="width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;outline:none"/>
+      </div>
+      <div class="field">
+        <label style="font-size:13px;font-weight:500;color:var(--slate);display:block;margin-bottom:5px">Message</label>
+        <textarea id="msg-body" placeholder="e.g. The session has been moved to Room A101. All other details remain unchanged."
+          style="width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;outline:none;resize:vertical;min-height:110px"></textarea>
+      </div>
+    </div>
+    <div style="padding:.875rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('send-message-modal').classList.remove('open')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="sendMessage()">Send message</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

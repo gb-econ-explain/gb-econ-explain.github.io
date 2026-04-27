@@ -346,8 +346,6 @@ function render() {
             </svg>
           </button>
         </div>
-</div><!-- /main -->
-
       </td>
     </tr>`;
   }).join('');
@@ -356,6 +354,8 @@ function render() {
 function cap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):''; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escAttr(s){ return String(s).replace(/'/g,"\\'"); }
+function ownerInitials(name){ if(!name) return '?'; return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function ownerColor(name){ const colors=['#1a4fa0','#1a7a4a','#8a3fc0','#b06000','#c0392b','#2d6a8a','#3b6fd4']; if(!name) return colors[0]; let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))>>>0; return colors[h%colors.length]; }
 function sortBy(key){ if(sortKey===key) sortDir*=-1; else { sortKey=key; sortDir=1; } render(); }
 function changeStatus(id,status){ ExplainDB.update(id,{status}); render(); showToast('Status updated to '+cap(status)); }
 function askDelete(id,name){ pendingDeleteId=id; document.getElementById('delete-name').textContent=name; document.getElementById('delete-modal').classList.add('open'); }

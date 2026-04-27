@@ -60,6 +60,7 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 .chart-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem}
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
 .chart-title{font-size:15px;font-weight:600;color:var(--navy)}
+.chart-var-select{padding:5px 22px 5px 9px;border:1px solid var(--border);border-radius:7px;font-family:inherit;font-size:12px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center;outline:none}
 .chart-area{height:200px;display:flex;align-items:flex-end;gap:6px;padding-bottom:24px;position:relative;border-bottom:1px solid var(--border)}
 .bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;position:relative}
 .bar{width:100%;border-radius:4px 4px 0 0;transition:opacity .15s;cursor:pointer;min-height:2px}
@@ -187,22 +188,19 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 
 <div class="two-col">
   <div class="chart-card" style="margin:0">
-    <div class="chart-header"><div class="chart-title">Subject pool composition</div></div>
+    <div class="chart-header">
+      <div class="chart-title">Subject pool composition</div>
+      <select class="chart-var-select" id="pool-chart-var" onchange="renderPoolDonut()">
+        <option value="gender">Gender</option>
+        <option value="edu">Education level</option>
+        <option value="age">Age group</option>
+        <option value="mode">Participation mode</option>
+        <option value="status">Status</option>
+      </select>
+    </div>
     <div class="donut-wrap">
-      <svg width="110" height="110" viewBox="0 0 110 110">
-        <circle cx="55" cy="55" r="36" fill="none" stroke="#edf2ff" stroke-width="20"/>
-        <circle cx="55" cy="55" r="36" fill="none" stroke="#3b6fd4" stroke-width="20" stroke-dasharray="122 104" stroke-dashoffset="0" transform="rotate(-90 55 55)"/>
-        <circle cx="55" cy="55" r="36" fill="none" stroke="#1a7a4a" stroke-width="20" stroke-dasharray="97 129" stroke-dashoffset="-122" transform="rotate(-90 55 55)"/>
-        <circle cx="55" cy="55" r="36" fill="none" stroke="#bbb" stroke-width="20" stroke-dasharray="7 219" stroke-dashoffset="-219" transform="rotate(-90 55 55)"/>
-        <text x="55" y="59" text-anchor="middle" font-family="DM Sans" font-size="13" font-weight="600" fill="#0d2b5e">312</text>
-      </svg>
-      <div class="dl-list">
-        <div class="dl-item"><div class="dl-dot" style="background:#3b6fd4"></div>Female — 54% (169)</div>
-        <div class="dl-item"><div class="dl-dot" style="background:#1a7a4a"></div>Male — 43% (134)</div>
-        <div class="dl-item"><div class="dl-dot" style="background:#bbb"></div>Other — 3% (9)</div>
-        <div style="height:1px;background:var(--border);margin:6px 0"></div>
-        <div class="dl-item" style="color:var(--muted)">Bachelor's 42% · Master's 39% · PhD 14%</div>
-      </div>
+      <svg id="pool-donut-svg" width="110" height="110" viewBox="0 0 110 110"></svg>
+      <div class="dl-list" id="pool-donut-legend"></div>
     </div>
   </div>
 
@@ -292,6 +290,37 @@ function renderChart(d){
 }
 
 update();
+
+// ── Subject pool donut chart ───────────────────────────────────────────────
+const POOL_DATA = {
+  gender:  {Female:{n:169,color:'#3b6fd4'}, Male:{n:134,color:'#1a7a4a'}, Other:{n:9,color:'#bbb'}},
+  edu:     {"Bachelor's":{n:131,color:'#3b6fd4'}, "Master's":{n:122,color:'#1a7a4a'}, PhD:{n:44,color:'#8a3fc0'}, Other:{n:15,color:'#b06000'}},
+  age:     {'18–25':{n:148,color:'#3b6fd4'}, '26–35':{n:89,color:'#1a7a4a'}, '36–50':{n:52,color:'#8a3fc0'}, '51–65':{n:18,color:'#b06000'}, '65+':{n:5,color:'#c0392b'}},
+  mode:    {'In-person':{n:142,color:'#3b6fd4'}, 'Online':{n:96,color:'#1a7a4a'}, 'Both':{n:74,color:'#8a3fc0'}},
+  status:  {Active:{n:287,color:'#1a7a4a'}, Inactive:{n:25,color:'#b06000'}},
+};
+
+function renderPoolDonut() {
+  const varKey = document.getElementById('pool-chart-var').value;
+  const groups = POOL_DATA[varKey] || {};
+  const entries = Object.entries(groups).sort((a,b)=>b[1].n-a[1].n);
+  const total = entries.reduce((s,[,v])=>s+v.n, 0);
+  const R=36, cx=55, cy=55, sw=20, circ=2*Math.PI*R;
+  let offset=0;
+  let paths = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#edf2ff" stroke-width="${sw}"/>`;
+  entries.forEach(([,{n,color}]) => {
+    const dash = n/total*circ;
+    paths += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${color}" stroke-width="${sw}" stroke-dasharray="${dash} ${circ-dash}" stroke-dashoffset="${-offset}" transform="rotate(-90 ${cx} ${cy})"/>`;
+    offset += dash;
+  });
+  paths += `<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="DM Sans" font-size="13" font-weight="600" fill="#0d2b5e">${total}</text>`;
+  document.getElementById('pool-donut-svg').innerHTML = paths;
+  document.getElementById('pool-donut-legend').innerHTML = entries.map(([label,{n,color}]) =>
+    `<div class="dl-item"><div class="dl-dot" style="background:${color}"></div>${label} — ${Math.round(n/total*100)}% (${n})</div>`
+  ).join('');
+}
+
+renderPoolDonut();
 </script>
 
 </div>

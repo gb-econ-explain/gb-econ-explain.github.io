@@ -47,8 +47,7 @@ body { font-family:'DM Sans',sans-serif; color:var(--text); background:var(--bg)
 .page-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap; }
 .page-header h1 { font-family:'DM Serif Display',serif; font-size:26px; color:var(--navy); }
 .page-header p { font-size:13.5px; color:var(--muted); margin-top:2px; }
-.access-notice { display:flex; align-items:flex-start; gap:10px; background:var(--warning-bg); border:1px solid var(--warning-border); border-radius:var(--radius); padding:11px 15px; font-size:13px; color:var(--warning); margin-bottom:1.5rem; }
-.access-notice svg { flex-shrink:0; margin-top:2px; }
+
 .stat-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin-bottom:1.75rem; }
 .stat-card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius-lg); padding:0.875rem 1.125rem; }
 .stat-label { font-size:11.5px; color:var(--muted); margin-bottom:3px; }
@@ -167,13 +166,8 @@ tbody tr:hover { background:#fafbfd; }
     <div class="page-header">
       <div>
         <h1>Accounting</h1>
-        <p>Payment summary for completed sessions — GATE · CNRS · Lyon. Data retained for 12 rolling months.</p>
+        <p>Payment summary for completed sessions — GATE · CNRS · Lyon.</p>
       </div>
-    </div>
-
-    <div class="access-notice">
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1.5L14.5 13H1.5L8 1.5z"/><path d="M8 6v4M8 11.5v.5"/></svg>
-      Access restricted to <strong>Lab managers</strong> and <strong>Accountants</strong>. Participant personal data is anonymised in exports per GDPR.
     </div>
 
     <div class="stat-row">
@@ -242,6 +236,11 @@ tbody tr:hover { background:#fafbfd; }
         <tfoot id="table-foot"></tfoot>
       </table>
     </div>
+  </div>
+
+  <div style="display:flex;align-items:flex-start;gap:9px;margin-top:1.25rem;padding:11px 15px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);font-size:12.5px;color:var(--muted)">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px;color:#94a3b8"><circle cx="8" cy="8" r="6.5"/><path d="M8 7v5M8 5v1"/></svg>
+    <span>Payment records are kept on a <strong>12-month rolling basis</strong> and are permanently deleted after that period. We recommend exporting your data at least once a month to avoid any loss.</span>
   </div>
 </div>
 

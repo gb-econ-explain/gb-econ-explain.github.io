@@ -31,12 +31,8 @@ A registration / onboarding page for new researchers joining EXPLAIN.
 
 ---
 
-## Dashboard as the universal welcome page
+## Dashboard
 
-Replace `welcome.html` with the dashboard as the landing page for all user types.
-
-- The dashboard (`dashboard.html`) becomes the first page seen after login for everyone
-- Remove the separate `welcome.html` (or repurpose it as a redirect to dashboard)
 - The dashboard content should adapt based on the user role:
   - **Lab Manager** — full dashboard as currently built (KPI cards, charts, pool composition)
   - **Researcher** — simplified view: their experiments, upcoming sessions, no accounting/pool stats

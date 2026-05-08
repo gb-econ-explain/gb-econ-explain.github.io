@@ -166,6 +166,39 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 
 @media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
 .nav-badge { font-size:10px; font-weight:700; background:#c0392b; color:#fff; border-radius:10px; padding:1px 6px; margin-left:auto; min-width:18px; text-align:center; }
+
+/* ── View toggle ── */
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex-shrink:0}
+.vt-btn{padding:6px 14px;font-family:inherit;font-size:13px;font-weight:500;border:none;background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;display:flex;align-items:center;gap:6px}
+.vt-btn:not(:last-child){border-right:1px solid var(--border)}
+.vt-btn.active{background:var(--blue);color:#fff}
+.vt-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── List view ── */
+.list-view{display:none;flex:1;overflow-y:auto;background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:0}
+.list-view.active{display:block}
+.list-month-group{border-bottom:1px solid var(--border)}
+.list-month-group:last-child{border-bottom:none}
+.list-month-header{padding:10px 16px 8px;background:var(--bg);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
+.list-row{display:flex;align-items:center;gap:14px;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s}
+.list-row:last-child{border-bottom:none}
+.list-row:hover{background:var(--blue-light)}
+.list-date-box{min-width:52px;text-align:center;flex-shrink:0}
+.list-date-day{font-size:20px;font-weight:700;color:var(--navy);line-height:1}
+.list-date-dow{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.list-info{flex:1;min-width:0}
+.list-exp{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.list-time-loc{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.list-fill{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+.list-fill-text{font-size:12px;color:var(--muted)}
+.list-fill-bar{width:80px;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.list-fill-inner{height:100%;border-radius:3px}
+
+/* When list view is active, hide calendar, when cal active hide list */
+.cal-view{flex:1;display:flex;flex-direction:column;min-height:0}
+.cal-view.hidden{display:none}
+
 </style>
 </head>
 <body>
@@ -230,6 +263,18 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
       <button class="nav-btn" onclick="changeMonth(1)"><svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg></button>
       <button class="today-btn" onclick="goToday()">Today</button>
     </div>
+
+      <!-- View toggle -->
+      <div class="view-toggle">
+        <button class="vt-btn active" id="vt-cal" onclick="setView('calendar')">
+          <svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>
+          Calendar
+        </button>
+        <button class="vt-btn" id="vt-list" onclick="setView('list')">
+          <svg viewBox="0 0 16 16"><path d="M4 4h9M4 8h9M4 12h9M1.5 4h.5M1.5 8h.5M1.5 12h.5"/></svg>
+          List
+        </button>
+      </div>
     <div class="cal-actions">
       <button class="btn btn-ghost" onclick="exportICal()">
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M7 1v8M4 6l3 3 3-3M2 11h10"/></svg>
@@ -241,13 +286,16 @@ body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);fon
 
   <div class="legend" id="legend"></div>
 
-  <div class="cal-wrap">
+  <div class="cal-view" id="cal-view"><div class="cal-wrap">
     <div class="cal-weekdays">
       <div class="cal-weekday">Mon</div><div class="cal-weekday">Tue</div><div class="cal-weekday">Wed</div>
       <div class="cal-weekday">Thu</div><div class="cal-weekday">Fri</div><div class="cal-weekday">Sat</div><div class="cal-weekday">Sun</div>
     </div>
     <div class="cal-grid" id="cal-grid"></div>
-  </div>
+  </div></div>
+
+  <!-- ── List view ── -->
+  <div class="list-view" id="list-view"></div>
 
 </div>
 </div>
@@ -403,6 +451,83 @@ let openSessId = null;
 
 function changeMonth(d){ current.setMonth(current.getMonth()+d); render(); }
 function goToday(){ current=new Date(todayD.getFullYear(),todayD.getMonth(),1); render(); }
+
+
+// ── View state ─────────────────────────────────────────────────────────────
+let currentView = 'calendar';
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('vt-cal').classList.toggle('active', v === 'calendar');
+  document.getElementById('vt-list').classList.toggle('active', v === 'list');
+  document.getElementById('cal-view').classList.toggle('hidden', v !== 'calendar');
+  document.getElementById('list-view').classList.toggle('active', v === 'list');
+  // Month nav only relevant for calendar view
+  document.querySelector('.cal-nav').style.opacity = v === 'calendar' ? '1' : '.45';
+  document.querySelector('.cal-nav').style.pointerEvents = v === 'calendar' ? '' : 'none';
+  document.getElementById('legend').style.display = v === 'calendar' ? '' : 'none';
+  if (v === 'list') renderListView();
+}
+
+function renderListView() {
+  const sessions = getSessions();
+  // Sort all sessions by date
+  const sorted = [...sessions].sort((a,b) => a.date.localeCompare(b.date));
+
+  // Group by month
+  const groups = {};
+  sorted.forEach(s => {
+    const key = s.date.slice(0,7); // YYYY-MM
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(s);
+  });
+
+  const statusLabel = { past:'Past', active:'Active', upcoming:'Upcoming' };
+  const statusColor = {
+    past:     { bg:'#f0f0f0',     text:'#666' },
+    active:   { bg:'var(--success-bg)', text:'var(--success)' },
+    upcoming: { bg:'var(--blue-light)',  text:'var(--blue)' },
+  };
+
+  let html = '';
+  Object.entries(groups).forEach(([key, sessions]) => {
+    const monthLabel = new Date(key+'-01T00:00').toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+    html += `<div class="list-month-group">
+      <div class="list-month-header">${monthLabel} — ${sessions.length} session${sessions.length!==1?'s':''}</div>`;
+
+    sessions.forEach(s => {
+      const exp = EXPS[s.expId] || {color:'#999', bg:'#eee', name:'Unknown'};
+      const d   = new Date(s.date+'T00:00');
+      const dow = d.toLocaleDateString('en-GB',{weekday:'short'});
+      const day = d.getDate();
+      const pct = s.slots ? Math.round((s.enrolled||0)/s.slots*100) : 0;
+      const sc  = statusColor[s.status] || statusColor.upcoming;
+      const barColor = pct>=100?'var(--success)':pct>=70?'var(--blue-mid)':'#e08020';
+      html += `<div class="list-row" onclick="openPanel('${s.id}')">
+        <div class="list-date-box">
+          <div class="list-date-day">${day}</div>
+          <div class="list-date-dow">${dow}</div>
+        </div>
+        <div style="width:3px;height:36px;border-radius:2px;background:${exp.color};flex-shrink:0"></div>
+        <div class="list-info">
+          <div class="list-exp" style="color:${exp.color}">${exp.name}</div>
+          <div class="list-time-loc">${s.time}${s.duration?' · '+s.duration:''} · ${s.location||'No location'}</div>
+        </div>
+        <div class="list-right">
+          <div class="list-fill">
+            <div class="list-fill-text">${s.enrolled||0} / ${s.slots}</div>
+            <div class="list-fill-bar"><div class="list-fill-inner" style="width:${pct}%;background:${barColor}"></div></div>
+          </div>
+          <span style="font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:${sc.bg};color:${sc.text};white-space:nowrap">${statusLabel[s.status]||'—'}</span>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  if (!html) html = '<div style="text-align:center;padding:3rem;color:var(--muted)">No sessions yet.</div>';
+  document.getElementById('list-view').innerHTML = html;
+}
 
 function render(){
   const y=current.getFullYear(), m=current.getMonth();

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPLAIN — Lab Resources</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a4fa0;--blue-light:#e8eff9;--blue-mid:#3b6fd4;
+  --navy:#0d2b5e;--slate:#4a5568;--muted:#718096;
+  --border:#dde3ed;--bg:#f6f8fc;--white:#fff;--text:#1a2035;
+  --radius:10px;--radius-lg:16px;
+  --success:#1a7a4a;--success-bg:#e6f4ed;
+  --warning:#8a6200;--warning-bg:#fff8e6;--warning-border:#f5d87a;
+  --danger:#c0392b;--danger-bg:#fff0f0;--danger-border:#f5c5c5;
+  --sidebar-w:220px;
+}
+html,body{height:100%}
+body{font-family:'DM Sans',sans-serif;color:var(--text);background:var(--bg);font-size:15px;line-height:1.6;display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);min-height:100vh;background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto}
+.sidebar-logo{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--border);text-decoration:none}
+.logo-mark{width:32px;height:32px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-mark svg{width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
+.logo-name{font-family:'DM Serif Display',serif;font-size:16px;color:var(--navy);display:block}
+.logo-sub{font-size:10px;color:var(--muted);display:block;line-height:1.3}
+.sidebar-nav{padding:0.75rem;flex:1}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);padding:0.9rem 0.5rem 0.35rem;display:block}
+.nav-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:var(--radius);font-size:13.5px;color:var(--slate);text-decoration:none;transition:background 0.12s,color 0.12s;margin-bottom:1px}
+.nav-item:hover{background:var(--bg);color:var(--navy)}
+.nav-item.active{background:var(--blue-light);color:var(--blue);font-weight:500}
+.nav-item svg{width:15px;height:15px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.nav-soon{font-size:10px;font-weight:600;color:var(--muted);background:#f0f0f0;border-radius:4px;padding:1px 6px;margin-left:auto}
+.nav-badge{font-size:10px;font-weight:700;background:#c0392b;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto;min-width:18px;text-align:center}
+.sidebar-footer{padding:0.875rem 1rem 1rem;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:var(--radius);cursor:default}
+.sidebar-user:hover{background:var(--bg)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-name{font-size:13px;font-weight:500;color:var(--text);line-height:1.2}
+.user-role{font-size:11px;color:var(--muted)}
+.notif-btn{width:28px;height:28px;border-radius:7px;border:1px solid var(--border);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all 0.15s;margin-left:auto;flex-shrink:0}
+.notif-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.content{padding:2.5rem 2.5rem 4rem}
+.breadcrumb{font-size:15px;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:1.75rem}
+.breadcrumb a{color:var(--blue-mid);text-decoration:none;font-weight:500}
+.breadcrumb a:hover{color:var(--blue);text-decoration:underline}
+.breadcrumb span.sep{color:#c0ccd8;font-size:17px;line-height:1}
+.breadcrumb span:not(.sep){color:var(--slate);font-weight:500}
+.page-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:1.75rem;gap:1rem;flex-wrap:wrap}
+.page-header h1{font-family:'DM Serif Display',serif;font-size:26px;color:var(--navy)}
+.page-header p{font-size:13.5px;color:var(--muted);margin-top:2px}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:300px}
+.search-wrap svg{position:absolute;left:9px;top:50%;transform:translateY(-50%);pointer-events:none}
+.search-input{width:100%;padding:7px 11px 7px 30px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.search-input:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+.filter-select{padding:7px 26px 7px 10px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13px;color:var(--slate);background:var(--white);appearance:none;cursor:pointer;outline:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.filter-select:focus{border-color:var(--blue-mid)}
+.count-label{font-size:13px;color:var(--muted);margin-left:auto}
+
+/* ── Resource grid ── */
+.resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.125rem}
+.resource-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.resource-card:hover{border-color:var(--blue-mid);box-shadow:0 3px 16px rgba(26,79,160,.1)}
+.rc-top{padding:1.125rem 1.25rem 0.875rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:14px}
+.rc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.rc-header{flex:1;min-width:0}
+.rc-name{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:3px;line-height:1.3}
+.rc-lab{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.rc-lab-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rc-body{padding:0.875rem 1.25rem;flex:1}
+.rc-desc{font-size:13px;color:var(--slate);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.rc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:0.75rem}
+.rc-tag{font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
+.rc-footer{padding:0.75rem 1.25rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rc-type{font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+.rc-type svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+.type-equipment{color:#1a7a4a;background:var(--success-bg);padding:3px 9px;border-radius:20px}
+.type-service{color:var(--blue);background:var(--blue-light);padding:3px 9px;border-radius:20px}
+.type-platform{color:#8a3fc0;background:#f3e8ff;padding:3px 9px;border-radius:20px}
+.rc-contact-btn{font-size:12.5px;font-weight:500;color:var(--blue-mid);text-decoration:none;display:flex;align-items:center;gap:4px;transition:color .12s}
+.rc-contact-btn:hover{color:var(--blue);text-decoration:underline}
+
+/* ── Detail modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,43,94,.35);z-index:1000;display:none;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--white);border-radius:var(--radius-lg);max-width:660px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.15);max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-header{padding:1.5rem 2rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:14px;flex-shrink:0}
+.modal-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.modal-title{font-family:'DM Serif Display',serif;font-size:21px;color:var(--navy);line-height:1.3}
+.modal-lab{font-size:13px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:6px}
+.modal-lab-dot{width:8px;height:8px;border-radius:50%}
+.modal-close{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);margin-left:auto;flex-shrink:0}
+.modal-close:hover{background:var(--bg)}
+.modal-body{padding:1.5rem 2rem;overflow-y:auto;flex:1}
+.modal-section{margin-bottom:1.25rem}
+.modal-section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:.625rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+.spec-item{background:var(--bg);border-radius:var(--radius);padding:8px 12px}
+.spec-key{font-size:11.5px;color:var(--muted);margin-bottom:2px}
+.spec-val{font-size:13.5px;font-weight:500;color:var(--text)}
+.modal-footer{padding:1rem 2rem;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;flex-shrink:0}
+
+/* ── Add resource modal ── */
+.field{margin-bottom:1rem}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--slate);margin-bottom:5px}
+.req{color:var(--danger);margin-left:2px}
+.field input,.field select,.field textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:13.5px;color:var(--text);background:var(--white);outline:none;transition:border .15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(59,111,212,.1)}
+.field textarea{resize:vertical;min-height:90px}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.875rem}
+@media(max-width:520px){.grid-2{grid-template-columns:1fr}}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--radius);font-family:inherit;font-size:13.5px;font-weight:500;cursor:pointer;border:none;transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--navy)}
+.btn-ghost{background:var(--white);color:var(--slate);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:5px 12px;font-size:12.5px}
+
+/* ── Toast ── */
+.toast{position:fixed;top:20px;left:calc(var(--sidebar-w) + 50%);transform:translateX(-50%) translateY(-80px);background:var(--success);color:#fff;padding:10px 22px;border-radius:var(--radius);font-size:13.5px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .35s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:768px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <a class="sidebar-logo" href="dashboard.html">
+    <div class="logo-mark"><svg viewBox="0 0 18 18"><circle cx="9" cy="9" r="7"/><path d="M5 9h8M9 5v8"/></svg></div>
+    <div><span class="logo-name">EXPLAIN</span><span class="logo-sub">Experimental Platform</span></div>
+  </a>
+  <nav class="sidebar-nav">
+    <a class="nav-item" href="dashboard.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1.5"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1.5"/><rect x="1.5" y="9" width="5.5" height="5.5" rx="1.5"/><rect x="9" y="9" width="5.5" height="5.5" rx="1.5"/></svg>Dashboard</a>
+    <span class="nav-label">Research</span>
+    <a class="nav-item" href="experiment-list.html"><svg viewBox="0 0 16 16"><path d="M5 2v5.5L2.5 13h11L11 7.5V2"/><path d="M4.5 2h7"/><circle cx="7.5" cy="10" r="0.8" fill="currentColor" stroke="none"/></svg>Experiments</a>
+    <a class="nav-item" href="calendar.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3" width="13" height="11.5" rx="2"/><path d="M1.5 7h13M5 1.5v3M11 1.5v3"/></svg>Calendar</a>
+    <a class="nav-item" href="multilab.html"><svg viewBox="0 0 16 16"><circle cx="3.5" cy="8" r="2"/><circle cx="12.5" cy="4" r="2"/><circle cx="12.5" cy="12" r="2"/><path d="M5.5 8h2.5M10.5 4H9M10.5 12H9M8 8l2-4M8 8l2 4" stroke-width="1.4"/></svg>Multilab</a>
+    <a class="nav-item active" href="lab-resources.html"><svg viewBox="0 0 16 16"><path d="M2 11.5h12M2 8h12M4.5 2v3.5M7.5 2v3.5M10.5 2v3.5M3 5.5h10a1 1 0 011 1V12a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5a1 1 0 011-1z"/></svg>Lab Resources</a>
+    <span class="nav-label">Administration</span>
+    <a class="nav-item" href="subject-pool.html"><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1.5 13.5c0-2.5 2-4 4.5-4s4.5 1.5 4.5 4"/><circle cx="12" cy="5" r="2"/><path d="M14.5 13.5c0-2-1.5-3.5-3.5-3.5"/></svg>Subject Pool</a>
+    <a class="nav-item" href="accounting.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="2" width="13" height="12" rx="1.5"/><path d="M5 6h6M5 9h4M5 12h2"/></svg>Accounting</a>
+    <a class="nav-item" href="users.html"><svg viewBox="0 0 16 16"><circle cx="5" cy="5" r="2.5"/><path d="M1 13c0-2.5 1.8-4 4-4s4 1.5 4 4"/><path d="M11 7l1.5 1.5L15 6"/></svg>Users</a>
+    <a class="nav-item" href="mailing.html"><svg viewBox="0 0 16 16"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>Mailing</a>
+    <a class="nav-item" href="new-feature.html"><svg viewBox="0 0 16 16"><path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4L8 10.4l-3.6 1.9.7-4L2.2 5.7l4-.6z"/></svg>New features<span class="nav-soon">soon</span></a>
+    <span class="nav-label">Ethics &amp; GDPR</span>
+    <a class="nav-item" href="review-board.html"><svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2.5 13.5c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M10.5 8l1 1 2.5-2.5" stroke-width="1.4"/></svg>Review Board</a>
+    <a class="nav-item" href="review.html"><svg viewBox="0 0 16 16"><path d="M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1z"/><path d="M5 8l2 2 4-4"/></svg>Review</a>
+    <a class="nav-item" href="documents.html"><svg viewBox="0 0 16 16"><path d="M9.5 1.5H4a1 1 0 00-1 1v11a1 1 0 001 1h8a1 1 0 001-1V5.5L9.5 1.5z"/><path d="M9.5 1.5V5.5H13.5"/><path d="M5.5 8.5h5M5.5 11h3"/></svg>Documents<span class="nav-badge">2</span></a>
+    <span class="nav-label">Help</span>
+    <a class="nav-item" href="recruit.html"><svg viewBox="0 0 16 16"><path d="M8 1.5C5 1.5 2.5 4 2.5 7c0 1.5.6 2.9 1.5 3.9L2.5 14.5h11l-1.5-3.6c1-.9 1.5-2.3 1.5-3.9 0-3-2.5-5.5-5.5-5.5z"/><circle cx="8" cy="7" r="1.5"/></svg>Recruit</a>
+    <a class="nav-item" href="https://explain.cnrs.fr" target="_blank"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.5v4"/><circle cx="8" cy="5" r="0.75" fill="currentColor" stroke="none"/></svg>Documentation</a>
+    <a class="nav-item" href="contact.html"><svg viewBox="0 0 16 16"><path d="M2 2h12v9H9l-3 3v-3H2z"/></svg>Contact</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="avatar">GB</div>
+      <div><div class="user-name">Gabriel Bayle</div><div class="user-role">Lab Manager · GATE</div></div>
+      <button class="notif-btn"><svg width="13" height="13" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M7.5 1.5a5 5 0 015 5v3l1 2H1.5l1-2v-3a5 5 0 015-5z"/><path d="M6 12.5a1.5 1.5 0 003 0"/></svg></button>
+    </div>
+  </div>
+</aside>
+
+<div class="main">
+<div class="content">
+
+  <div class="breadcrumb"><span>Lab Resources</span></div>
+  <div class="page-header">
+    <div>
+      <h1>Lab Resources &amp; Services</h1>
+      <p>Equipment and services offered by EXPLAIN partner laboratories. Contact labs directly to arrange access.</p>
+    </div>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Share a resource</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="5.5" cy="5.5" r="4" stroke="#718096" stroke-width="1.4"/><path d="M9 9L12 12" stroke="#718096" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input class="search-input" id="search" type="text" placeholder="Search equipment, services, labs…" oninput="render()"/>
+    </div>
+    <select class="filter-select" id="f-type" onchange="render()">
+      <option value="">All types</option>
+      <option value="equipment">Equipment</option>
+      <option value="service">Service</option>
+      <option value="platform">Platform</option>
+    </select>
+    <select class="filter-select" id="f-lab" onchange="render()">
+      <option value="">All labs</option>
+      <option value="GATE">GATE · CNRS · Lyon</option>
+      <option value="PLATIPUS">PLATIPUS · Lyon</option>
+      <option value="CREST">CREST · Paris</option>
+      <option value="LEEM">LEEM · Montpellier</option>
+    </select>
+    <span class="count-label" id="count-label"></span>
+  </div>
+
+  <div class="resource-grid" id="resource-grid"></div>
+
+</div>
+</div>
+
+<!-- ── Detail modal ── -->
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this)closeModal('detail-modal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-icon" id="dm-icon"></div>
+      <div style="flex:1;min-width:0">
+        <div class="modal-title" id="dm-name">—</div>
+        <div class="modal-lab" id="dm-lab"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('detail-modal')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-title">Description</div>
+        <div id="dm-desc" style="font-size:14px;color:var(--slate);line-height:1.7"></div>
+      </div>
+      <div class="modal-section" id="dm-specs-section">
+        <div class="modal-section-title">Technical specifications</div>
+        <div class="spec-grid" id="dm-specs"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Access &amp; conditions</div>
+        <div id="dm-conditions" style="font-size:14px;color:var(--slate);line-height:1.7"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-title">Contact</div>
+        <div id="dm-contact-info"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('detail-modal')">Close</button>
+      <a id="dm-email-btn" href="#" class="btn btn-primary btn-sm">Send an email</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Add resource modal ── -->
+<div class="modal-overlay" id="add-modal" onclick="if(event.target===this)closeModal('add-modal')">
+  <div class="modal">
+    <div class="modal-header" style="align-items:center">
+      <div style="flex:1"><div class="modal-title">Share a resource or service</div><div style="font-size:13px;color:var(--muted);margin-top:3px">Visible to all EXPLAIN partner labs</div></div>
+      <button class="modal-close" onclick="closeModal('add-modal')"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="field"><label>Name <span class="req">*</span></label><input type="text" id="add-name" placeholder="e.g. Eye tracker SR Research"/></div>
+        <div class="field"><label>Type <span class="req">*</span></label>
+          <select id="add-type">
+            <option value="">— Select —</option>
+            <option value="equipment">Equipment</option>
+            <option value="service">Service</option>
+            <option value="platform">Platform</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Category / tags</label><input type="text" id="add-tags" placeholder="e.g. eye-tracking, neuroimaging, development…"/></div>
+      <div class="field"><label>Full description <span class="req">*</span></label><textarea id="add-desc" placeholder="Describe what you offer, its capabilities, and typical use cases…"></textarea></div>
+      <div class="field"><label>Technical specifications</label><input type="text" id="add-specs" placeholder="e.g. 1000 Hz, binocular, portable — separate with commas"/></div>
+      <div class="field"><label>Access &amp; conditions</label><textarea id="add-conditions" rows="2" placeholder="e.g. Available on request, 2 weeks minimum notice, training required…"></textarea></div>
+      <div class="grid-2">
+        <div class="field"><label>Contact name</label><input type="text" id="add-contact-name" placeholder="Marie Dupont"/></div>
+        <div class="field"><label>Contact email <span class="req">*</span></label><input type="email" id="add-contact-email" placeholder="contact@lab.fr"/></div>
+      </div>
+      <div class="field"><label>Your laboratory</label><input type="text" id="add-lab" value="GATE · CNRS · Lyon" readonly style="background:var(--bg);color:var(--muted)"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="submitResource()">Publish resource</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LABS = {
+  GATE:     { name:'GATE · CNRS · Lyon',      color:'#1a4fa0' },
+  PLATIPUS: { name:'PLATIPUS · Lyon',          color:'#8a3fc0' },
+  CREST:    { name:'CREST · Paris',            color:'#1a7a4a' },
+  LEEM:     { name:'LEEM · Montpellier',       color:'#b06000' },
+};
+
+const TYPE_STYLES = {
+  equipment: { label:'Equipment', bg:'var(--success-bg)', color:'var(--success)' },
+  service:   { label:'Service',   bg:'var(--blue-light)', color:'var(--blue)' },
+  platform:  { label:'Platform',  bg:'#f3e8ff',          color:'#8a3fc0' },
+};
+
+let RESOURCES = [
+  {
+    id:'r1', type:'equipment', icon:'👁', labKey:'GATE',
+    name:'Eye tracker SR Research EyeLink 1000 Plus',
+    tags:['eye-tracking','psychophysiology','reading','decision-making'],
+    desc:'High-speed remote eye tracker with 1000 Hz sampling rate. Binocular tracking, head-mounted or remote configuration. Compatible with E-Prime, MATLAB, Python, and oTree. Ideal for attention studies, reading experiments, and decision-making tasks with gaze-contingent displays.',
+    specs:[{k:'Sampling rate',v:'1000 Hz'},{k:'Tracking',v:'Binocular'},{k:'Accuracy',v:'0.25°–0.5°'},{k:'Config',v:'Remote / tower'},{k:'Software',v:'SR Research DataViewer'},{k:'Compatibility',v:'E-Prime, MATLAB, Python'}],
+    conditions:'Available upon request with minimum 2-week advance notice. A half-day training session is required for first-time users. Bring your own stimuli. Technical support available from the GATE technical team.',
+    contact:{ name:'Jean-Claude Déry', email:'jc.dery@cnrs.fr', phone:'+33 4 72 86 60 00' },
+  },
+  {
+    id:'r2', type:'equipment', icon:'🖥', labKey:'GATE',
+    name:'z-Tree / oTree experimental laboratory',
+    tags:['experimental-lab','z-tree','o-tree','economics'],
+    desc:'Fully networked experimental economics laboratory with 24 individual booths. Air-conditioned, soundproofed partitions, privacy screens. Network configured for z-Tree server/client and oTree self-contained server. Webcam and microphone available for online simultaneous sessions.',
+    specs:[{k:'Stations',v:'24 booths'},{k:'Software',v:'z-Tree, oTree'},{k:'Network',v:'Dedicated LAN'},{k:'Screens',v:'24" full HD'},{k:'OS',v:'Windows 10'},{k:'Internet',v:'Isolated / open'}],
+    conditions:'Lab bookings managed through the EXPLAIN calendar. Priority to GATE researchers, external use subject to availability. Room setup and IT support included during working hours.',
+    contact:{ name:'Gabriel Bayle', email:'gabriel.bayle@cnrs.fr', phone:'' },
+  },
+  {
+    id:'r3', type:'platform', icon:'🧠', labKey:'PLATIPUS',
+    name:'fMRI — Siemens MAGNETOM Prisma 3T',
+    tags:['fmri','neuroimaging','cognitive-neuroscience','mri'],
+    desc:'State-of-the-art 3 Tesla MRI scanner with 64-channel head coil. Equipped with an MR-compatible button box, headphones, and projector system for stimulus presentation (1024×768, 60 Hz refresh). Dedicated MR physicist and neuroimaging engineer support. Full access to SPM, FSL, and AFNI analysis pipelines.',
+    specs:[{k:'Field strength',v:'3 Tesla'},{k:'Head coil',v:'64-channel'},{k:'Bore',v:'60 cm'},{k:'Gradient',v:'80 mT/m'},{k:'Response box',v:'Lumina (Cedrus)'},{k:'Display',v:'1024×768 @ 60Hz'}],
+    conditions:'External access via formal collaboration agreement. Requires ethics approval (CPP). Safety training mandatory. Minimum booking: half-day (4 hrs scanning + setup). Physicist support billed separately to research projects.',
+    contact:{ name:'Dr. Sophie Laurent', email:'s.laurent@platipus.fr', phone:'+33 4 72 11 73 00' },
+  },
+  {
+    id:'r4', type:'platform', icon:'⚡', labKey:'PLATIPUS',
+    name:'EEG — BrainProducts 64-channel actiCHamp Plus',
+    tags:['eeg','erp','oscillations','cognitive-neuroscience','psychophysiology'],
+    desc:'High-density EEG system with 64 active electrodes (actiCHamp Plus). Ultra-low noise amplifier, 25 kHz max sampling rate. Shielded recording room. Compatible with PsychoPy, E-Prime, Presentation. Simultaneous EEG+EMG+ECG possible. Integrated trigger system for millisecond-accurate event marking.',
+    specs:[{k:'Channels',v:'64 + 8 AUX'},{k:'Sampling',v:'Up to 25 kHz'},{k:'Noise',v:'< 1 µV RMS'},{k:'Cap sizes',v:'S / M / L / XL'},{k:'Room',v:'Shielded'},{k:'Software',v:'BrainVision Analyzer'}],
+    conditions:'Available to EXPLAIN partner labs with prior contact. Setup and supervision by PLATIPUS technical staff. First session requires a joint pilot run. Participant preparation time ~45 min included.',
+    contact:{ name:'Marc Tisserand', email:'m.tisserand@platipus.fr', phone:'' },
+  },
+  {
+    id:'r5', type:'platform', icon:'🔬', labKey:'PLATIPUS',
+    name:'Psychophysiology lab — skin conductance, EMG, heart rate',
+    tags:['psychophysiology','eda','emg','ecg','autonomic','stress'],
+    desc:'Peripheral psychophysiology recording suite using BIOPAC MP160. Supports simultaneous EDA (skin conductance), EMG (facial / limb), ECG / heart rate, respiration, and skin temperature. Dedicated calm recording room, reclining chair, multiple stimulus delivery systems including speaker array and display.',
+    specs:[{k:'System',v:'BIOPAC MP160'},{k:'Channels',v:'16 simultaneous'},{k:'EDA',v:'EDA100C'},{k:'ECG',v:'ECG100C'},{k:'EMG',v:'EMG100C'},{k:'Software',v:'AcqKnowledge 5'}],
+    conditions:'Half-day minimum booking. Technical assistance available. Consumables (electrodes, gel) provided. Ethics approval required. Suitable for emotion, stress, and decision-making research.',
+    contact:{ name:'Dr. Sophie Laurent', email:'s.laurent@platipus.fr', phone:'' },
+  },
+  {
+    id:'r6', type:'service', icon:'🛠', labKey:'GATE',
+    name:'Experiment development — z-Tree & oTree',
+    tags:['development','z-tree','o-tree','programming','economics'],
+    desc:'GATE offers experiment development support for z-Tree and oTree. We can help design and programme game-theoretic experiments, surveys, and belief-elicitation tasks. Services range from consultation and code review to full turnkey development. Experienced with public goods games, auctions, negotiation tasks, and multi-player coordination.',
+    specs:[],
+    conditions:'Collaborative arrangements preferred (co-authorship or acknowledgement). Contact us to discuss scope and timeline. External commissions evaluated case by case.',
+    contact:{ name:'Iane Vallanzasca', email:'iane.vallanzasca@cnrs.fr', phone:'' },
+  },
+  {
+    id:'r7', type:'service', icon:'🤝', labKey:'CREST',
+    name:'Running experiments for external researchers',
+    tags:['subject-recruitment','session-running','paris','online'],
+    desc:'CREST can run experiments on behalf of external researchers using the EXPLAIN platform. We recruit participants from our pool (500+ active subjects in Paris region), handle scheduling, run sessions in our laboratory or online, and provide standardised data export. Suitable for replication studies or cross-site experiments.',
+    specs:[],
+    conditions:'Requires that the experiment is already approved by an ethics committee. Contact us to discuss protocol, timeline, and data-sharing agreement. We do not manage payment logistics.',
+    contact:{ name:'Pierre Martin', email:'pierre.martin@ensae.fr', phone:'' },
+  },
+  {
+    id:'r8', type:'equipment', icon:'👂', labKey:'PLATIPUS',
+    name:'Auditory lab — sound-attenuated booth',
+    tags:['auditory','psychoacoustics','speech','music'],
+    desc:'Double-walled, sound-attenuated recording booth. Audiometric-grade acoustic isolation (> 40 dB attenuation). High-fidelity stereo speaker system (Genelec) and audiometric headphones (Sennheiser HD 800). Suitable for auditory psychophysics, speech perception, and music cognition studies.',
+    specs:[{k:'Attenuation',v:'> 40 dB'},{k:'Speakers',v:'Genelec 8050'},{k:'Headphones',v:'Sennheiser HD 800'},{k:'Interface',v:'RME Fireface UCX'},{k:'Dimensions',v:'2.5 × 2 m'},{k:'Software',v:'PsychoPy / MATLAB'}],
+    conditions:'Booking minimum 1 day. Accessible within PLATIPUS premises. Participant escort required. Contact PLATIPUS platform manager.',
+    contact:{ name:'Marc Tisserand', email:'m.tisserand@platipus.fr', phone:'' },
+  },
+];
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function render() {
+  const q  = document.getElementById('search').value.toLowerCase();
+  const ft = document.getElementById('f-type').value;
+  const fl = document.getElementById('f-lab').value;
+
+  const list = RESOURCES.filter(r => {
+    if (ft && r.type !== ft) return false;
+    if (fl && r.labKey !== fl) return false;
+    if (q && !r.name.toLowerCase().includes(q) &&
+             !r.desc.toLowerCase().includes(q) &&
+             !r.tags.some(t => t.includes(q)) &&
+             !LABS[r.labKey]?.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  document.getElementById('count-label').textContent = list.length + ' resource' + (list.length !== 1 ? 's' : '');
+
+  document.getElementById('resource-grid').innerHTML = list.map(r => {
+    const lab  = LABS[r.labKey] || { name:r.labKey, color:'#718096' };
+    const ts   = TYPE_STYLES[r.type] || TYPE_STYLES.equipment;
+    const tags = r.tags.slice(0,4).map(t =>
+      `<span class="rc-tag" style="background:${ts.bg};color:${ts.color}">${t}</span>`
+    ).join('');
+    return `<div class="resource-card" onclick="openDetail('${r.id}')">
+      <div class="rc-top">
+        <div class="rc-icon" style="background:${ts.bg}">${r.icon}</div>
+        <div class="rc-header">
+          <div class="rc-name">${r.name}</div>
+          <div class="rc-lab"><div class="rc-lab-dot" style="background:${lab.color}"></div>${lab.name}</div>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-desc">${r.desc}</div>
+        <div class="rc-tags">${tags}</div>
+      </div>
+      <div class="rc-footer">
+        <span class="rc-type" style="background:${ts.bg};color:${ts.color}">${ts.label}</span>
+        <a class="rc-contact-btn" href="mailto:${r.contact.email}" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 16 16" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 6l6.5 4 6.5-4"/></svg>
+          Contact
+        </a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Detail modal ───────────────────────────────────────────────────────────
+function openDetail(id) {
+  const r = RESOURCES.find(x => x.id === id); if (!r) return;
+  const lab = LABS[r.labKey] || { name:r.labKey, color:'#718096' };
+  const ts  = TYPE_STYLES[r.type] || TYPE_STYLES.equipment;
+
+  document.getElementById('dm-icon').textContent = r.icon;
+  document.getElementById('dm-icon').style.background = ts.bg;
+  document.getElementById('dm-name').textContent = r.name;
+  document.getElementById('dm-lab').innerHTML =
+    `<div class="modal-lab-dot" style="background:${lab.color}"></div>${lab.name}
+     <span style="margin-left:6px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:${ts.bg};color:${ts.color}">${ts.label}</span>`;
+  document.getElementById('dm-desc').textContent = r.desc;
+
+  const specsEl = document.getElementById('dm-specs');
+  const specsSection = document.getElementById('dm-specs-section');
+  if (r.specs && r.specs.length) {
+    specsSection.style.display = '';
+    specsEl.innerHTML = r.specs.map(s =>
+      `<div class="spec-item"><div class="spec-key">${s.k}</div><div class="spec-val">${s.v}</div></div>`
+    ).join('');
+  } else {
+    specsSection.style.display = 'none';
+  }
+
+  document.getElementById('dm-conditions').textContent = r.conditions;
+  document.getElementById('dm-contact-info').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:var(--radius)">
+      <div style="width:34px;height:34px;border-radius:50%;background:${lab.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0">${r.contact.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div>
+        <div style="font-size:14px;font-weight:500">${r.contact.name}</div>
+        <div style="font-size:13px;color:var(--muted)">${r.contact.email}${r.contact.phone ? ' · '+r.contact.phone : ''}</div>
+      </div>
+    </div>`;
+  document.getElementById('dm-email-btn').href = `mailto:${r.contact.email}?subject=EXPLAIN Lab Resources: ${encodeURIComponent(r.name)}`;
+
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+// ── Add resource ───────────────────────────────────────────────────────────
+function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
+
+function submitResource() {
+  const name  = document.getElementById('add-name').value.trim();
+  const type  = document.getElementById('add-type').value;
+  const desc  = document.getElementById('add-desc').value.trim();
+  const email = document.getElementById('add-contact-email').value.trim();
+  if (!name || !type || !desc || !email) { showToast('Please fill all required fields', true); return; }
+
+  const rawTags = document.getElementById('add-tags').value;
+  const tags = rawTags.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  const rawSpecs = document.getElementById('add-specs').value;
+  const specs = rawSpecs ? rawSpecs.split(',').map((s,i)=>({k:'Spec '+(i+1),v:s.trim()})).filter(s=>s.v) : [];
+
+  RESOURCES.unshift({
+    id: 'r'+Date.now(), type, icon: type==='equipment'?'🔧':type==='service'?'🤝':'🔬',
+    labKey:'GATE', name, tags, desc,
+    specs, conditions: document.getElementById('add-conditions').value.trim() || 'Contact the lab for conditions.',
+    contact:{ name: document.getElementById('add-contact-name').value.trim() || 'GATE Team', email }
+  });
+
+  closeModal('add-modal');
+  render();
+  showToast('Resource published');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+let _tt;
+function showToast(msg, err) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.background = err ? '#c0392b' : 'var(--success)';
+  t.classList.add('show'); clearTimeout(_tt); _tt = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+render();
+</script>
+</body>
+</html>

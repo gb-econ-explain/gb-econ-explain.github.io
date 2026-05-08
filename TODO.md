@@ -2,19 +2,7 @@
 
 > Features described here are **not yet implemented**. This file is a reference for future development sessions.
 
----
 
-## Ethics & GDPR section
-
-A new top-level navigation section (alongside Research, Administration, Help) with three pages.
-
-### Review Board (`review-board.html`)
-
-For lab managers / platform admins. Manages the review board of EXPLAIN.
-
-- Add a button to send to review on the right menu.
-- Add a button to produce the certificate for validated reviews.
-- Add a status for reviews for which the certificate has been produced, like "Archived".
 
 ---
 
@@ -31,8 +19,12 @@ A registration / onboarding page for new researchers joining EXPLAIN.
 
 ---
 
-## Dashboard
+## Dashboard as the universal welcome page
 
+Replace `welcome.html` with the dashboard as the landing page for all user types.
+
+- The dashboard (`dashboard.html`) becomes the first page seen after login for everyone
+- Remove the separate `welcome.html` (or repurpose it as a redirect to dashboard)
 - The dashboard content should adapt based on the user role:
   - **Lab Manager** — full dashboard as currently built (KPI cards, charts, pool composition)
   - **Researcher** — simplified view: their experiments, upcoming sessions, no accounting/pool stats
